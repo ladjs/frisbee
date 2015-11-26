@@ -1,0 +1,31 @@
+{
+  "name": "fetch-api",
+  "version": "0.0.1",
+  "description": "API wrapper for ES6's fetch method used with GitHub's fetch polyfill",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niftylettuce/node-react-native-fetch-api.git"
+  },
+  "keywords": [
+    "fetch",
+    "github",
+    "polyfill",
+    "api",
+    "wrapper",
+    "rest",
+    "restful",
+    "glue",
+    "superagent",
+    "superagent-defaults"
+  ],
+  "author": "Nick Baugh <niftylettuce@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/niftylettuce/node-react-native-fetch-api/issues"
+  },
+  "homepage": "https://github.com/niftylettuce/node-react-native-fetch-api#readme"
+}
