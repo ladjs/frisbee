@@ -1,0 +1,21 @@
+{
+  "name": "fetch-api",
+  "description": "API wrapper for ES6's fetch method used with GitHub's fetch polyfill",
+  "keywords": [
+    "fetch",
+    "github",
+    "polyfill",
+    "api",
+    "wrapper",
+    "rest",
+    "restful",
+    "glue",
+    "superagent",
+    "superagent-defaults"
+  ],
+  "repo": "niftylettuce/node-react-native-fetch-api",
+  "main": "./lib/main.js",
+  "scripts": [ "./lib/main.js" ],
+  "version": "0.0.1",
+  "license": "MIT"
+}

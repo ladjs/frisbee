@@ -1,0 +1,33 @@
+{
+  "name": "fetch-api",
+  "main": "./lib/main.js",
+  "keywords": [
+    "fetch",
+    "github",
+    "polyfill",
+    "api",
+    "wrapper",
+    "rest",
+    "restful",
+    "glue",
+    "superagent",
+    "superagent-defaults"
+  ],
+  "ignore": [
+    "src",
+    "docs",
+    "test",
+    "*.yml",
+    "CNAME",
+    "index.html",
+    "favicon.ico",
+    "CONTRIBUTING.md",
+    ".*",
+    "component.json",
+    "package.json",
+    "karma.*"
+  ],
+  "dependencies": {
+    "fetch": "~0.10.1"
+  }
+}

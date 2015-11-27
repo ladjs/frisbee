@@ -1,21 +1,26 @@
 
 # Node React Native Fetch API
 
+[![Circle CI][circle-ci-image]][circle-ci-url]
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][npm-downloads]][npm-url]
 [![MIT License][license-image]][license-url]
 
 > **API wrapper for ES6's fetch method used with GitHub's fetch polyfill**
 
-> _Familiar with NPM packages?  [Click here to jump to Usage!](#usage)_
+> _Familiar with packages?  [Jump to Usage now](#usage)_
 
-```bash
-npm install --save fetch-api
-```
+NPM | Bower\*
+--- | -------
+`npm install --save fetch-api` | `bower install --save fetch-api`
+
+<small>\* You may need to `bower install --save es6-promise` to support [older browsers][older-browsers]</small>
 
 **What is this project about?**
 
 Use this package as a simple HTTP method wrapper for integrating your API in your [Node][nodejs] and [React Native][react-native] projects.  It's a better alternative, with less headaches (at least for me) for this use case than [superagent][superagent] and the default [fetch Network method][fetch-network-method].
+
+It supports and is [tested](#Tests) for both client-side usage (e.g. with Bower, Browserify, or Webpack, with `whatwg-fetch`) and also server-side (with `node-fetch`).
 
 **Why not just use `superagent` or `fetch`?**
 
@@ -30,6 +35,8 @@ Read my article about [building Node.js API's with authentication][blog-article]
 
 * [Usage](#usage)
 * [API](#api)
+* [Tests](#tests)
+* [Development](#development)
 * [Background](#background)
 * [Contributors](#contributors)
 * [Credits](#credits)
@@ -39,10 +46,16 @@ Read my article about [building Node.js API's with authentication][blog-article]
 ## Usage
 
 1. Install the package:
+    * NPM:
 
-    ```bash
-    npm install --save fetch-api
-    ```
+        ```bash
+        npm install --save fetch-api
+        ```
+    * Bower:
+
+        ```bash
+        bower install --save fetch-api
+        ```
 
 2. Require it, set a base URI, and call some methods:
 
@@ -56,7 +69,7 @@ Read my article about [building Node.js API's with authentication][blog-article]
     });
 
     // log in to our API with a user/pass
-    api.post('/v1/login', ((err, res, user) => {
+    api.post('/v1/login', (err, res, user) => {
 
       // you'll probably want to handle this
       // error better than just throwing it
@@ -69,7 +82,9 @@ Read my article about [building Node.js API's with authentication][blog-article]
       // now let's post a message to our API
       api.post(
         '/v1/message',
-        'Hello',
+        { body: 'Hello' },
+        // if you wanted to pass JSON instead of plaintext:
+        // { body: { message: 'Hello' } }
         (err, res, message) => {
           // again obviously handle this error better
           if (err) throw err;
@@ -95,7 +110,7 @@ import API from 'fetch-api';
     * `baseURI` - the default URI to use as a prefix for all HTTP requests
         * If your API server is running on `http://localhost:8080`, then use that as the value for this option
         * If you use [React Native][react-native], then you most likely want to set `baseURI` as follows (e.g. making use of `__DEV__` global variable):
-        
+
         ```js
         let api = new API({
           baseURI: __DEV__
@@ -103,41 +118,59 @@ import API from 'fetch-api';
             : 'https://api.startup.com'
         });
         ```
-        
+
         * You could also set `API_BASE_URI` as an environment variable, and then set the value of this option to `process.env.API_BASE_URI` (e.g. `API_BASE_URI=http://localhost:8080 node app`)
 
     * `headers` - an object containing default headers to send with every request
+    * `auth` - will call the `auth()` function below and set it as a default
 
 Upon being invoked, `API` returns an object with the following methods:
 
-* `api.auth(user, pass)` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
+* `api.auth([ user, pass ])` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
 
     * If you don't pass both `user` and `pass` arguments, then it removes any previously set BasicAuth headers from prior `auth()` calls
     * If you pass only a `user`, then it will set `pass` to an empty string `''`)
+    * If you pass `:` then it will assume you are trying to set BasicAuth headers using your own `user:pass` string
+    * If you pass more than two keys, then it will throw an error (since we BasicAuth only consists of `user` and `pass` anyways)
+
 * All exposed HTTP methods require a `path` string and `callback` function arguments, and accept an optional `options` object:
     * Accepted method arguments:
         * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` mentioned earlier)
         * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request, here are a few examples:
             * To set a custom header value of `X-Reply-To` on a `POST` request:
-            
+
                 ```js
                 api.post('/messages', {
                   headers: {
                     'X-Reply-To': '7s9inuna748y4l1azchi'
                   }
                 }, callback);
-                ``` 
+                ```
         * `callback` **required** - a callback function that gets called with the  arguments of `(err, res, body)`:
             *  `err` - contains an error object (or `null`)
             *  `res` - the response from server (it contains status code, etc)
             *  `body` - the parsed JSON or text response (or `null`)
     * List of available HTTP methods:
         * `api.get(path, options, callback)` - GET
-        * `api.head(path, options, callback)` - HEAD
+        * `api.head(path, options, callback)` - HEAD (*does not currently work - see tests*)
         * `api.post(path, options, callback)` - POST
         * `api.put(path, options, callback)` - PUT
         * `api.del(path, options, callback)` - DELETE
+        * `api.options(path, options, callback)` - OPTIONS (*does not currently work - see tests*)
         * `api.patch(path, options, callback)` - PATCH
+
+
+## Tests
+
+This package is tested to work with `whatwg-fetch` and `node-fetch`.
+
+This means that it is compatible for both client-side and server-side usage.
+
+
+## Development
+
+Watch the `src` directory for changes with `npm run watch` and when you are done, run `npm test`.
+
 
 ## Background
 
@@ -179,8 +212,9 @@ Therefore I created `fetch-api` to serve as my API glue, and hopefully it'll ser
 [react-native]: https://facebook.github.io/react-native
 [superagent]: https://github.com/visionmedia/superagent
 [fetch-network-method]: https://facebook.github.io/react-native/docs/network.html#fetch
-
-
+[older-browsers]: http://caniuse.com/#feat=promises
 [npm-image]: http://img.shields.io/npm/v/fetch-api.svg?style=flat
 [npm-url]: https://npmjs.org/package/fetch-api
 [npm-downloads]: http://img.shields.io/npm/dm/fetch-api.svg?style=flat
+[circle-ci-image]: https://circleci.com/gh/niftylettuce/node-react-native-fetch-api.svg?style=svg
+[circle-ci-url]: https://circleci.com/gh/niftylettuce/node-react-native-fetch-api

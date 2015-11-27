@@ -1,0 +1,10 @@
+machine:
+  timezone: America/New_York
+  node:
+    version: 4.1.2
+general:
+  artifacts:
+    - ./coverage
+test:
+  override:
+    - npm run-script coverage
