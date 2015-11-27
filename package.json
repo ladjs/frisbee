@@ -1,6 +1,6 @@
 {
   "name": "fetch-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "API wrapper for ES6's fetch method used with GitHub's fetch polyfill",
   "main": "./lib/main.js",
   "scripts": {
