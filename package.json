@@ -51,8 +51,6 @@
     "whatwg-fetch": "^0.10.1"
   },
   "dependencies": {
-    "debug": "^2.2.0",
-    "istanbul": "^0.4.1",
-    "whatwg-fetch": "^0.10.1"
+    "debug": "^2.2.0"
   }
 }
