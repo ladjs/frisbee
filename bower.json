@@ -1,8 +1,12 @@
 {
-  "name": "fetch-api",
-  "main": "./lib/main.js",
+  "name": "frisbee",
+  "version": "0.0.2",
+  "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
+  "main": "./lib/frisbee.js",
   "keywords": [
     "fetch",
+    "whatwg",
+    "whatwg-fetch",
     "github",
     "polyfill",
     "api",
@@ -11,7 +15,15 @@
     "restful",
     "glue",
     "superagent",
-    "superagent-defaults"
+    "superagent-defaults",
+    "react",
+    "react-native",
+    "boilerplate",
+    "router",
+    "helper",
+    "rest",
+    "restful",
+    "frisbee"
   ],
   "ignore": [
     "src",
@@ -24,11 +36,6 @@
     "CONTRIBUTING.md",
     ".*",
     "component.json",
-    "package.json",
-    "karma.*"
-  ],
-  "dependencies": {
-    "fetch": "~0.10.1"
-  },
-  "version": "0.0.2"
+    "package.json"
+  ]
 }

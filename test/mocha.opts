@@ -1,9 +1,8 @@
---timeout 5000
 --recursive
 --debug
 --reporter spec
+--bail
 --check-leaks
 --ui bdd
---compilers js:babel-core/register
 --require test/support/
 test/**/*.test.js

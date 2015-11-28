@@ -1,24 +1,28 @@
 
-# Node React Native Fetch API
+# Frisbee
 
 [![Circle CI][circle-ci-image]][circle-ci-url]
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][npm-downloads]][npm-url]
 [![MIT License][license-image]][license-url]
 
-> **API wrapper for ES6's fetch method used with GitHub's fetch polyfill**
+> **Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.  BYOF; Bring your own `fetch` method from [whatwg-fetch][whatwg-fetch] or [node-fetch][node-fetch].  You'll need a [promise polyfill][promise-polyfill] for [older browsers][older browsers].**
 
 > _Familiar with packages?  [Jump to Usage now](#usage)_
 
-NPM | Bower\*
+NPM | Bower
 --- | -------
-`npm install --save fetch-api` | `bower install --save fetch-api`
+`npm install --save frisbee` | `bower install --save frisbee`
 
 <small>\* You may need to `bower install --save es6-promise` to support [older browsers][older-browsers]</small>
 
 **What is this project about?**
 
-Use this package as a simple HTTP method wrapper for integrating your API in your [Node][nodejs] and [React Native][react-native] projects.  It's a better alternative, with less headaches (at least for me) for this use case than [superagent][superagent] and the default [fetch Network method][fetch-network-method].
+Use this package as a **universal API wrapper** for integrating your API in your client-side or server-side projects.
+
+It's a better working alternative (and with less headaches; at least for me) &ndash; for talking to your API &ndash; than [superagent][superagent] and the default [fetch Network method][fetch-network-method] provide.
+
+Use it for projects in [Node][nodejs], [React][react], [Angular][angular], [React Native][react-native], ...
 
 It supports and is [tested](#Tests) for both client-side usage (e.g. with Bower, Browserify, or Webpack, with `whatwg-fetch`) and also server-side (with `node-fetch`).
 
@@ -26,9 +30,13 @@ It supports and is [tested](#Tests) for both client-side usage (e.g. with Bower,
 
 See [Background](#background) for more information.
 
-**Learning how to build an API with Node.js?**
+**Want to build an API back-end with Node.js?**
 
 Read my article about [building Node.js API's with authentication][blog-article].
+
+**Need help or want to request a feature?**
+
+File [an issue][issue] on GitHub and we'll try our best help you out.
 
 
 ## Index
@@ -49,22 +57,22 @@ Read my article about [building Node.js API's with authentication][blog-article]
     * NPM:
 
         ```bash
-        npm install --save fetch-api
+        npm install --save frisbee
         ```
     * Bower:
 
         ```bash
-        bower install --save fetch-api
+        bower install --save frisbee
         ```
 
 2. Require it, set a base URI, and call some methods:
 
     ```js
     // require the module
-    import API from 'fetch-api';
+    import Frisbee from 'frisbee';
 
-    // instantiate a new API instance
-    let api = new API({
+    // create a new instance of Frisbee
+    let api = new Frisbee({
       baseURI: 'https://api.startup.com'
     });
 
@@ -100,19 +108,19 @@ Read my article about [building Node.js API's with authentication][blog-article]
 ## API
 
 ```js
-import API from 'fetch-api';
+import Frisbee from 'frisbee';
 ```
 
-`API` is a function that optionally accepts an argument `options`, which is an object full of options for constructing your API instance.
+`Frisbee` is a function that optionally accepts an argument `options`, which is an object full of options for constructing your API instance.
 
-* `API` - accepts an `options` object, with the following accepted options:
+* `Frisbee` - accepts an `options` object, with the following accepted options:
 
     * `baseURI` - the default URI to use as a prefix for all HTTP requests
         * If your API server is running on `http://localhost:8080`, then use that as the value for this option
         * If you use [React Native][react-native], then you most likely want to set `baseURI` as follows (e.g. making use of `__DEV__` global variable):
 
         ```js
-        let api = new API({
+        let api = new Frisbee({
           baseURI: __DEV__
             ? process.env.API_BASE_URI || 'http://localhost:8080'
             : 'https://api.startup.com'
@@ -120,14 +128,19 @@ import API from 'fetch-api';
         ```
 
         * You could also set `API_BASE_URI` as an environment variable, and then set the value of this option to `process.env.API_BASE_URI` (e.g. `API_BASE_URI=http://localhost:8080 node app`)
+        * Using [React Native][react-native]?  You might want to read this article about [automatic IP configuration][automatic-ip-configuration].
 
     * `headers` - an object containing default headers to send with every request
+
+        * By default we set `"Accept"` header to '"application/json"` and the `"Content-Type"` header to `"application/json"`
+
     * `auth` - will call the `auth()` function below and set it as a default
 
-Upon being invoked, `API` returns an object with the following methods:
+Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
-* `api.auth([ user, pass ])` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
+* `api.auth(creds)` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
 
+    * You can pass `creds` user and pass as an array, arguments, or string: `([user, pass])`, `(user, pass)`, or `("user:pass")`, so you shouldn't have any problems!
     * If you don't pass both `user` and `pass` arguments, then it removes any previously set BasicAuth headers from prior `auth()` calls
     * If you pass only a `user`, then it will set `pass` to an empty string `''`)
     * If you pass `:` then it will assume you are trying to set BasicAuth headers using your own `user:pass` string
@@ -159,6 +172,13 @@ Upon being invoked, `API` returns an object with the following methods:
         * `api.options(path, options, callback)` - OPTIONS (*does not currently work - see tests*)
         * `api.patch(path, options, callback)` - PATCH
 
+* Note that you can chain methods together, for example:
+
+    ```js
+    api.auth('foo:bar').get('/', callback);
+
+    api.get('/', callback).post('/', callback);
+    ```
 
 ## Tests
 
@@ -169,7 +189,13 @@ This means that it is compatible for both client-side and server-side usage.
 
 ## Development
 
-Watch the `src` directory for changes with `npm run watch` and when you are done, run `npm test`.
+1. Fork/clone this repository
+2. Run `npm install`
+3. Run `npm run watch` to watch the `src` directory for changes
+4. Make changes in `src` directory
+5. Write unit tests in `/test/` if you add more stuff
+6. Run `npm test` when you're done
+7. Submit a pull request
 
 
 ## Background
@@ -188,16 +214,20 @@ I know that solutions like `superagent` exist, but they don't seem to work well 
 
 In addition, the authors of the spec for ES6's fetch support throwing errors instead of catching them and bubbling them up to the callback/promise.
 
-Therefore I created `fetch-api` to serve as my API glue, and hopefully it'll serve as yours too.
+Therefore I created `frisbee` to serve as my API glue, and hopefully it'll serve as yours too.
 
 
 ## Contributors
 
 * Nick Baugh <niftylettuce@gmail.com>
 
+
 ## Credits
 
-* <https://gist.github.com/anthonator/0dc0310a931398490fab>
+* Thanks to [James Ide][ide] for coining the name "Frisbee" (it used to be called `fetch-api`, and `frisbee` was surprisingly available on NPM)
+* Inspiration from <https://gist.github.com/anthonator/0dc0310a931398490fab>, [superagent][superagent], and from writing dozens of API wrappers!
+* Google for being an awesome search engine to help me discover stuff on GitHub (haha)
+
 
 ## License
 
@@ -212,9 +242,17 @@ Therefore I created `fetch-api` to serve as my API glue, and hopefully it'll ser
 [react-native]: https://facebook.github.io/react-native
 [superagent]: https://github.com/visionmedia/superagent
 [fetch-network-method]: https://facebook.github.io/react-native/docs/network.html#fetch
+[npm-image]: http://img.shields.io/npm/v/frisbee.svg?style=flat
+[npm-url]: https://npmjs.org/package/frisbee
+[npm-downloads]: http://img.shields.io/npm/dm/frisbee.svg?style=flat
+[circle-ci-image]: https://circleci.com/gh/niftylettuce/frisbee.svg?style=svg
+[circle-ci-url]: https://circleci.com/gh/niftylettuce/frisbee
+[whatwg-fetch]: https://github.com/github/fetch
+[node-fetch]: https://github.com/bitinn/node-fetch
+[promise-polyfill]: https://github.com/jakearchibald/es6-promise
 [older-browsers]: http://caniuse.com/#feat=promises
-[npm-image]: http://img.shields.io/npm/v/fetch-api.svg?style=flat
-[npm-url]: https://npmjs.org/package/fetch-api
-[npm-downloads]: http://img.shields.io/npm/dm/fetch-api.svg?style=flat
-[circle-ci-image]: https://circleci.com/gh/niftylettuce/node-react-native-fetch-api.svg?style=svg
-[circle-ci-url]: https://circleci.com/gh/niftylettuce/node-react-native-fetch-api
+[ide]: https://github.com/ide
+[react]: https://facebook.github.io/react/
+[angular]: https://angularjs.org/
+[issue]: https://github.com/niftylettuce/frisbee/issues
+[automatic-ip-configuration]: http://moduscreate.com/automated-ip-configuration-for-react-native-development/

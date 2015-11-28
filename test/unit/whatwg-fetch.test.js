@@ -4,11 +4,11 @@ import jsdomify from 'jsdomify';
 let app = require('./app');
 
 // create our DOM instance and expose `global.window`
-// so that when we import API it will use `whatwg-fetch`
+// so that when we import Frisbee it will use `whatwg-fetch`
 // instead of using `node-fetch` as the other test does
 jsdomify.create();
 
-import API from '../../';
+import Frisbee from '../../src/frisbee';
 
 describe('whatwg-fetch', () => {
 
@@ -30,13 +30,13 @@ describe('whatwg-fetch', () => {
   // <https://github.com/niftylettuce/node-react-native-fetch-api>
   /*
   it('should throw an error if we fail to pass baseURI', () => {
-    expect(new API).to.throw(new Error('baseURI option is required'));
+    expect(new Frisbee).to.throw(new Error('baseURI option is required'));
   });
   */
 
-  it('should create API instance with all methods', () => {
+  it('should create Frisbee instance with all methods', () => {
 
-    let api = new API({
+    let api = new Frisbee({
       baseURI: 'http://localhost:8080'
     });
 
@@ -80,7 +80,7 @@ describe('whatwg-fetch', () => {
 
     it(`should return 200 on ${methodName}`, (done) => {
 
-      let api = new API({
+      let api = new Frisbee({
         baseURI: 'http://localhost:8080'
       });
 

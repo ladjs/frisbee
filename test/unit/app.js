@@ -22,4 +22,8 @@ app.all('/', (req, res, next) => {
 
 });
 
+app.get('/404-with-json-expected', (req, res, next) => {
+  res.sendStatus(404);
+});
+
 module.exports = app;

@@ -1,8 +1,13 @@
 {
-  "name": "fetch-api",
-  "description": "API wrapper for ES6's fetch method used with GitHub's fetch polyfill",
+  "name": "frisbee",
+  "version": "0.0.2",
+  "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
+  "main": "./lib/frisbee.js",
+  "scripts": [ "./lib/frisbee.js" ],
   "keywords": [
     "fetch",
+    "whatwg",
+    "whatwg-fetch",
     "github",
     "polyfill",
     "api",
@@ -11,11 +16,16 @@
     "restful",
     "glue",
     "superagent",
-    "superagent-defaults"
+    "superagent-defaults",
+    "react",
+    "react-native",
+    "boilerplate",
+    "router",
+    "helper",
+    "rest",
+    "restful",
+    "frisbee"
   ],
-  "repo": "niftylettuce/node-react-native-fetch-api",
-  "main": "./lib/main.js",
-  "scripts": [ "./lib/main.js" ],
-  "version": "0.0.1",
+  "repo": "niftylettuce/frisbee",
   "license": "MIT"
 }

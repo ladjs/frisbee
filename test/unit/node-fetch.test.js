@@ -1,6 +1,8 @@
 
-import API from '../../';
+import Frisbee from '../../src/frisbee';
 let app = require('./app');
+
+const baseURI = 'http://localhost:8080';
 
 describe('node-fetch', () => {
 
@@ -19,17 +21,14 @@ describe('node-fetch', () => {
   });
 
   // <https://github.com/niftylettuce/node-react-native-fetch-api>
-  /*
   it('should throw an error if we fail to pass baseURI', () => {
-    expect(new API).to.throw(new Error('baseURI option is required'));
+    //expect(new Frisbee).to.throw(new Error('baseURI option is required'));
+    expect(() => { new Frisbee(); }).to.throw(/baseURI option is required/);
   });
-  */
 
-  it('should create API instance with all methods', () => {
+  it('should create Frisbee instance with all methods', () => {
 
-    let api = new API({
-      baseURI: 'http://localhost:8080'
-    });
+    let api = new Frisbee({ baseURI: baseURI });
 
     expect(api).to.be.an('object');
 
@@ -48,14 +47,87 @@ describe('node-fetch', () => {
 
   });
 
-  // TODO: auth (string)
-  // TODO: auth (string with ':')
-  // TODO: array (empty)
-  // TODO: array (with only user)
-  // TODO: array (with user and pass)
-  // TODO: array (with only pass)
-  // TODO: array with more than 2 keys
-  // TODO: array with non-string value keys
+  it('should throw errors for incorrect auth() usage', () => {
+
+    let api = new Frisbee({ baseURI: baseURI });
+
+    expect(() => { api.auth({}); })
+      .to.throw(/auth option `user` must be a string/);
+
+    expect(() => { api.auth(new Array(3)); })
+      .to.throw(/auth option can only have two keys/);
+
+    expect(() => { api.auth(new Array({}, '')); })
+      .to.throw(/auth option `user` must be a string/);
+
+    expect(() => { api.auth(new Array('', {})); })
+      .to.throw(/auth option `pass` must be a string/);
+
+  });
+
+  it('should accept valid auth("user:pass") usage', () => {
+
+    let api = new Frisbee({ baseURI: baseURI });
+
+    let creds = 'foo:bar';
+
+    api.auth('foo:bar');
+
+    let basicAuthHeader = 'Basic ' + new Buffer(creds).toString('base64');
+    expect(api.headers.Authorization).to.equal(basicAuthHeader);
+
+  });
+
+  it('should allow chaining of methods', () => {
+
+    let api = new Frisbee({ baseURI: baseURI });
+
+    expect(() => {
+
+      api
+        .auth('foo', 'bar')
+        .auth()
+        .auth('foo:bar')
+        .get('/', () => {})
+        .auth()
+        .post('/', () => {})
+        .auth('baz');
+
+    }).to.not.throw();
+
+  });
+
+  it('should allow removal of auth() header', () => {
+
+    let api = new Frisbee({ baseURI: baseURI });
+
+    api.auth('foo').auth();
+
+    expect(api.headers.Authorization).to.not.exist();
+
+  });
+
+  it('should throw an error if we fail to pass a string `path`', () => {
+    let api = new Frisbee({ baseURI: baseURI });
+    expect(() => { api.get({}) }).to.throw(/`path` must be a string/);
+  });
+
+  it('should throw an error if we fail to pass an object `options`', () => {
+    let api = new Frisbee({ baseURI: baseURI });
+    expect(() => { api.get('', []); }).to.throw(/`options` must be an object/);
+    expect(() => { api.get('', 1); }).to.throw(/`options` must be an object/);
+  });
+
+  it('should automatically set options to an empty object if false', () => {
+    let api = new Frisbee({ baseURI: baseURI });
+    expect(() => { api.get('', false, () => {}); }).to.not.throw();
+  });
+
+  it('should throw an error if we fail to pass a function `callback`', () => {
+    let api = new Frisbee({ baseURI: baseURI });
+    expect(() => { api.get('', {}, false); })
+      .to.throw(/`callback` must be a function/);
+  });
 
   [
     'get',
@@ -71,9 +143,7 @@ describe('node-fetch', () => {
 
     it(`should return 200 on ${methodName}`, (done) => {
 
-      let api = new API({
-        baseURI: 'http://localhost:8080'
-      });
+      let api = new Frisbee({ baseURI: baseURI });
 
       api[method]('/', {}, (err, res, body) => {
         // until `check` is added here to mocha:
@@ -88,5 +158,30 @@ describe('node-fetch', () => {
     });
 
   });
+
+  it('should not throw on parsing JSON from a 404', (done) => {
+
+    let api = new Frisbee({ baseURI: baseURI });
+
+    expect(() => {
+      api.get('/404-with-json-expected', (err, res, body) => {
+        global.chai.check(done, () => {
+          expect(err).to.exist();
+          expect(err.message).to.equal('Not Found');
+          expect(res).to.be.an('object');
+          expect(res).to.have.property('status');
+          expect(res.status).to.be.a('number');
+          expect(res.status).to.equal(404);
+          expect(body).to.equal('Not Found');
+        });
+      });
+    }).to.not.throw();
+
+  });
+
+  // TODO: expect text/plain without Content-Type specified
+
+  // TODO: expect error "Failed to parse JSON body" when
+  // JSON body is invalid but 200 status
 
 });
