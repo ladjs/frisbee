@@ -117,7 +117,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     * If you don't pass both `user` and `pass` arguments, then it removes any previously set BasicAuth headers from prior `auth()` calls
     * If you pass only a `user`, then it will set `pass` to an empty string `''`)
     * If you pass `:` then it will assume you are trying to set BasicAuth headers using your own `user:pass` string
-    * If you pass more than two keys, then it will throw an error (since we BasicAuth only consists of `user` and `pass` anyways)
+    * If you pass more than two keys, then it will throw an error (since BasicAuth only consists of `user` and `pass` anyways)
 
 * All exposed HTTP methods require a `path` string and `callback` function arguments, and accept an optional `options` object:
     * Accepted method arguments:
