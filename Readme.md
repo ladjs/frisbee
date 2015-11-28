@@ -10,41 +10,12 @@
 
 > **Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.  BYOF; Bring your own `fetch` method from [whatwg-fetch][whatwg-fetch] or [node-fetch][node-fetch].  You'll need a [promise polyfill][promise-polyfill] for [older browsers][older-browsers].**
 
-> _Familiar with packages?  [Jump to Usage now](#usage)_
-
-NPM | Bower
---- | -------
-`npm install --save frisbee` | `bower install --save frisbee`
-
-<small>\* You may need to `bower install --save es6-promise` to support [older browsers][older-browsers]</small>
-
-**What is this project about?**
-
-Use this package as a **universal API wrapper** for integrating your API in your client-side or server-side projects.
-
-It's a better working alternative (and with less headaches; at least for me) &ndash; for talking to your API &ndash; than [superagent][superagent] and the default [fetch Network method][fetch-network-method] provide.
-
-Use it for projects in [Node][nodejs], [React][react], [Angular][angular], [React Native][react-native], ...
-
-It supports and is [tested](#Tests) for both client-side usage (e.g. with Bower, Browserify, or Webpack, with `whatwg-fetch`) and also server-side (with `node-fetch`).
-
-**Why not just use `superagent` or `fetch`?**
-
-See [Background](#background) for more information.
-
-**Want to build an API back-end with Node.js?**
-
-Read my article about [building Node.js API's with authentication][blog-article].
-
-**Need help or want to request a feature?**
-
-File [an issue][issue] on GitHub and we'll try our best help you out.
-
 
 ## Index
 
 * [Usage](#usage)
 * [API](#api)
+* [Frequently Asked Questions](#frequently-asked-questions)
 * [Tests](#tests)
 * [Development](#development)
 * [Background](#background)
@@ -181,6 +152,32 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
     api.get('/', callback).post('/', callback);
     ```
+
+
+## Frequently Asked Questions
+
+**What is this project about?**
+
+Use this package as a **universal API wrapper** for integrating your API in your client-side or server-side projects.
+
+It's a better working alternative (and with less headaches; at least for me) &ndash; for talking to your API &ndash; than [superagent][superagent] and the default [fetch Network method][fetch-network-method] provide.
+
+Use it for projects in [Node][nodejs], [React][react], [Angular][angular], [React Native][react-native], ...
+
+It supports and is [tested](#Tests) for both client-side usage (e.g. with Bower, Browserify, or Webpack, with `whatwg-fetch`) and also server-side (with `node-fetch`).
+
+**Why not just use `superagent` or `fetch`?**
+
+See [Background](#background) for more information.
+
+**Want to build an API back-end with Node.js?**
+
+Read my article about [building Node.js API's with authentication][blog-article].
+
+**Need help or want to request a feature?**
+
+File [an issue][issue] on GitHub and we'll try our best help you out.
+
 
 ## Tests
 
