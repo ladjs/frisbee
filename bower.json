@@ -36,6 +36,7 @@
     "CONTRIBUTING.md",
     ".*",
     "component.json",
-    "package.json"
+    "package.json",
+    "media/"
   ]
 }

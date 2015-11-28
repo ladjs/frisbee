@@ -1,4 +1,6 @@
 
+[![Frisbee][frisbee-logo]](#usage)
+
 # Frisbee
 
 [![Circle CI][circle-ci-image]][circle-ci-url]
@@ -6,7 +8,7 @@
 [![NPM downloads][npm-downloads]][npm-url]
 [![MIT License][license-image]][license-url]
 
-> **Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.  BYOF; Bring your own `fetch` method from [whatwg-fetch][whatwg-fetch] or [node-fetch][node-fetch].  You'll need a [promise polyfill][promise-polyfill] for [older browsers][older browsers].**
+> **Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.  BYOF; Bring your own `fetch` method from [whatwg-fetch][whatwg-fetch] or [node-fetch][node-fetch].  You'll need a [promise polyfill][promise-polyfill] for [older browsers][older-browsers].**
 
 > _Familiar with packages?  [Jump to Usage now](#usage)_
 
@@ -132,7 +134,7 @@ import Frisbee from 'frisbee';
 
     * `headers` - an object containing default headers to send with every request
 
-        * By default we set `"Accept"` header to '"application/json"` and the `"Content-Type"` header to `"application/json"`
+        * By default we set `"Accept"` header to `"application/json"` and the `"Content-Type"` header to `"application/json"`
 
     * `auth` - will call the `auth()` function below and set it as a default
 
@@ -256,3 +258,4 @@ Therefore I created `frisbee` to serve as my API glue, and hopefully it'll serve
 [angular]: https://angularjs.org/
 [issue]: https://github.com/niftylettuce/frisbee/issues
 [automatic-ip-configuration]: http://moduscreate.com/automated-ip-configuration-for-react-native-development/
+[frisbee-logo]: https://cdn.rawgit.com/niftylettuce/frisbee/master/media/logo.svg
