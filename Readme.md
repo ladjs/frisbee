@@ -229,6 +229,7 @@ Therefore I created `frisbee` to serve as my API glue, and hopefully it'll serve
 * Thanks to [James Ide][ide] for coining the name "Frisbee" (it used to be called `fetch-api`, and `frisbee` was surprisingly available on NPM)
 * Inspiration from <https://gist.github.com/anthonator/0dc0310a931398490fab>, [superagent][superagent], and from writing dozens of API wrappers!
 * Google for being an awesome search engine to help me discover stuff on GitHub (haha)
+* Logo created by Andrey Vasiliev from the Noun project
 
 
 ## License
