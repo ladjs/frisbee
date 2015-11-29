@@ -1,11 +1,6 @@
 
-// setup global fetch
-//
-// node-fetch has limits:
-// <https://github.com/bitinn/node-fetch/blob/master/LIMITS.md>
-global.fetch = (typeof window === 'undefined')
-  ? require('node-fetch')
-  : require('whatwg-fetch');
+// base URI for everything
+global.baseURI = 'http://localhost:8080';
 
 // setup global chai methods
 import chai from 'chai';

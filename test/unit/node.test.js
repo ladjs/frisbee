@@ -1,10 +1,9 @@
 
+import 'isomorphic-fetch';
 import Frisbee from '../../src/frisbee';
 let app = require('./app');
 
-const baseURI = 'http://localhost:8080';
-
-describe('node-fetch', () => {
+describe('node runtime', () => {
 
   let server;
 
@@ -28,7 +27,7 @@ describe('node-fetch', () => {
 
   it('should create Frisbee instance with all methods', () => {
 
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     expect(api).to.be.an('object');
 
@@ -49,7 +48,7 @@ describe('node-fetch', () => {
 
   it('should throw errors for incorrect auth() usage', () => {
 
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     expect(() => { api.auth({}); })
       .to.throw(/auth option `user` must be a string/);
@@ -67,7 +66,7 @@ describe('node-fetch', () => {
 
   it('should accept valid auth("user:pass") usage', () => {
 
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     let creds = 'foo:bar';
 
@@ -80,7 +79,7 @@ describe('node-fetch', () => {
 
   it('should allow chaining of methods', () => {
 
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     expect(() => {
 
@@ -99,7 +98,7 @@ describe('node-fetch', () => {
 
   it('should allow removal of auth() header', () => {
 
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     api.auth('foo').auth();
 
@@ -108,23 +107,23 @@ describe('node-fetch', () => {
   });
 
   it('should throw an error if we fail to pass a string `path`', () => {
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
     expect(() => { api.get({}) }).to.throw(/`path` must be a string/);
   });
 
   it('should throw an error if we fail to pass an object `options`', () => {
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
     expect(() => { api.get('', []); }).to.throw(/`options` must be an object/);
     expect(() => { api.get('', 1); }).to.throw(/`options` must be an object/);
   });
 
   it('should automatically set options to an empty object if false', () => {
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
     expect(() => { api.get('', false, () => {}); }).to.not.throw();
   });
 
   it('should throw an error if we fail to pass a function `callback`', () => {
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
     expect(() => { api.get('', {}, false); })
       .to.throw(/`callback` must be a function/);
   });
@@ -143,7 +142,7 @@ describe('node-fetch', () => {
 
     it(`should return 200 on ${methodName}`, (done) => {
 
-      let api = new Frisbee({ baseURI: baseURI });
+      let api = new Frisbee({ baseURI: global.baseURI });
 
       api[method]('/', {}, (err, res, body) => {
         // until `check` is added here to mocha:
@@ -161,7 +160,7 @@ describe('node-fetch', () => {
 
   it('should not throw on parsing JSON from a 404', (done) => {
 
-    let api = new Frisbee({ baseURI: baseURI });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     expect(() => {
       api.get('/404-with-json-expected', (err, res, body) => {

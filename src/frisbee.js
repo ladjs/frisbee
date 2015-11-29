@@ -11,10 +11,18 @@
 import Debug from 'debug';
 
 const debug = Debug('fetch-api');
-const fetch = typeof window === 'undefined' ? global.fetch : window.fetch;
+
+let fetch = (typeof window === 'object') ? window.fetch : global.fetch;
 
 if (!fetch)
-  throw new Error('fetch is required, use `whatwg-fetch` or `node-fetch`');
+  throw new Error(
+      'A global `fetch` method is required as either `window.fetch` '
+    + 'for browsers or `global.fetch` for node runtime environments. '
+    + 'Please add `require(\'isomorphic-fetch\')` before importing `frisbee`. '
+    + 'You may optionally `require(\'es6-promise\').polyfill()` before you '
+    + 'require `isomorphic-fetch` if you want to support older browsers.'
+    + '\n\nFor more info: https://github.com/niftylettuce/frisbee#usage'
+  );
 
 let methods = [
   'get',
@@ -91,8 +99,8 @@ export default class Frisbee {
 
       // TODO: rewrite this with `await`
       // <https://github.com/github/fetch/issues/235#issuecomment-160059975>
-      fetch(that.opts.baseURI + path, opts)
-        .then((res) => {
+      let request = fetch(that.opts.baseURI + path, opts);
+      request.then((res) => {
           // set original response
           response = res;
           return res;

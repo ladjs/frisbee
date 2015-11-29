@@ -2,13 +2,16 @@
   "name": "frisbee",
   "version": "0.0.2",
   "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
+  "browser": "./lib/frisbee.js",
   "main": "./lib/frisbee.js",
   "scripts": {
     "prepublish": "npm run compile && npm prune",
     "lint": "eslint src",
     "compile": "babel src --modules common --out-dir lib",
     "watch": "babel src --watch --modules common --out-dir lib --source-maps",
-    "test": "npm run lint && NODE_ENV=test _mocha --compilers js:babel-core/register",
+    "test": "npm run lint && npm run test-browser && npm run test-node",
+    "test-browser": "NODE_ENV=test _mocha --compilers js:babel-core/register test/unit/browser.test.js",
+    "test-node": "NODE_ENV=test _mocha --compilers js:babel-core/register test/unit/node.test.js",
     "coverage": "rm -rf coverage/ && npm run analyze-coverage && npm run check-coverage",
     "analyze-coverage": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
     "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage"
@@ -50,17 +53,19 @@
     "check-chai": "0.0.1",
     "cors": "^2.7.1",
     "dirty-chai": "^1.2.2",
+    "es6-promise": "^3.0.2",
     "eslint-plugin-react": "^3.10.0",
     "express": "^4.13.3",
+    "isomorphic-fetch": "^2.2.0",
     "isparta": "^4.0.0",
     "istanbul": "^0.4.1",
     "jsdomify": "^1.0.2",
     "jshint": "^2.8.0",
     "mocha": "^2.3.4",
-    "node-fetch": "^1.3.3",
-    "whatwg-fetch": "^0.10.1"
+    "xmlhttprequest": "^1.8.0"
   },
   "dependencies": {
-    "debug": "^2.2.0"
+    "debug": "^2.2.0",
+    "isomorphic-fetch": "niftylettuce/isomorphic-fetch"
   }
 }

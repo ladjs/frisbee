@@ -1,18 +1,47 @@
 
 import jsdomify from 'jsdomify';
+import { XMLHttpRequest } from 'xmlhttprequest';
+global.XMLHttpRequest = XMLHttpRequest;
 
 let app = require('./app');
+let Frisbee;
+let server;
 
-// create our DOM instance and expose `global.window`
-// so that when we import Frisbee it will use `whatwg-fetch`
-// instead of using `node-fetch` as the other test does
-jsdomify.create();
+describe('browser', () => {
 
-import Frisbee from '../../src/frisbee';
+  before((done) => {
 
-describe('whatwg-fetch', () => {
+    // create our DOM instance and expose `global.window`
+    // so that when we import Frisbee it will use `whatwg-fetch`
+    // instead of using `node-fetch` as the other test does
+    jsdomify.create();
 
-  let server;
+    // <https://github.com/podio/jsdomify/issues/42>
+    // wait for DOM to be created
+    setTimeout(() => {
+      let es6promise = require('es6-promise');
+      es6promise.polyfill();
+      require('isomorphic-fetch');
+      // add Blob, FileReader, etc to global scope
+      // otherwise `whatwg-fetch` won't work
+      /*global global:true */
+      // TODO: submit patch to whatwg-fetch in order to
+      // explicity say `window.Blob` and `window.FileReader`
+      // in the source code (instead of relying on global)
+      global.Blob = window.Blob;
+      global.FileReader = window.FileReader;
+      global.FormData = window.FormData;
+      // thanks to @skevy for this
+      // <https://exponentjs.slack.com/archives/general/p1448833299000870>
+      Frisbee = require('../../src/frisbee').default;
+      done();
+    }, 100);
+
+  });
+
+  before(() => {
+    expect(window).to.exist();
+  });
 
   before((done) => {
     server = app.listen(8080, done);
@@ -24,7 +53,7 @@ describe('whatwg-fetch', () => {
   });
 
   it('should have `fetch` defined', () => {
-    expect(fetch).to.exist();
+    expect(window.fetch).to.exist();
   });
 
   // <https://github.com/niftylettuce/node-react-native-fetch-api>
@@ -36,9 +65,7 @@ describe('whatwg-fetch', () => {
 
   it('should create Frisbee instance with all methods', () => {
 
-    let api = new Frisbee({
-      baseURI: 'http://localhost:8080'
-    });
+    let api = new Frisbee({ baseURI: global.baseURI });
 
     expect(api).to.be.an('object');
 
@@ -80,9 +107,7 @@ describe('whatwg-fetch', () => {
 
     it(`should return 200 on ${methodName}`, (done) => {
 
-      let api = new Frisbee({
-        baseURI: 'http://localhost:8080'
-      });
+      let api = new Frisbee({ baseURI: global.baseURI });
 
       api[method]('/', {}, (err, res, body) => {
         // until `check` is added here to mocha:
