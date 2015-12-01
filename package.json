@@ -11,7 +11,7 @@
     "watch": "babel src --watch --modules common --out-dir lib --source-maps",
     "test": "npm run lint && npm run browserify && NODE_ENV=test _mocha --compilers js:babel-core/register",
     "browserify": "browserify -t babelify test/unit/browser.js > test/unit/browser.bundled.js",
-    "coverage": "rm -rf coverage/ && npm run analyze-coverage && npm run check-coverage",
+    "coverage": "rm -rf coverage/ && npm run browserify && npm run analyze-coverage && npm run check-coverage",
     "analyze-coverage": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
     "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage"
   },
