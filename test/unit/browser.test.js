@@ -1,55 +1,34 @@
 
-import jsdomify from 'jsdomify';
-import { XMLHttpRequest } from 'xmlhttprequest';
-global.XMLHttpRequest = XMLHttpRequest;
+import jsdom from 'jsdom';
 
 let app = require('./app');
-let Frisbee;
+
+let window;
 let server;
 
 describe('browser', () => {
 
   before((done) => {
-
-    // create our DOM instance and expose `global.window`
-    // so that when we import Frisbee it will use `whatwg-fetch`
-    // instead of using `node-fetch` as the other test does
-    jsdomify.create();
-
-    // <https://github.com/podio/jsdomify/issues/42>
-    // wait for DOM to be created
-    setTimeout(() => {
-      let es6promise = require('es6-promise');
-      es6promise.polyfill();
-      require('isomorphic-fetch');
-      // add Blob, FileReader, etc to global scope
-      // otherwise `whatwg-fetch` won't work
-      /*global global:true */
-      // TODO: submit patch to whatwg-fetch in order to
-      // explicity say `window.Blob` and `window.FileReader`
-      // in the source code (instead of relying on global)
-      global.Blob = window.Blob;
-      global.FileReader = window.FileReader;
-      global.FormData = window.FormData;
-      // thanks to @skevy for this
-      // <https://exponentjs.slack.com/archives/general/p1448833299000870>
-      Frisbee = require('../../src/frisbee').default;
-      done();
-    }, 100);
-
-  });
-
-  before(() => {
-    expect(window).to.exist();
+    jsdom.env({
+      html: '',
+      scripts: [ require.resolve('./browser.bundled.js') ],
+      virtualConsole: jsdom.createVirtualConsole().sendTo(console),
+      done(err, _window) {
+        if (err) return done(err);
+        window = _window;
+        done();
+      }
+    })
   });
 
   before((done) => {
     server = app.listen(8080, done);
   });
 
-  after((done) => {
-    jsdomify.destroy();
-    server.close(done);
+  after(() => {
+    // free memory associated with the window
+    window.close();
+    server.close();
   });
 
   it('should have `fetch` defined', () => {
@@ -65,7 +44,7 @@ describe('browser', () => {
 
   it('should create Frisbee instance with all methods', () => {
 
-    let api = new Frisbee({ baseURI: global.baseURI });
+    let api = new window.Frisbee({ baseURI: global.baseURI });
 
     expect(api).to.be.an('object');
 
@@ -107,7 +86,7 @@ describe('browser', () => {
 
     it(`should return 200 on ${methodName}`, (done) => {
 
-      let api = new Frisbee({ baseURI: global.baseURI });
+      let api = new window.Frisbee({ baseURI: global.baseURI });
 
       api[method]('/', {}, (err, res, body) => {
         // until `check` is added here to mocha:

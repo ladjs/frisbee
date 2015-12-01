@@ -5,3 +5,4 @@
 --bail
 --ui bdd
 --require test/support/
+test/**/*.test.js
