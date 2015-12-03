@@ -1,8 +1,7 @@
 {
   "name": "frisbee",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
-  "browser": "lib/frisbee.js",
   "main": "lib/frisbee.js",
   "scripts": {
     "prepublish": "npm run compile",
@@ -63,7 +62,6 @@
     "istanbul": "^0.4.1",
     "jsdom": "^7.1.0",
     "jshint": "^2.8.0",
-    "mocha": "^2.3.4",
-    "xmlhttprequest": "^1.8.0"
+    "mocha": "^2.3.4"
   }
 }

@@ -3,3 +3,8 @@ media
 coverage
 src
 .babelrc
+.eslintrc
+.istanbul.yml
+circle.yml
+component.json
+bower.json
