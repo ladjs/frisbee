@@ -1,10 +1,8 @@
 *.
 media/
 test/
-src/
 coverage/
 bower_components/
 bower.json
 circle.yml
 component.json
-
