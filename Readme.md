@@ -1,5 +1,5 @@
 
-[![Frisbee][frisbee-logo]](#usage)
+![Frisbee][frisbee-logo]
 
 # Frisbee
 
