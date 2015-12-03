@@ -1,7 +1,7 @@
 node_modules
 bower_components
-/lib
-/coverage
+lib
+coverage
 *.log
 .DS_Store
 test/unit/browser.bundled.js

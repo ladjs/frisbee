@@ -8,10 +8,6 @@
 
 // # frisbee
 
-import Debug from 'debug';
-
-const debug = Debug('fetch-api');
-
 let fetch = (typeof window === 'object') ? window.fetch : global.fetch;
 
 if (!fetch)

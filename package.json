@@ -1,11 +1,11 @@
 {
   "name": "frisbee",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
-  "browser": "./lib/frisbee.js",
-  "main": "./lib/frisbee.js",
+  "browser": "lib/frisbee.js",
+  "main": "lib/frisbee.js",
   "scripts": {
-    "prepublish": "npm run compile && npm prune",
+    "prepublish": "npm run compile",
     "lint": "eslint src",
     "compile": "babel src --modules common --out-dir lib",
     "watch": "babel src --watch --modules common --out-dir lib --source-maps",
@@ -65,8 +65,5 @@
     "jshint": "^2.8.0",
     "mocha": "^2.3.4",
     "xmlhttprequest": "^1.8.0"
-  },
-  "dependencies": {
-    "debug": "^2.2.0"
   }
 }
