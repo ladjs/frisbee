@@ -52,7 +52,7 @@
         bower install --save frisbee
         ```
 
-2. Require it, set a base URI, and call some methods:
+2. Require it, set default options, and make some requests:
 
     ```js
     // add optional support for older browsers
@@ -68,7 +68,11 @@
 
     // create a new instance of Frisbee
     let api = new Frisbee({
-      baseURI: 'https://api.startup.com'
+      baseURI: 'https://api.startup.com',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
     });
 
     // log in to our API with a user/pass
@@ -87,7 +91,7 @@
         '/v1/message',
         { body: 'Hello' },
         // if you wanted to pass JSON instead of plaintext:
-        // { body: { message: 'Hello' } }
+        // { body: JSON.stringify({ message: 'Hello' }) }
         (err, res, message) => {
           // again obviously handle this error better
           if (err) throw err;
@@ -95,6 +99,10 @@
           console.log('message', message);
         }
       );
+
+      // for more information on `fetch` headers and
+      // how to send and expect various types of data:
+      // <https://github.com/github/fetch>
 
     });
     ```
@@ -127,7 +135,7 @@ import Frisbee from 'frisbee';
 
     * `headers` - an object containing default headers to send with every request
 
-        * By default we set `"Accept"` header to `"application/json"` and the `"Content-Type"` header to `"application/json"`
+        * **Tip**: You'll most likely want to set the `"Accept"` header to `"application/json"` and the `"Content-Type"` header to `"application/json"`
 
     * `auth` - will call the `auth()` function below and set it as a default
 

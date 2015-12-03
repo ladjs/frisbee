@@ -44,9 +44,7 @@ export default class Frisbee {
       throw new Error('baseURI option is required');
 
     this.headers = {
-      ...opts.headers,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      ...opts.headers
     }
 
     if (this.opts.auth)

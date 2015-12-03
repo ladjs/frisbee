@@ -1,6 +1,12 @@
 
 // base URI for everything
-global.baseURI = 'http://localhost:8080';
+global._options = {
+  baseURI: 'http://localhost:8080',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+};
 
 // setup global chai methods
 import chai from 'chai';

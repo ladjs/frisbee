@@ -44,7 +44,7 @@ describe('browser', () => {
 
   it('should create Frisbee instance with all methods', () => {
 
-    let api = new window.Frisbee({ baseURI: global.baseURI });
+    let api = new window.Frisbee(global._options);
 
     expect(api).to.be.an('object');
 
@@ -86,7 +86,7 @@ describe('browser', () => {
 
     it(`should return 200 on ${methodName}`, (done) => {
 
-      let api = new window.Frisbee({ baseURI: global.baseURI });
+      let api = new window.Frisbee(global._options);
 
       api[method]('/', {}, (err, res, body) => {
         // until `check` is added here to mocha:
