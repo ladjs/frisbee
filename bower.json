@@ -1,6 +1,6 @@
 {
   "name": "frisbee",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
   "main": "./lib/frisbee.js",
   "keywords": [
