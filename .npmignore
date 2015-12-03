@@ -8,3 +8,4 @@ src
 circle.yml
 component.json
 bower.json
+bower_components
