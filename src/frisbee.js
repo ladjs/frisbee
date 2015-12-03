@@ -54,8 +54,6 @@ export default class Frisbee {
 
   _setup(method) {
 
-    let that = this;
-
     return (path, options, callback) => {
 
       // path must be string
@@ -83,7 +81,7 @@ export default class Frisbee {
 
       let opts = {
         headers: {
-          ...that.headers
+          ...this.headers
         },
         ...options,
         method: method === 'del' ? 'DELETE' : method.toUpperCase()
@@ -93,7 +91,7 @@ export default class Frisbee {
 
       // TODO: rewrite this with `await`
       // <https://github.com/github/fetch/issues/235#issuecomment-160059975>
-      let request = fetch(that.opts.baseURI + path, opts);
+      let request = fetch(this.opts.baseURI + path, opts);
       request.then((res) => {
           // set original response
           response = res;
@@ -123,7 +121,7 @@ export default class Frisbee {
           callback(err, response, response.statusText);
         });
 
-      return that;
+      return this;
 
     }
 
