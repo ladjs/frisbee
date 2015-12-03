@@ -76,7 +76,7 @@
         bower install --save frisbee
         ```
 
-2. Require it, set default options, and make some requests:
+2. Require it, set default options, and make some requests using promises:
 
     ```js
     // add optional support for older browsers
@@ -91,7 +91,61 @@
     import Frisbee from 'frisbee';
 
     // create a new instance of Frisbee
-    let api = new Frisbee({
+    const api = new Frisbee({
+      baseURI: 'https://api.startup.com',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // log in to our API with a user/pass
+    api.post('/v1/login').then(data => {
+
+      // you'll probably want to handle this
+      // error better than just throwing it
+      if (err) throw err;
+
+      // set basic auth headers for all
+      // future API requests we make
+      api.auth(data.body.api_token);
+
+      // now let's post a message to our API
+      return api.post(
+        '/v1/message',
+        { body: 'Hello' },
+        // if you wanted to pass JSON instead of plaintext:
+        // { body: JSON.stringify({ message: 'Hello' }) }
+      ).catch(function(err) {
+        // again obviously handle this error better instead of just throwing it again
+        if (err) throw err;
+        // do something with the response
+        console.log('message', message);
+      });
+
+      // for more information on `fetch` headers and
+      // how to send and expect various types of data:
+      // <https://github.com/github/fetch>
+
+    });
+    ```
+
+3. Require it, set default options, and make some requests using callbacks:
+
+    ```js
+    // add optional support for older browsers
+    import es6promise from 'es6-promise';
+    es6promise.polyfill();
+
+    // add required support for global `fetch` method
+    // *this must always come before `frisbee` is imported*
+    import 'isomorphic-fetch';
+
+    // require the module
+    import Frisbee from 'frisbee';
+
+    // create a new instance of Frisbee
+    const api = new Frisbee({
       baseURI: 'https://api.startup.com',
       headers: {
         'Accept': 'application/json',
@@ -130,7 +184,6 @@
 
     });
     ```
-
 
 ## API
 
@@ -186,7 +239,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
                   }
                 }, callback);
                 ```
-        * `callback` **required** - a callback function that gets called with the  arguments of `(err, res, body)`:
+        * `callback` _optional_ - a callback function that gets called with the  arguments of `(err, res, body)`, otherwise a promise is returned:
             *  `err` - contains an error object (or `null`)
             *  `res` - the response from server (it contains status code, etc)
             *  `body` - the parsed JSON or text response (or `null`)
@@ -232,6 +285,9 @@ Read my article about [building Node.js API's with authentication][blog-article]
 
 File [an issue][issue] on GitHub and we'll try our best help you out.
 
+**Why don't you have an ES5 compiled version readily available in this git repo?**
+
+As this module relies on ES6 **fetch**, there is currently no backwards compatibility for ES5
 
 ## Tests
 
