@@ -118,6 +118,8 @@ export default class Frisbee {
         }).then((body) => {
           callback(null, response, body);
         }).catch((err) => {
+          if (!response || !response.statusText)
+            return callback(err);
           callback(err, response, response.statusText);
         });
 

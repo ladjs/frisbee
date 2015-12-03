@@ -13,7 +13,8 @@
 
 ## Index
 
-* [Usage](#usage)
+* [React Native Usage](#react-native-usage)
+* [Browser and Server-Side Usage](#browser-and-server-side-usage)
 * [API](#api)
 * [Frequently Asked Questions](#frequently-asked-questions)
 * [Tests](#tests)
@@ -24,7 +25,30 @@
 * [License](#license)
 
 
-## Usage
+## React Native Usage
+
+1. Install the required package (note that `react-native` provides us with a `fetch` implementation):
+
+  ```bash
+  npm install --save frisbee
+  ```
+
+2. Require the package:
+  * If you're using stock React Native:
+
+      ```js
+      var Frisbee = require('frisbee').default;
+      ```
+  * If you're using Webpack with support for ES6:
+
+       ```js
+       import Frisbee from 'frisbee';
+       ```
+
+3. See usage example and API below.
+
+
+## Browser and Server-Side Usage
 
 1. Install the required packages:
     * NPM:
@@ -34,7 +58,7 @@
         npm install --save es6-promise
 
         # required (to add global `fetch` method):
-        npm install --save niftylettuce/isomorphic-fetch
+        npm install --save isomorphic-fetch
 
         # required (this package):
         npm install --save frisbee
@@ -46,7 +70,7 @@
         bower install --save es6-promise
 
         # required (to add global `fetch` method):
-        bower install --save niftylettuce/isomorphic-fetch
+        bower install --save isomorphic-fetch
 
         # required (this package):
         bower install --save frisbee
