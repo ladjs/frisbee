@@ -40,6 +40,7 @@ describe('node runtime', () => {
     expect(api).to.be.an('object');
 
     methods.forEach(method => expect(api[method]).to.be.a('function'));
+
   });
 
   it('should throw errors for incorrect auth() usage', () => {
@@ -100,28 +101,36 @@ describe('node runtime', () => {
   });
 
   it('should throw an error if we fail to pass a string `path`', () => {
-    
+
     api = new Frisbee(global._options);
-    
+
     expect(() => api.get({})).to.throw(/`path` must be a string/);
-    
+
   });
 
   it('should throw an error if we fail to pass an object `options`', () => {
-    
+
     api = new Frisbee(global._options);
-    
+
     expect(() => api.get('', [])).to.throw(/`options` must be an object/);
     expect(() => api.get('', 1)).to.throw(/`options` must be an object/);
     
   });
 
-  it('should automatically set options to an empty object if false', () => {
-    
+  it('should throw an error if we pass a non object `options`', () => {
+
     api = new Frisbee(global._options);
-    
-    expect(() => api.get('', false, () => {})).to.not.throw();
-    
+
+    expect(() => api.get('', false, () => {})).to.throw(/`options` must be an object/);
+
+  });
+
+  it('should automatically set options to an empty object if not set', () => {
+
+    api = new Frisbee(global._options);
+
+    expect(() => api.get('', () => {})).to.not.throw();
+
   });
 
   standardMethods.forEach(method => {

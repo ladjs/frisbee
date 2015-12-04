@@ -52,7 +52,7 @@ export default class Frisbee {
 
   _setup(method) {
 
-    return (path, options, callback) => {
+    return (path, options = {}, callback) => {
 
       // path must be string
       if (typeof path !== 'string')
@@ -62,11 +62,6 @@ export default class Frisbee {
         callback = options;
         options = {};
       }
-
-      // options must be an object
-
-      // in case it is null, undefined, or false value
-      options = options || {};
 
       // otherwise check if its an object
       if (typeof options !== 'object' || Array.isArray(options))
@@ -111,9 +106,10 @@ export default class Frisbee {
 
           return body;
         })
-        .then(body => callback ?
-                      callback(null, response, body) :
-                      { response, body }
+        .then(body =>
+          callback ?
+          callback(null, response, body) :
+          { response, body }
         )
         .catch(err => {
           if (!response || !response.statusText) {
@@ -149,7 +145,7 @@ export default class Frisbee {
 
     switch (creds.length) {
     case 0:
-      creds = new Array('', '');
+      creds = ['', ''];
       break;
     case 1:
       creds.push('');

@@ -57,9 +57,7 @@ describe('browser', () => {
       'del',
       'options',
       'patch'
-    ].forEach((method) => {
-      expect(api[method]).to.be.a('function');
-    });
+    ].forEach(method => expect(api[method]).to.be.a('function'));
 
   });
 
@@ -80,7 +78,7 @@ describe('browser', () => {
     'del',
     //'options',
     'patch'
-  ].forEach((method) => {
+  ].forEach(method => {
 
     let methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
