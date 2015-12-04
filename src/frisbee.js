@@ -8,7 +8,7 @@
 
 // # frisbee
 
-let fetch = (typeof window === 'object') ? window.fetch : global.fetch;
+const fetch = typeof window === 'object' ? window.fetch : global.fetch;
 
 if (!fetch)
   throw new Error(
@@ -20,7 +20,7 @@ if (!fetch)
     + '\n\nFor more info: https://github.com/niftylettuce/frisbee#usage'
   );
 
-let methods = [
+const methods = [
   'get',
   'head',
   'post',
@@ -41,20 +41,18 @@ export default class Frisbee {
 
     this.headers = {
       ...opts.headers
-    }
+    };
 
     if (this.opts.auth)
       this.auth(this.opts.auth);
 
-    methods.forEach((method) => {
-      this[method] = this._setup(method);
-    });
+    methods.forEach(method => this[method] = this._setup(method));
 
   }
 
   _setup(method) {
 
-    return (path, options, callback) => {
+    return (path, options = {}, callback) => {
 
       // path must be string
       if (typeof path !== 'string')
@@ -65,21 +63,15 @@ export default class Frisbee {
         options = {};
       }
 
-      // options must be an object
-
-      // in case it is null, undefined, or false value
-      if (!options)
-        options = {};
-
       // otherwise check if its an object
-      if (typeof options !== 'object' || options instanceof Array)
+      if (typeof options !== 'object' || Array.isArray(options))
         throw new Error('`options` must be an object');
 
       // callback must be a function
-      if (typeof callback !== 'function')
+      if (callback && typeof callback !== 'function')
         throw new Error('`callback` must be a function');
 
-      let opts = {
+      const opts = {
         headers: {
           ...this.headers
         },
@@ -89,39 +81,48 @@ export default class Frisbee {
 
       let response;
 
-      // TODO: rewrite this with `await`
-      // <https://github.com/github/fetch/issues/235#issuecomment-160059975>
-      let request = fetch(this.opts.baseURI + path, opts);
-      request.then((res) => {
+      const request = fetch(this.opts.baseURI + path, opts)
+        .then(res => {
           // set original response
           response = res;
           return res;
         })
-        .then((res) => {
+        .then(res => {
 
           if (!res.ok)
             throw new Error(res.statusText);
 
+          let body;
           if (opts.headers['Content-Type'] !== 'application/json')
-            return res.text();
+            body = res.text();
 
           try {
-            return res.json();
+            body = res.json();
           } catch (err) {
-            throw new Error(
-              `Failed to parse JSON body: ${err.message}`
-            );
+            const message = `Failed to parse JSON body: ${err.message}`;
+            if (callback) { return callback(message); }
+            throw new Error(message);
           }
 
-        }).then((body) => {
-          callback(null, response, body);
-        }).catch((err) => {
-          if (!response || !response.statusText)
-            return callback(err);
-          callback(err, response, response.statusText);
+          return body;
+        })
+        .then(body =>
+          callback ?
+          callback(null, response, body) :
+          { response, body }
+        )
+        .catch(err => {
+          if (!response || !response.statusText) {
+            if (callback) return callback(err);
+            throw err;
+          }
+
+          if (callback)
+            return callback(err, response, response.statusText);
+          throw new Error(err);
         });
 
-      return this;
+      return callback ? this : request;
 
     }
 
@@ -139,12 +140,12 @@ export default class Frisbee {
       }
     }
 
-    if (!(creds instanceof Array))
-      creds = Array.prototype.slice.call(arguments);
+    if (!Array.isArray(creds))
+      creds = [].slice.call(arguments);
 
     switch (creds.length) {
     case 0:
-      creds = new Array('', '');
+      creds = ['', ''];
       break;
     case 1:
       creds.push('');
@@ -152,7 +153,7 @@ export default class Frisbee {
     case 2:
       break;
     default:
-      throw new Error('auth option can only have two keys `[user, pass]`')
+      throw new Error('auth option can only have two keys `[user, pass]`');
     }
 
     if (typeof creds[0] !== 'string')
@@ -161,7 +162,7 @@ export default class Frisbee {
     if (typeof creds[1] !== 'string')
       throw new Error('auth option `pass` must be a string');
 
-    if (creds[0] === '' && creds[1] === '')
+    if (!creds[0] && !creds[1])
       delete this.headers.Authorization;
     else
       this.headers.Authorization =

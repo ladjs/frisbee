@@ -8,7 +8,7 @@ let server;
 
 describe('browser', () => {
 
-  before((done) => {
+  before(done => {
     jsdom.env({
       html: '',
       scripts: [ require.resolve('./browser.bundled.js') ],
@@ -18,10 +18,10 @@ describe('browser', () => {
         window = _window;
         done();
       }
-    })
+    });
   });
 
-  before((done) => {
+  before(done => {
     server = app.listen(8080, done);
   });
 
@@ -57,9 +57,7 @@ describe('browser', () => {
       'del',
       'options',
       'patch'
-    ].forEach((method) => {
-      expect(api[method]).to.be.a('function');
-    });
+    ].forEach(method => expect(api[method]).to.be.a('function'));
 
   });
 
@@ -80,11 +78,11 @@ describe('browser', () => {
     'del',
     //'options',
     'patch'
-  ].forEach((method) => {
+  ].forEach(method => {
 
     let methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
-    it(`should return 200 on ${methodName}`, (done) => {
+    it(`should return 200 on ${methodName}`, done => {
 
       let api = new window.Frisbee(global._options);
 

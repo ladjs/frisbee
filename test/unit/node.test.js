@@ -1,19 +1,27 @@
 
 import 'isomorphic-fetch';
 import Frisbee from '../../src/frisbee';
-let app = require('./app');
+const app = require('./app');
+
+const standardMethods = [
+  'get',
+  'post',
+  'put',
+  'del',
+  'patch'
+];
+const methods = [].slice.call(standardMethods).concat(['head', 'options']);
 
 describe('node runtime', () => {
 
+  let api;
   let server;
 
-  before((done) => {
+  before(done => {
     server = app.listen(8080, done);
   });
 
-  after((done) => {
-    server.close(done);
-  });
+  after(done => server.close(done));
 
   it('should have `fetch` defined', () => {
     expect(fetch).to.exist();
@@ -22,51 +30,37 @@ describe('node runtime', () => {
   // <https://github.com/niftylettuce/node-react-native-fetch-api>
   it('should throw an error if we fail to pass baseURI', () => {
     //expect(new Frisbee).to.throw(new Error('baseURI option is required'));
-    expect(() => { new Frisbee(); }).to.throw(/baseURI option is required/);
+    expect(() => new Frisbee()).to.throw(/baseURI option is required/);
   });
 
   it('should create Frisbee instance with all methods', () => {
 
-    let api = new Frisbee(global._options);
+    api = new Frisbee(global._options);
 
     expect(api).to.be.an('object');
 
-    [
-      'auth',
-      'get',
-      'head',
-      'post',
-      'put',
-      'del',
-      'options',
-      'patch'
-    ].forEach((method) => {
-      expect(api[method]).to.be.a('function');
-    });
+    methods.forEach(method => expect(api[method]).to.be.a('function'));
 
   });
 
   it('should throw errors for incorrect auth() usage', () => {
 
-    let api = new Frisbee(global._options);
+    api = new Frisbee(global._options);
 
-    expect(() => { api.auth({}); })
+    expect(() => api.auth({}))
       .to.throw(/auth option `user` must be a string/);
-
-    expect(() => { api.auth(new Array(3)); })
+    expect(() => api.auth(new Array(3)))
       .to.throw(/auth option can only have two keys/);
-
-    expect(() => { api.auth(new Array({}, '')); })
+    expect(() => api.auth(new Array({}, '')))
       .to.throw(/auth option `user` must be a string/);
-
-    expect(() => { api.auth(new Array('', {})); })
+    expect(() => api.auth(new Array('', {})))
       .to.throw(/auth option `pass` must be a string/);
 
   });
 
   it('should accept valid auth("user:pass") usage', () => {
 
-    let api = new Frisbee(global._options);
+    api = new Frisbee(global._options);
 
     let creds = 'foo:bar';
 
@@ -79,7 +73,7 @@ describe('node runtime', () => {
 
   it('should allow chaining of methods', () => {
 
-    let api = new Frisbee(global._options);
+    api = new Frisbee(global._options);
 
     expect(() => {
 
@@ -98,7 +92,7 @@ describe('node runtime', () => {
 
   it('should allow removal of auth() header', () => {
 
-    let api = new Frisbee(global._options);
+    api = new Frisbee(global._options);
 
     api.auth('foo').auth();
 
@@ -107,44 +101,69 @@ describe('node runtime', () => {
   });
 
   it('should throw an error if we fail to pass a string `path`', () => {
-    let api = new Frisbee(global._options);
-    expect(() => { api.get({}) }).to.throw(/`path` must be a string/);
+
+    api = new Frisbee(global._options);
+
+    expect(() => api.get({})).to.throw(/`path` must be a string/);
+
   });
 
   it('should throw an error if we fail to pass an object `options`', () => {
-    let api = new Frisbee(global._options);
-    expect(() => { api.get('', []); }).to.throw(/`options` must be an object/);
-    expect(() => { api.get('', 1); }).to.throw(/`options` must be an object/);
+
+    api = new Frisbee(global._options);
+
+    expect(() => api.get('', [])).to.throw(/`options` must be an object/);
+    expect(() => api.get('', 1)).to.throw(/`options` must be an object/);
+    
   });
 
-  it('should automatically set options to an empty object if false', () => {
-    let api = new Frisbee(global._options);
-    expect(() => { api.get('', false, () => {}); }).to.not.throw();
+  it('should throw an error if we pass a non object `options`', () => {
+
+    api = new Frisbee(global._options);
+
+    expect(() => api.get('', false, () => {})).to.throw(/`options` must be an object/);
+
   });
 
-  it('should throw an error if we fail to pass a function `callback`', () => {
-    let api = new Frisbee(global._options);
-    expect(() => { api.get('', {}, false); })
-      .to.throw(/`callback` must be a function/);
+  it('should automatically set options to an empty object if not set', () => {
+
+    api = new Frisbee(global._options);
+
+    expect(() => api.get('', () => {})).to.not.throw();
+
   });
 
-  [
-    'get',
-    //'head',
-    'post',
-    'put',
-    'del',
-    //'options',
-    'patch'
-  ].forEach((method) => {
+  standardMethods.forEach(method => {
 
-    let methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
+    const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
-    it(`should return 200 on ${methodName}`, (done) => {
+    it(`should return 200 on ${methodName}`, done => {
 
-      let api = new Frisbee(global._options);
+      api = new Frisbee(global._options);
 
-      let opts = {};
+      const opts = {};
+
+      if (method === 'post')
+        opts.body = JSON.stringify({ foo: 'bar' });
+
+      api[method]('/', opts).then(data => {
+        expect(data.response).to.be.an('object');
+        expect(data.body).to.be.an('object');
+      }).then(done).catch(done);
+
+    });
+
+  });
+
+  standardMethods.forEach(method => {
+
+    const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
+
+    it(`should return 200 on ${methodName} when using callbacks`, done => {
+
+      api = new Frisbee(global._options);
+
+      const opts = {};
 
       if (method === 'post')
         opts.body = JSON.stringify({ foo: 'bar' });
@@ -153,7 +172,7 @@ describe('node runtime', () => {
         // until `check` is added here to mocha:
         // <https://github.com/sindresorhus/globals/blob/master/globals.json>
         global.chai.check(done, () => {
-          expect(err).to.be.a('null');
+          expect(err).to.be.null;
           expect(res).to.be.an('object');
           expect(body).to.be.an('object');
         });
@@ -163,9 +182,9 @@ describe('node runtime', () => {
 
   });
 
-  it('should not throw on parsing JSON from a 404', (done) => {
+  it('should not throw on parsing JSON from a 404', done => {
 
-    let api = new Frisbee(global._options);
+    api = new Frisbee(global._options);
 
     expect(() => {
       api.get('/404-with-json-expected', (err, res, body) => {
