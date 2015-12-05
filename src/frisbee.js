@@ -89,8 +89,25 @@ export default class Frisbee {
         })
         .then(res => {
 
-          if (!res.ok)
-            throw new Error(res.statusText);
+          if (!res.ok) {
+
+            let err = new Error(res.statusText);
+
+            // As inspired by Stripe
+            // <https://goo.gl/QFLdGM>
+            try {
+              err = JSON.parse(res._bodyInit);
+              if (typeof body === 'object' && typeof body.error === 'object') {
+                err = new Error(body.error.message);
+                err = {
+                  ...body.error
+                };
+              }
+            } catch (e) {} finally {
+              throw err;
+            }
+
+          }
 
           let body;
           if (opts.headers['Content-Type'] !== 'application/json')
