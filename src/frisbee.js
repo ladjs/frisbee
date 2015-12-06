@@ -99,9 +99,12 @@ export default class Frisbee {
               err = JSON.parse(res._bodyInit);
               if (typeof body === 'object' && typeof body.error === 'object') {
                 err = new Error(body.error.message);
-                err = {
-                  ...body.error
-                };
+                if (body.error.stack)
+                  err.stack = body.error.stack;
+                if (body.error.code)
+                  err.code = body.error.code;
+                if (body.error.param)
+                  err.param = body.error.param;
               }
             } catch (e) {} finally {
               throw err;
