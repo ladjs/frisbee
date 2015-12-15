@@ -134,7 +134,7 @@ export default class Frisbee {
         )
         .catch(err => {
           if (!response || !response.statusText) {
-            if (callback) return callback(err);
+            if (callback) return callback(err, response || null);
             throw err;
           }
 
