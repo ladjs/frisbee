@@ -79,6 +79,12 @@ export default class Frisbee {
         method: method === 'del' ? 'DELETE' : method.toUpperCase()
       };
 
+      // in order to support Android POST requests
+      // we must allow an empty body to be sent
+      // https://github.com/facebook/react-native/issues/4890
+      if (typeof opts.body === 'undefined' && opts.method === 'POST')
+        opts.body = '';
+
       let response;
 
       const request = fetch(this.opts.baseURI + path, opts)
