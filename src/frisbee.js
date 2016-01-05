@@ -114,15 +114,19 @@ export default class Frisbee {
 
           }
 
-          if (opts.headers['Content-Type'] !== 'application/json')
+          if (opts.headers['Content-Type'] !== 'application/json' && opts.headers['Accept'] !== 'application/json') {
             body = res.text();
-
-          try {
-            body = res.json();
-          } catch (err) {
-            const message = `Failed to parse JSON body: ${err.message}`;
-            if (callback) { return callback(message); }
-            throw new Error(message);
+          }
+          else {
+            try {
+              body = res.json();
+            } catch (err) {
+              var message = 'Failed to parse JSON body: ' + err.message;
+              if (callback) {
+                return callback(message);
+              }
+              throw new Error(message);
+            }
           }
 
           return body;
