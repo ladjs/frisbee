@@ -8,6 +8,8 @@
 
 // # frisbee
 
+import { Buffer } from 'buffer';
+
 const fetch = typeof window === 'object' ? window.fetch : global.fetch;
 
 if (!fetch)
@@ -120,14 +122,15 @@ export default class Frisbee {
 
           }
 
-          if (opts.headers['Content-Type'] !== 'application/json' && opts.headers['Accept'] !== 'application/json') {
+          if (opts.headers['Content-Type'] !== 'application/json'
+              && opts.headers['Accept'] !== 'application/json') {
             body = res.text();
           }
           else {
             try {
               body = res.json();
             } catch (err) {
-              var message = 'Failed to parse JSON body: ' + err.message;
+              let message = 'Failed to parse JSON body: ' + err.message;
               if (callback) {
                 return callback(message);
               }
