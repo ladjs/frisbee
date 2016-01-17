@@ -309,7 +309,7 @@ This means that it is compatible for both client-side and server-side usage.
 
 ## Background
 
-Facebook [recommends][facebook-recommends] to use `superagent` with React Native, but it does not work properly, therefore I went with the next best solution, their `fetch` package.  After having several issues trying to use `fetch` and writing my own API wrapper for a project with it (and running into roadblocks along the way) -- I decided to publish this.
+The docs suggest that you use `superagent` with React Native, but in my experience it did not work properly, therefore I went with the next best solution, the Github `fetch` API polyfill included with React Native.  After having several issues trying to use `fetch` and writing my own API wrapper for a project with it (and running into roadblocks along the way) -- I decided to publish this.
 
 Here were the issues I discovered/filed related to this:
 * <https://github.com/github/fetch/issues/235>
@@ -342,8 +342,6 @@ Therefore I created `frisbee` to serve as my API glue, and hopefully it'll serve
 
 [MIT][license-url]
 
-
-[facebook-recommends]: https://facebook.github.io/react-native/docs/network.html
 [blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: LICENSE
