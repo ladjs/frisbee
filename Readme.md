@@ -11,9 +11,8 @@
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][npm-downloads]][npm-url]
 
-> **tldr;** [Stripe][stripe]-inspired API wrapper around ES6/ES7's [fetch()][fetch-method] method for making simple HTTP requests (alternative to [superagent][superagent], [request][request], [axios][axios])",
+> **tldr;** [Stripe][stripe]-inspired API wrapper around ES6/ES7's [fetch()][fetch-method] method for making simple HTTP requests (alternative to [superagent][superagent], [request][request], [axios][axios]).
 
-> As of version `1.0.0` we have dropped support for callbacks, it now supports Promises.
 
 ## Index
 
@@ -215,6 +214,10 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
 ## Frequently Asked Questions
 
+**Does this support callbacks, promises, or both?**
+
+As of version `1.0.0` we have dropped support for callbacks, it now __only__ supports Promises.
+
 **What is the `fetch` method?**
 
 It is a new method introduced into the ES6 specification.  You can read more about it here <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>.
@@ -348,5 +351,5 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [slack-image]: http://slack.glazed.io/badge.svg
 [slack-url]: http://slack.glazed.io
 [axios]: https://github.com/mzabriskie/axios
-[fetch]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+[fetch-method]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 [stripe]: https://stripe.com/docs/api#errors
