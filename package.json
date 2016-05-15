@@ -8,7 +8,8 @@
     "email": "niftylettuce@gmail.com"
   },
   "dependencies": {
-    "buffer": "^4.1.0"
+    "buffer": "^4.1.0",
+    "qs": "^6.2.0"
   },
   "devDependencies": {
     "@earnest/eslint-config-es7": "^2.1.1",

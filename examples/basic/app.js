@@ -38,8 +38,19 @@ async function makeRequests() {
     api.auth(res.body.api_token);
 
     // now let's post a message to our API
-    res = await api.post('/v1/message', { body: 'Hello' });
+    res = await api.post('/v1/messages', { body: 'Hello' });
     console.log('response', res.body);
+
+    // handle HTTP or API errors
+    if (res.err) throw res.err;
+
+    // now let's get a list of messages filtered by page and limit
+    res = await api.get('/v1/messages', {
+      body: {
+        limit: 10,
+        page: 2
+      }
+    });
 
     // handle HTTP or API errors
     if (res.err) throw res.err;

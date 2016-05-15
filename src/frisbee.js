@@ -13,6 +13,7 @@ import 'babel-polyfill';
 import 'babel-regenerator-runtime';
 import 'source-map-support/register';
 
+import qs from 'qs';
 import { Buffer } from 'buffer';
 
 const fetch = typeof window === 'object' ? window.fetch : global.fetch;
@@ -84,14 +85,19 @@ export default class Frisbee {
       // in order to support Android POST requests
       // we must allow an empty body to be sent
       // https://github.com/facebook/react-native/issues/4890
-      if (typeof opts.body === 'undefined' && opts.method === 'POST')
-        opts.body = '';
-
-      if (typeof opts.body === 'object' || opts.body instanceof Array) {
-        try {
-          opts.body = JSON.stringify(opts.body);
-        } catch (err) {
-          throw err;
+      if (typeof opts.body === 'undefined') {
+        if (opts.method === 'POST')
+          opts.body = '';
+      } else if (typeof opts.body === 'object' || opts.body instanceof Array) {
+        if (opts.method === 'GET') {
+          path += `?${qs.stringify(opts.body)}`;
+          delete opts.body;
+        } else {
+          try {
+            opts.body = JSON.stringify(opts.body);
+          } catch (err) {
+            throw err;
+          }
         }
       }
 

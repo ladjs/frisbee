@@ -166,6 +166,34 @@ describe('node runtime', () => {
 
   });
 
+  it('should stringify querystring parameters for GET requests', async () => {
+    api = new Frisbee(global._options);
+    const querystring = {
+      a: 'blue',
+      b: 'cyan',
+      c: 'pink'
+    };
+    const res = await api.get('/querystring', {
+      body: querystring
+    });
+    expect(res.body).to.be.an('object');
+    expect(res.body).to.deep.equal(querystring);
+  });
+
+  it('should URL encode querystring parameters for GET requests', async () => {
+    api = new Frisbee(global._options);
+    const querystring = {
+      a: '   ',
+      b: '&foo&',
+      c: '$$%%%%'
+    };
+    const res = await api.get('/querystring', {
+      body: querystring
+    });
+    expect(res.body).to.be.an('object');
+    expect(res.body).to.deep.equal(querystring);
+  });
+
   it('should return 404', async () => {
     api = new Frisbee(global._options);
     const res = await api.get('/404');
@@ -188,7 +216,6 @@ describe('node runtime', () => {
       `Invalid JSON received from ${global._options.baseURI}`
     );
   });
-
 
   it('should return 404 with stripe error', async () => {
     api = new Frisbee(global._options);
