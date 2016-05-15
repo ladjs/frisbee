@@ -1,9 +1,10 @@
 {
   "name": "frisbee",
-  "version": "0.2.0",
-  "description": "Your API wrapper for ES6's fetch method.  Easily make HTTP requests to your API.",
+  "version": "1.0.0",
+  "description": "A wrapper around ES6/ES7's fetch() method for making simple API/HTTP requests (alternative to superagent, request, axios)",
   "main": "./lib/frisbee.js",
   "keywords": [
+    "stripe",
     "fetch",
     "whatwg",
     "whatwg-fetch",

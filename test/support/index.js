@@ -1,4 +1,9 @@
 
+// babel requirements
+import 'babel-polyfill';
+import 'babel-regenerator-runtime';
+import 'source-map-support/register';
+
 // base URI for everything
 global._options = {
   baseURI: 'http://localhost:8080',
@@ -10,10 +15,12 @@ global._options = {
 
 // setup global chai methods
 import chai from 'chai';
+import expectToBeAPromise from 'expect-to-be-a-promise';
 import dirtyChai from 'dirty-chai';
 import checkChai from 'check-chai';
 chai.config.includeStack = true;
 chai.config.showDiff = true;
+chai.use(expectToBeAPromise);
 chai.use(dirtyChai);
 chai.use(checkChai);
 global.chai = chai;

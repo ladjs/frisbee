@@ -1,7 +1,7 @@
 
 import jsdom from 'jsdom';
 
-let app = require('./app');
+const app = require('./app');
 
 let window;
 let server;
@@ -44,7 +44,7 @@ describe('browser', () => {
 
   it('should create Frisbee instance with all methods', () => {
 
-    let api = new window.Frisbee(global._options);
+    const api = new window.Frisbee(global._options);
 
     expect(api).to.be.an('object');
 
@@ -72,29 +72,27 @@ describe('browser', () => {
 
   [
     'get',
-    //'head',
+    // 'head',
     'post',
     'put',
     'del',
-    //'options',
+    // 'options',
     'patch'
   ].forEach(method => {
 
-    let methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
+    const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
-    it(`should return 200 on ${methodName}`, done => {
+    it(`should return 200 on ${methodName}`, async () => {
 
-      let api = new window.Frisbee(global._options);
+      const api = new window.Frisbee(global._options);
 
-      api[method]('/', {}, (err, res, body) => {
-        // until `check` is added here to mocha:
-        // <https://github.com/sindresorhus/globals/blob/master/globals.json>
-        global.chai.check(done, () => {
-          expect(err).to.be.a('null');
-          expect(res).to.be.an('object');
-          expect(body).to.be.an('object');
-        });
-      });
+      try {
+        const res = await api[method]('/', {});
+        expect(res).to.be.an('object');
+        expect(res.body).to.be.an('object');
+      } catch (err) {
+        throw err;
+      }
 
     });
 

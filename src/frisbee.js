@@ -8,6 +8,11 @@
 
 // # frisbee
 
+// babel requirements
+import 'babel-polyfill';
+import 'babel-regenerator-runtime';
+import 'source-map-support/register';
+
 import { Buffer } from 'buffer';
 
 const fetch = typeof window === 'object' ? window.fetch : global.fetch;
@@ -41,6 +46,8 @@ export default class Frisbee {
     if (!this.opts.baseURI)
       throw new Error('baseURI option is required');
 
+    this.parseErr = new Error(`Invalid JSON received from ${opts.baseURI}`);
+
     this.headers = {
       ...opts.headers
     };
@@ -48,30 +55,23 @@ export default class Frisbee {
     if (this.opts.auth)
       this.auth(this.opts.auth);
 
-    methods.forEach(method => this[method] = this._setup(method));
+    methods.forEach(method => {
+      this[method] = this._setup(method);
+    });
 
   }
 
   _setup(method) {
 
-    return (path, options = {}, callback) => {
+    return (path = '/', options = {}) => {
 
       // path must be string
       if (typeof path !== 'string')
         throw new Error('`path` must be a string');
 
-      if (typeof options === 'function') {
-        callback = options;
-        options = {};
-      }
-
       // otherwise check if its an object
       if (typeof options !== 'object' || Array.isArray(options))
         throw new Error('`options` must be an object');
-
-      // callback must be a function
-      if (callback && typeof callback !== 'function')
-        throw new Error('`callback` must be a function');
 
       const opts = {
         headers: {
@@ -87,90 +87,93 @@ export default class Frisbee {
       if (typeof opts.body === 'undefined' && opts.method === 'POST')
         opts.body = '';
 
-      let response;
+      if (typeof opts.body === 'object' || opts.body instanceof Array) {
+        try {
+          opts.body = JSON.stringify(opts.body);
+        } catch (err) {
+          throw err;
+        }
+      }
 
-      const request = fetch(this.opts.baseURI + path, opts)
-        .then(res => {
-          // set original response
-          response = res;
-          return res;
-        })
-        .then(res => {
+      return new Promise(async (resolve, reject) => {
 
-          let body;
+        try {
+
+          const res = await fetch(this.opts.baseURI + path, opts);
 
           if (!res.ok) {
 
-            let err = new Error(res.statusText);
+            res.err = new Error(res.statusText);
 
-            // As inspired by Stripe
-            // <https://goo.gl/QFLdGM>
-            try {
-              body = JSON.parse(res._bodyInit);
-              if (typeof body === 'object' && typeof body.error === 'object') {
-                err = new Error(body.error.message);
-                if (body.error.stack)
-                  err.stack = body.error.stack;
-                if (body.error.code)
-                  err.code = body.error.code;
-                if (body.error.param)
-                  err.param = body.error.param;
+            // check if the response was JSON, and if so, better the error
+            if (res.headers.get('Content-Type').indexOf('application/json') !== -1) {
+
+              try {
+
+                // attempt to parse json body to use as error message
+                res.body = await res.text();
+                res.body = JSON.parse(res.body);
+
+                // attempt to utilize Stripe-inspired error messages
+                if (!(res.body instanceof Array) && typeof res.body.error === 'object') {
+                  if (res.body.error.message)
+                    res.err = new Error(res.body.error.message);
+                  if (res.body.error.stack)
+                    res.err.stack = res.body.error.stack;
+                  if (res.body.error.code)
+                    res.err.code = res.body.error.code;
+                  if (res.body.error.param)
+                    res.err.param = res.body.error.param;
+                }
+
+              } catch (e) {
+                res.err = this.parseErr;
               }
-            } catch (e) {} finally {
-              throw err;
+
             }
 
+            resolve(res);
+            return;
+
           }
 
-          if (opts.headers['Content-Type'] !== 'application/json'
-              && opts.headers['Accept'] !== 'application/json') {
-            body = res.text();
-          }
-          else {
+          // determine whether we're returning text or json for body
+          if (res.headers.get('Content-Type').indexOf('application/json') !== -1) {
             try {
-              body = res.json();
+              res.body = await res.text();
+              res.body = JSON.parse(res.body);
             } catch (err) {
-              let message = 'Failed to parse JSON body: ' + err.message;
-              if (callback) {
-                return callback(message);
+              if (res.headers.get('Content-Type') === 'application/json') {
+                res.err = this.parseErr;
+                resolve(res);
+                return;
               }
-              throw new Error(message);
             }
+          } else {
+            res.body = await res.text();
           }
 
-          return body;
-        })
-        .then(body =>
-          callback ?
-          callback(null, response, body) :
-          { response, body }
-        )
-        .catch(err => {
-          if (!response || !response.statusText) {
-            if (callback) return callback(err, response || null);
-            throw err;
-          }
+          resolve(res);
 
-          if (callback)
-            return callback(err, response, response.statusText);
-          throw new Error(err);
-        });
+        } catch (err) {
+          reject(err);
+        }
 
-      return callback ? this : request;
+      });
 
-    }
+    };
 
   }
 
   auth(creds) {
 
     if (typeof creds === 'string') {
-      let index = creds.indexOf(':');
+      const index = creds.indexOf(':');
       if (index !== -1) {
         creds = [
           creds.substr(0, index),
           creds.substr(index + 1)
-        ]
+        ];
       }
     }
 
@@ -178,16 +181,16 @@ export default class Frisbee {
       creds = [].slice.call(arguments);
 
     switch (creds.length) {
-    case 0:
-      creds = ['', ''];
-      break;
-    case 1:
-      creds.push('');
-      break;
-    case 2:
-      break;
-    default:
-      throw new Error('auth option can only have two keys `[user, pass]`');
+      case 0:
+        creds = ['', ''];
+        break;
+      case 1:
+        creds.push('');
+        break;
+      case 2:
+        break;
+      default:
+        throw new Error('auth option can only have two keys `[user, pass]`');
     }
 
     if (typeof creds[0] !== 'string')
@@ -200,7 +203,7 @@ export default class Frisbee {
       delete this.headers.Authorization;
     else
       this.headers.Authorization =
-        'Basic ' + new Buffer(creds.join(':')).toString('base64');
+        `Basic ${new Buffer(creds.join(':')).toString('base64')}`;
 
     return this;
 

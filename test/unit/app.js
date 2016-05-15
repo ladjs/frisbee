@@ -3,8 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
-let app = express();
-let extended = { extended: false };
+const app = express();
+const extended = { extended: false };
 
 app.use(cors());
 
@@ -30,8 +30,32 @@ app.all('/', (req, res, next) => {
 
 });
 
-app.get('/404-with-json-expected', (req, res, next) => {
+app.get('/404', (req, res, next) => {
   res.sendStatus(404);
+});
+
+app.get('/404-with-valid-json', (req, res, next) => {
+  res.set('Content-Type', 'application/json')
+    .status(400)
+    .send({ foo: 'baz' });
+});
+
+app.get('/404-with-invalid-json', (req, res, next) => {
+  res.set('Content-Type', 'application/json')
+    .status(404)
+    .send('foobaz');
+});
+
+app.get('/404-with-stripe-error', (req, res, next) => {
+  res.status(404)
+    .json({
+      error: {
+        message: 'Some error happened',
+        stack: {},
+        code: 23,
+        param: 'hello_world'
+      }
+    });
 });
 
 module.exports = app;
