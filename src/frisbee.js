@@ -8,11 +8,6 @@
 
 // # frisbee
 
-// babel requirements
-import 'babel-polyfill';
-import 'babel-regenerator-runtime';
-import 'source-map-support/register';
-
 import qs from 'qs';
 import { Buffer } from 'buffer';
 
