@@ -1,7 +1,7 @@
 {
   "name": "frisbee",
   "description": "Stripe-inspired API wrapper around ES6/ES7's fetch() method for making simple HTTP requests (alternative to superagent, request, axios)",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Nick Baugh <niftylettuce@gmail.com>",
   "bugs": {
     "url": "https://github.com/glazedio/frisbee/issues",
