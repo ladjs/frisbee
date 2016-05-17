@@ -227,4 +227,11 @@ describe('node runtime', () => {
     expect(res.err.param).to.be.a('string');
   });
 
+  it('should return 400 with message', async () => {
+    api = new Frisbee(global._options);
+    const res = await api.get('/400-with-message');
+    expect(res.err).to.be.an('error');
+    expect(res.err.message).to.equal('Oops!');
+  });
+
 });

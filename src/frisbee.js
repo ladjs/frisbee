@@ -115,8 +115,13 @@ export default class Frisbee {
                 res.body = await res.text();
                 res.body = JSON.parse(res.body);
 
-                // attempt to utilize Stripe-inspired error messages
-                if (!(res.body instanceof Array) && typeof res.body.error === 'object') {
+                // attempt to use Glazed error messages
+                if (typeof res.body === 'object'
+                  && typeof res.body.message === 'string') {
+                  res.err = new Error(res.body.message);
+                } else if (!(res.body instanceof Array)
+                  // attempt to utilize Stripe-inspired error messages
+                  && typeof res.body.error === 'object') {
                   if (res.body.error.message)
                     res.err = new Error(res.body.error.message);
                   if (res.body.error.stack)

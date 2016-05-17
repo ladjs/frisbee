@@ -30,6 +30,10 @@ app.all('/', (req, res, next) => {
 
 });
 
+app.get('/400-with-message', (req, res, next) => {
+  res.status(400).json({ message: 'Oops!' });
+});
+
 app.get('/querystring', (req, res, next) => {
   res.json(req.query);
 });
