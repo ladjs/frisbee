@@ -1,6 +1,6 @@
 {
   "name": "frisbee",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Stripe-inspired API wrapper around ES6/ES7's fetch() method for making simple HTTP requests (alternative to superagent, request, axios)",
   "main": "./lib/frisbee.js",
   "keywords": [
