@@ -13,6 +13,8 @@
 
 > **tldr;** [Stripe][stripe]-inspired API wrapper around ES6/ES7's [fetch()][fetch-method] method for making simple HTTP requests (alternative to [superagent][superagent], [request][request], [axios][axios]).
 
+> If you're using `node-fetch`, you need `node-fetch@v1.5.3` to use `form-data` with files properly (due to <https://github.com/bitinn/node-fetch/issues/102>)
+
 
 ## Index
 

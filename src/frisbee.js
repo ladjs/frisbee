@@ -8,6 +8,7 @@
 
 // # frisbee
 
+import caseless from 'caseless';
 import qs from 'qs';
 import { Buffer } from 'buffer';
 
@@ -77,6 +78,8 @@ export default class Frisbee {
         method: method === 'del' ? 'DELETE' : method.toUpperCase()
       };
 
+      const c = caseless(opts.headers);
+
       // in order to support Android POST requests
       // we must allow an empty body to be sent
       // https://github.com/facebook/react-native/issues/4890
@@ -87,7 +90,7 @@ export default class Frisbee {
         if (opts.method === 'GET') {
           path += `?${qs.stringify(opts.body)}`;
           delete opts.body;
-        } else {
+        } else if (c.get('Content-Type') === 'application/json') {
           try {
             opts.body = JSON.stringify(opts.body);
           } catch (err) {
