@@ -1,6 +1,6 @@
 
 import 'isomorphic-fetch';
-import Frisbee from '../../src/frisbee';
+import Frisbee from '../../lib/frisbee';
 const app = require('./app');
 
 const standardMethods = [
