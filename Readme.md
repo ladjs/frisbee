@@ -366,3 +366,4 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [axios]: https://github.com/mzabriskie/axios
 [fetch-method]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 [stripe]: https://stripe.com/docs/api#errors
+[glazed]: https://github.com/glazedio/glazed
