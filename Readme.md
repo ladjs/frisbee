@@ -267,7 +267,7 @@ See [Background](#background) for more information.
 
 **Want to build an API back-end with Node.js?**
 
-See the [Glazed][glazed] framework as a great starting point, and read this article about [building Node.js API's with authentication][blog-article].
+See [CrocodileJS][crocodile-url] as a great starting point, and read this article about [building Node.js API's with authentication][blog-article].
 
 **Need help or want to request a feature?**
 
@@ -347,25 +347,25 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [ide]: https://github.com/ide
 [react]: https://facebook.github.io/react/
 [angular]: https://angularjs.org/
-[issue]: https://github.com/glazedio/frisbee/issues
+[issue]: https://github.com/crocodilejs/frisbee/issues
 [automatic-ip-configuration]: http://moduscreate.com/automated-ip-configuration-for-react-native-development/
-[frisbee-logo]: https://cdn.rawgit.com/glazedio/frisbee/master/media/logo-revised.svg
+[frisbee-logo]: https://cdn.rawgit.com/crocodilejs/frisbee/master/media/logo-revised.svg
 [unicorn-approved]: http://img.shields.io/badge/unicorn-approved-ff69b4.svg
 [unicorn-url]: https://www.youtube.com/watch?v=9auOCbH5Ns4
-[coveralls-image]: https://coveralls.io/repos/github/glazedio/frisbee/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/glazedio/frisbee?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/crocodilejs/frisbee/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/crocodilejs/frisbee?branch=master
 [build-image]: https://semaphoreci.com/api/v1/niftylettuce/frisbee/branches/master/shields_badge.svg
 [build-url]: https://semaphoreci.com/niftylettuce/frisbee
-[codecov-image]: https://img.shields.io/codecov/c/github/glazedio/frisbee/master.svg
-[codecov-url]: https://codecov.io/github/glazedio/frisbee
+[codecov-image]: https://img.shields.io/codecov/c/github/crocodilejs/frisbee/master.svg
+[codecov-url]: https://codecov.io/github/crocodilejs/frisbee
 [standard-image]: https://img.shields.io/badge/code%20style-standard%2Bes7-brightgreen.svg
 [standard-url]: https://github.com/meetearnest/eslint-config-earnest-es7
 [stability-image]: https://img.shields.io/badge/stability-stable-green.svg
 [stability-url]: https://nodejs.org/api/documentation.html#documentation_stability_index
 [request]: https://github.com/request/request
-[slack-image]: http://slack.glazed.io/badge.svg
-[slack-url]: http://slack.glazed.io
+[slack-image]: http://slack.crocodilejs.com/badge.svg
+[slack-url]: http://slack.crocodilejs.com
 [axios]: https://github.com/mzabriskie/axios
 [fetch-method]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 [stripe]: https://stripe.com/docs/api#errors
-[glazed]: https://github.com/glazedio/glazed
+[crocodile-url]: https://github.com/crocodilejs/crocodile
