@@ -218,4 +218,16 @@ export default class Frisbee {
 
   }
 
+  jwt(token) {
+
+    if (typeof token === 'string')
+      this.headers.Authorization =
+        `Bearer ${token}`;
+    else
+      throw new Error('jwt token must be a string');
+
+    return this;
+
+  }
+
 }

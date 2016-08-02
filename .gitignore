@@ -5,3 +5,4 @@ coverage
 *.log
 .DS_Store
 test/unit/browser.bundled.js
+.vscode

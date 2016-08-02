@@ -50,6 +50,7 @@ describe('browser', () => {
 
     [
       'auth',
+      'jwt',
       'get',
       'head',
       'post',
