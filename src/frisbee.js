@@ -34,6 +34,70 @@ const methods = [
   'patch'
 ];
 
+const respProperties = {
+  readOnly: [
+    'headers',
+    'ok',
+    'redirected',
+    'status',
+    'statusText',
+    'type',
+    'url',
+    'bodyUsed'
+  ],
+  writable: [
+    'useFinalURL'
+  ],
+  callable: [
+    'clone',
+    'error',
+    'redirect',
+    'arrayBuffer',
+    'blob',
+    'formData',
+    'json',
+    'text'
+  ]
+};
+
+
+function createFrisbeeResponse(origResp) {
+  const resp = {
+    originalResponse: origResp
+  };
+
+  respProperties.readOnly.forEach(
+    prop => Object.defineProperty(resp, prop, {
+      value: origResp[prop]
+    })
+  );
+
+  respProperties.writable.forEach(
+    prop => Object.defineProperty(resp, prop, {
+      get() {
+        return origResp[prop];
+      },
+      set(value) {
+        origResp[prop] = value;
+      }
+    })
+  );
+
+  let callable = null;
+  respProperties.callable.forEach(
+    prop => {
+      Object.defineProperty(resp, prop, {
+        value: (
+          callable = origResp[prop],
+          typeof callable === 'function' && callable.bind(origResp)
+        )
+      });
+    }
+  );
+
+  return resp;
+}
+
 export default class Frisbee {
 
   constructor(opts) {
@@ -103,7 +167,8 @@ export default class Frisbee {
 
         try {
 
-          const res = await fetch(this.opts.baseURI + path, opts);
+          const originalRes = await fetch(this.opts.baseURI + path, opts);
+          const res = createFrisbeeResponse(originalRes);
 
           if (!res.ok) {
 
