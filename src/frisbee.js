@@ -101,7 +101,6 @@ function createFrisbeeResponse(origResp) {
 export default class Frisbee {
 
   constructor(opts) {
-
     this.opts = opts || {};
 
     if (!this.opts.baseURI)
@@ -112,6 +111,8 @@ export default class Frisbee {
     this.headers = {
       ...opts.headers
     };
+
+    this.arrayFormat = opts.arrayFormat || 'indices';
 
     if (this.opts.auth)
       this.auth(this.opts.auth);
@@ -152,7 +153,7 @@ export default class Frisbee {
           opts.body = '';
       } else if (typeof opts.body === 'object' || opts.body instanceof Array) {
         if (opts.method === 'GET') {
-          path += `?${qs.stringify(opts.body)}`;
+          path += `?${qs.stringify(opts.body, { arrayFormat: this.arrayFormat })}`;
           delete opts.body;
         } else if (c.get('Content-Type') === 'application/json') {
           try {

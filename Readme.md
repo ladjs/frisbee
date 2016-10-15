@@ -186,6 +186,8 @@ import Frisbee from 'frisbee';
 
     * `auth` - will call the `auth()` function below and set it as a default
 
+    * `arrayFormat` - how to stringify array in passed body. See [https://github.com/ljharb/qs][https://github.com/ljharb/qs] for available formats
+
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
 * `api.auth(creds)` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
