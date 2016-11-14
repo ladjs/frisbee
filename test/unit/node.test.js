@@ -180,6 +180,25 @@ describe('node runtime', () => {
     expect(res.body).to.deep.equal(querystring);
   });
 
+  it('should stringify querystring parameters with arrayFormat for GET requests', async () => {
+    api = new Frisbee(Object.assign({}, global._options, {formatArray: 'brackets'}));
+    const querystring = {
+      a: 'blue',
+      b: 'cyan',
+      c: 'pink',
+      d: [
+        '1',
+        '2',
+        '3'
+      ]
+    };
+    const res = await api.get('/querystring', {
+      body: querystring
+    });
+    expect(res.body).to.be.an('object');
+    expect(res.body).to.deep.equal(querystring);
+  });
+
   it('should URL encode querystring parameters for GET requests', async () => {
     api = new Frisbee(global._options);
     const querystring = {

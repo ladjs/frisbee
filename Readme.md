@@ -186,6 +186,8 @@ import Frisbee from 'frisbee';
 
     * `auth` - will call the `auth()` function below and set it as a default
 
+    * `arrayFormat` - how to stringify array in passed body. See [qs][qs-url] for available formats
+
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
 * `api.auth(creds)` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
@@ -369,3 +371,4 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [fetch-method]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 [stripe]: https://stripe.com/docs/api#errors
 [crocodile-url]: https://github.com/crocodilejs/crocodile
+[qs-url]: https://github.com/ljharb/qs
