@@ -45,7 +45,7 @@
     "source-map-support": "^0.4.0"
   },
   "engines": {
-    "node": "6.x"
+    "node": "6.x||7.x"
   },
   "homepage": "https://github.com/glazedio/frisbee",
   "keywords": [
