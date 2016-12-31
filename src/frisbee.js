@@ -171,13 +171,13 @@ export default class Frisbee {
 
           const originalRes = await fetch(this.opts.baseURI + path, opts)
           const res = createFrisbeeResponse(originalRes)
+          const contentType = res.headers.get('Content-Type')
 
           if (!res.ok) {
 
             res.err = new Error(res.statusText)
 
             // check if the response was JSON, and if so, better the error
-            const contentType = res.headers.get('Content-Type')
             if (contentType && contentType.includes('application/json')) {
 
               try {
@@ -215,12 +215,12 @@ export default class Frisbee {
           }
 
           // determine whether we're returning text or json for body
-          if (res.headers.get('Content-Type').indexOf('application/json') !== -1) {
+          if (contentType && contentType.includes('application/json')) {
             try {
               res.body = await res.text()
               res.body = JSON.parse(res.body)
             } catch (err) {
-              if (res.headers.get('Content-Type') === 'application/json') {
+              if (contentType && contentType === 'application/json') {
                 res.err = this.parseErr
                 resolve(res)
                 return
