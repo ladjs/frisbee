@@ -110,7 +110,7 @@ export default class Frisbee {
 
   constructor(opts) {
     this.opts = opts;
-    
+
     if (!opts.baseURI)
       throw new Error('baseURI option is required');
 
@@ -125,7 +125,9 @@ export default class Frisbee {
     if (opts.auth)
       this.auth(opts.auth);
 
-    methods.forEach(method => this[method] = this._setup(method));
+    methods.forEach(method => {
+      this[method] = this._setup(method);
+    });
   }
 
   _setup(method) {
