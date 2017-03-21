@@ -95,6 +95,14 @@ function createFrisbeeResponse(origResp) {
     }
   );
 
+  const headersObj = {};
+  origResp.headers.forEach(pair => {
+    headersObj[pair[0]] = pair[1];
+  });
+  Object.defineProperty(resp, 'headersObj', {
+    value: headersObj
+  });
+
   return resp;
 }
 
