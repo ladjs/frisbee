@@ -95,15 +95,23 @@ function createFrisbeeResponse(origResp) {
     }
   );
 
+  const headersObj = {};
+  origResp.headers.forEach(pair => {
+    headersObj[pair[0]] = pair[1];
+  });
+  Object.defineProperty(resp, 'headersObj', {
+    value: headersObj
+  });
+
   return resp;
 }
 
 export default class Frisbee {
 
-  constructor(opts) {
-    this.opts = opts || {};
+  constructor(opts = {}) {
+    this.opts = opts;
 
-    if (!this.opts.baseURI)
+    if (!opts.baseURI)
       throw new Error('baseURI option is required');
 
     this.parseErr = new Error(`Invalid JSON received from ${opts.baseURI}`);
@@ -114,13 +122,12 @@ export default class Frisbee {
 
     this.arrayFormat = opts.arrayFormat || 'indices';
 
-    if (this.opts.auth)
-      this.auth(this.opts.auth);
+    if (opts.auth)
+      this.auth(opts.auth);
 
     methods.forEach(method => {
       this[method] = this._setup(method);
     });
-
   }
 
   _setup(method) {
