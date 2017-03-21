@@ -108,7 +108,7 @@ function createFrisbeeResponse(origResp) {
 
 export default class Frisbee {
 
-  constructor(opts) {
+  constructor(opts = {}) {
     this.opts = opts;
 
     if (!opts.baseURI)
