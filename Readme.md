@@ -11,9 +11,10 @@
 [![NPM version][npm-image]][npm-url]
 [![NPM downloads][npm-downloads]][npm-url]
 
-> **tldr;** [Stripe][stripe]-inspired API wrapper around ES6/ES7's [fetch()][fetch-method] method for making simple HTTP requests (alternative to [superagent][superagent], [request][request], [axios][axios]).
+> **tldr;** [Stripe][stripe]-inspired API wrapper for WHATWG's [fetch()][fetch-method] method for making simple HTTP requests (alternative to [superagent][superagent], [request][request], [axios][axios]).
 
 > If you're using `node-fetch`, you need `node-fetch@v1.5.3` to use `form-data` with files properly (due to <https://github.com/bitinn/node-fetch/issues/102>)
+> If you experience form file upload issues, please see <https://github.com/facebook/react-native/issues/7564#issuecomment-266323928>.
 
 
 ## Index
@@ -231,13 +232,20 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
 ## Frequently Asked Questions
 
+**Why do my form uploads randomly fail with React Native?**
+
+This is due to a bug with setting the boundary.  For more information and temporary workaround if you are affected please see <https://github.com/facebook/react-native/issues/7564#issuecomment-266323928>.
+
 **Does this support callbacks, promises, or both?**
 
 As of version `1.0.0` we have dropped support for callbacks, it now __only__ supports Promises.
 
 **What is the `fetch` method?**
 
-It is a new method introduced into the ES6 specification.  You can read more about it here <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>.
+It is a WHATWG browser API specification.  You can read more about at the following links:
+
+* <https://fetch.spec.whatwg.org/>
+* <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>
 
 **Does the Browser or Node.js support `fetch` yet?**
 
@@ -275,9 +283,6 @@ See [CrocodileJS][crocodile-url] as a great starting point, and read this articl
 
 File [an issue][issue] on GitHub and we'll try our best help you out.
 
-**Why don't you have an ES5 compiled version readily available in this git repo?**
-
-As this module relies on ES6 **fetch**, there is currently no backwards compatibility for ES5
 
 ## Tests
 
@@ -311,7 +316,7 @@ Here were the issues we discovered/filed related to this:
 
 We know that solutions like `superagent` exist, but they don't seem to work well with React Native (which was our use case for this package).
 
-In addition, the authors of the spec for ES6's fetch support throwing errors instead of catching them and bubbling them up to the callback/promise (for example, with Frisbee any HTTP or API errors are found in the `res.err` object).
+In addition, the authors of WHATWG's fetch API only support throwing errors instead of catching them and bubbling them up to the callback/promise (for example, with Frisbee any HTTP or API errors are found in the `res.err` object).
 
 Therefore we created `frisbee` to serve as our API glue, and hopefully it'll serve as yours too.
 
