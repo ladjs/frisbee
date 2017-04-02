@@ -4,7 +4,7 @@
   "version": "1.1.9",
   "author": "Nick Baugh <niftylettuce@gmail.com>",
   "bugs": {
-    "url": "https://github.com/glazedio/frisbee/issues",
+    "url": "https://github.com/joinspontaneous/frisbee/issues",
     "email": "niftylettuce@gmail.com"
   },
   "dependencies": {
@@ -47,7 +47,7 @@
   "engines": {
     "node": "6.x||7.x"
   },
-  "homepage": "https://github.com/glazedio/frisbee",
+  "homepage": "https://github.com/joinspontaneous/frisbee",
   "keywords": [
     "api",
     "boilerplate",
@@ -75,7 +75,7 @@
   "main": "lib/frisbee.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/glazedio/frisbee"
+    "url": "https://github.com/joinspontaneous/frisbee"
   },
   "scripts": {
     "analyze-coverage": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
