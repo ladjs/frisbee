@@ -199,12 +199,12 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     * If you pass `:` then it will assume you are trying to set BasicAuth headers using your own `user:pass` string
     * If you pass more than two keys, then it will throw an error (since BasicAuth only consists of `user` and `pass` anyways)
 
-* `api.jwt(token)` - helper function that sets a JWT Bearer header. It accepts the `jwt_token` as a single string argument
+* `api.jwt(token)` - helper function that sets a JWT Bearer header. It accepts the `jwt_token` as a single string argument.  If you simply invoke the function without passing an argument (`null`), it will remove JWT headers.
 
 * All exposed HTTP methods return a Promise, and they require a `path` string, and accept an optional `options` object:
     * Accepted method arguments:
         * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` mentioned earlier)
-        * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request, here are a few examples:
+        * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request, here are a few examples (you can override/merge your set default headers as well per request):
             * To set a custom header value of `X-Reply-To` on a `POST` request:
 
                 ```js
