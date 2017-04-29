@@ -301,8 +301,9 @@ export default class Frisbee {
   }
 
   jwt(token) {
-
-    if (typeof token === 'string')
+    if (token === null)
+      delete this.headers.Authorization;
+    else if (typeof token === 'string')
       this.headers.Authorization =
         `Bearer ${token}`;
     else
