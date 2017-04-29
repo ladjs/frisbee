@@ -189,8 +189,12 @@ export default class Frisbee {
               try {
 
                 // attempt to parse json body to use as error message
-                res.body = await res.text();
-                res.body = JSON.parse(res.body);
+                if (typeof res.json === 'function') {
+                  res.body = await res.json();
+                } else {
+                  res.body = await res.text();
+                  res.body = JSON.parse(res.body);
+                }
 
                 // attempt to use Glazed error messages
                 if (typeof res.body === 'object'
@@ -223,8 +227,12 @@ export default class Frisbee {
           // determine whether we're returning text or json for body
           if (contentType && contentType.includes('application/json')) {
             try {
-              res.body = await res.text();
-              res.body = JSON.parse(res.body);
+              if (typeof res.json === 'function') {
+                res.body = await res.json();
+              } else {
+                res.body = await res.text();
+                res.body = JSON.parse(res.body);
+              }
             } catch (err) {
               if (contentType === 'application/json') {
                 res.err = this.parseErr;
