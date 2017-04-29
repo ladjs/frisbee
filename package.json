@@ -1,7 +1,7 @@
 {
   "name": "frisbee",
   "description": "Stripe-inspired API wrapper around WHATWG's fetch() method for making simple HTTP requests (alternative to superagent, request, axios)",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "author": "Nick Baugh <niftylettuce@gmail.com>",
   "bugs": {
     "url": "https://github.com/joinspontaneous/frisbee/issues",
