@@ -143,10 +143,11 @@ export default class Frisbee {
         throw new Error('`options` must be an object');
 
       const opts = {
-        headers: {
-          ...this.headers
-        },
         ...options,
+        headers: {
+          ...this.headers,
+          ...options.headers
+        },
         method: method === 'del' ? 'DELETE' : method.toUpperCase()
       };
 
