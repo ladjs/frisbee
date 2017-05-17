@@ -38,6 +38,10 @@ app.get('/querystring', (req, res, next) => {
   res.json(req.query);
 });
 
+app.del('/querystring', (req, res, next) => {
+  res.json(req.query);
+});
+
 app.get('/404', (req, res, next) => {
   res.sendStatus(404);
 });

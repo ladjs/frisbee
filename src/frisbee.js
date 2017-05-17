@@ -160,7 +160,7 @@ export default class Frisbee {
         if (opts.method === 'POST')
           opts.body = '';
       } else if (typeof opts.body === 'object' || opts.body instanceof Array) {
-        if (opts.method === 'GET') {
+        if (opts.method === 'GET' || opts.method === 'DELETE') {
           path += `?${qs.stringify(opts.body, { arrayFormat: this.arrayFormat })}`;
           delete opts.body;
         } else if (c.get('Content-Type') === 'application/json') {
