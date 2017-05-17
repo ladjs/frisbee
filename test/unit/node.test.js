@@ -166,21 +166,28 @@ describe('node runtime', () => {
 
   });
 
-  it('should stringify querystring parameters for GET requests', async () => {
+  it('should stringify querystring parameters for GET and DELETE requests', async () => {
     api = new Frisbee(global._options);
     const querystring = {
       a: 'blue',
       b: 'cyan',
       c: 'pink'
     };
-    const res = await api.get('/querystring', {
+    const getRes = await api.get('/querystring', {
       body: querystring
     });
-    expect(res.body).to.be.an('object');
-    expect(res.body).to.deep.equal(querystring);
+    expect(getRes.body).to.be.an('object');
+    expect(getRes.body).to.deep.equal(querystring);
+
+    const delRes = await api.get('/querystring', {
+      body: querystring
+    });
+    expect(delRes.body).to.be.an('object');
+    expect(delRes.body).to.deep.equal(querystring);
   });
 
-  it('should stringify querystring parameters with arrayFormat for GET requests', async () => {
+  it('should stringify querystring parameters with arrayFormat for GET and DELETE requests',
+  async () => {
     api = new Frisbee(Object.assign({}, global._options, {formatArray: 'brackets'}));
     const querystring = {
       a: 'blue',
@@ -192,25 +199,37 @@ describe('node runtime', () => {
         '3'
       ]
     };
-    const res = await api.get('/querystring', {
+    const getRes = await api.get('/querystring', {
       body: querystring
     });
-    expect(res.body).to.be.an('object');
-    expect(res.body).to.deep.equal(querystring);
+    expect(getRes.body).to.be.an('object');
+    expect(getRes.body).to.deep.equal(querystring);
+
+    const delRes = await api.get('/querystring', {
+      body: querystring
+    });
+    expect(delRes.body).to.be.an('object');
+    expect(delRes.body).to.deep.equal(querystring);
   });
 
-  it('should URL encode querystring parameters for GET requests', async () => {
+  it('should URL encode querystring parameters for GET and DELETE requests', async () => {
     api = new Frisbee(global._options);
     const querystring = {
       a: '   ',
       b: '&foo&',
       c: '$$%%%%'
     };
-    const res = await api.get('/querystring', {
+    const getRes = await api.get('/querystring', {
       body: querystring
     });
-    expect(res.body).to.be.an('object');
-    expect(res.body).to.deep.equal(querystring);
+    expect(getRes.body).to.be.an('object');
+    expect(getRes.body).to.deep.equal(querystring);
+
+    const delRes = await api.del('/querystring', {
+      body: querystring
+    });
+    expect(delRes.body).to.be.an('object');
+    expect(delRes.body).to.deep.equal(querystring);
   });
 
   it('should return 404', async () => {
