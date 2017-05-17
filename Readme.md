@@ -204,7 +204,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 * All exposed HTTP methods return a Promise, and they require a `path` string, and accept an optional `options` object:
     * Accepted method arguments:
         * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` mentioned earlier)
-        * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For GET and DELETE methods, `body` data will be encoded in the query string.
+        * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.
 
             Here are a few examples (you can override/merge your set default headers as well per request):
             * To set a custom header value of `X-Reply-To` on a `POST` request:
