@@ -234,6 +234,12 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
 ## Frequently Asked Questions
 
+**How do I unset a default header?**
+
+Simply set its value to `null`, `''`, or `undefined` &ndash; and it will be unset and removed from the headers sent with your request.
+
+A common use case for this is when you are attempting to use `FormData` and need the content boundary automatically added.
+
 **Why do my form uploads randomly fail with React Native?**
 
 This is due to a bug with setting the boundary.  For more information and temporary workaround if you are affected please see <https://github.com/facebook/react-native/issues/7564#issuecomment-266323928>.

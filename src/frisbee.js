@@ -151,6 +151,15 @@ export default class Frisbee {
         method: method === 'del' ? 'DELETE' : method.toUpperCase()
       };
 
+      // remove any nil or blank headers
+      // (e.g. to automatically set Content-Type with `FormData` boundary)
+      Object.keys(opts.headers).forEach(key => {
+        if (typeof opts.headers[key] === 'undefined'
+          || opts.headers[key] === null
+          || opts.headers[key] === '')
+          delete opts.headers[key];
+      });
+
       const c = caseless(opts.headers);
 
       // in order to support Android POST requests
@@ -163,7 +172,8 @@ export default class Frisbee {
         if (opts.method === 'GET' || opts.method === 'DELETE') {
           path += `?${qs.stringify(opts.body, { arrayFormat: this.arrayFormat })}`;
           delete opts.body;
-        } else if (c.get('Content-Type').split(';')[0] === 'application/json') {
+        } else if (c.get('Content-Type')
+          && c.get('Content-Type').split(';')[0] === 'application/json') {
           try {
             opts.body = JSON.stringify(opts.body);
           } catch (err) {
