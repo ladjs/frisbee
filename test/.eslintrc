@@ -9,6 +9,7 @@
     "no-console": 0
   },
   "globals": {
-    "expect": true
+    "expect": true,
+    "sinon": true
   }
 }

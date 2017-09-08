@@ -141,30 +141,6 @@ describe('node runtime', () => {
 
   });
 
-  standardMethods.forEach(method => {
-
-    const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
-
-    it(`should return 200 on ${methodName}`, async () => {
-
-      api = new Frisbee(global._options);
-
-      const opts = {};
-
-      if (method === 'post')
-        opts.body = { foo: 'bar' };
-
-      try {
-        const res = await api[method]('/', opts);
-        expect(res).to.be.an('object');
-        expect(res.body).to.be.an('object');
-      } catch (err) {
-        throw err;
-      }
-
-    });
-
-  });
 
   it('should stringify querystring parameters for GET and DELETE requests', async () => {
     api = new Frisbee(global._options);
@@ -187,30 +163,30 @@ describe('node runtime', () => {
   });
 
   it('should stringify querystring parameters with arrayFormat for GET and DELETE requests',
-  async () => {
-    api = new Frisbee(Object.assign({}, global._options, {formatArray: 'brackets'}));
-    const querystring = {
-      a: 'blue',
-      b: 'cyan',
-      c: 'pink',
-      d: [
-        '1',
-        '2',
-        '3'
-      ]
-    };
-    const getRes = await api.get('/querystring', {
-      body: querystring
-    });
-    expect(getRes.body).to.be.an('object');
-    expect(getRes.body).to.deep.equal(querystring);
+    async () => {
+      api = new Frisbee(Object.assign({}, global._options, { formatArray: 'brackets' }));
+      const querystring = {
+        a: 'blue',
+        b: 'cyan',
+        c: 'pink',
+        d: [
+          '1',
+          '2',
+          '3'
+        ]
+      };
+      const getRes = await api.get('/querystring', {
+        body: querystring
+      });
+      expect(getRes.body).to.be.an('object');
+      expect(getRes.body).to.deep.equal(querystring);
 
-    const delRes = await api.get('/querystring', {
-      body: querystring
+      const delRes = await api.get('/querystring', {
+        body: querystring
+      });
+      expect(delRes.body).to.be.an('object');
+      expect(delRes.body).to.deep.equal(querystring);
     });
-    expect(delRes.body).to.be.an('object');
-    expect(delRes.body).to.deep.equal(querystring);
-  });
 
   it('should URL encode querystring parameters for GET and DELETE requests', async () => {
     api = new Frisbee(global._options);
@@ -271,5 +247,29 @@ describe('node runtime', () => {
     expect(res.err).to.be.an('error');
     expect(res.err.message).to.equal('Oops!');
   });
+
+  methods.forEach(method => {
+
+    const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
+
+    it(`should intercept ${methodName} method`, async () => {
+
+      api = new Frisbee(global._options);
+      const interceptor = {
+        request: sinon.stub().resolves(true)
+      };
+      api.interceptor.register(interceptor);
+
+      try {
+        await api[method]('/');
+        expect(interceptor.request).to.have.been.called();
+      } catch (err) {
+        throw err;
+      }
+
+    });
+
+  });
+
 
 });
