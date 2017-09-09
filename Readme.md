@@ -263,7 +263,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     
     * Note that when interceptors are added in the order A->B->C:
       * The `request`/`requestError` functions will run in the same order `A->B->C`.
-      * The `response`/`responseError` function will run in an reversed order `C->B->A`.
+      * The `response`/`responseError` function will run in reversed order `C->B->A`.
 
 ## Frequently Asked Questions
 
