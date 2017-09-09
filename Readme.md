@@ -225,12 +225,45 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         * `api.options(path, options)` - OPTIONS (*does not currently work - see tests*)
         * `api.patch(path, options)` - PATCH
 
-* Note that you can chain the `auth` method and an HTTP method together:
+    * Note that you can chain the `auth` method and an HTTP method together:
 
-    ```js
-    const res = await api.auth('foo:bar').get('/');
+        ```js
+        const res = await api.auth('foo:bar').get('/');
+        ```
+* `interceptor` - object that can be used to manipulate request and response interceptors. It has the following methods:
+    * `api.interceptor.register(interceptor)`:
+    Accepts an interceptor object that can have one or more of the following functions
+    ```js 
+    { 
+    request: function (path, options) {
+        // Read/Modify the path or options
+        // ...
+        return [path, options];
+    },
+    requestError: function (err) {
+        // Handle an error occured in the request method
+        // ...
+        return Promise.reject(err);
+    },
+    response: function (response) {
+        // Read/Modify the response
+        // ...
+        return response;
+    },
+    responseError: function (err) {
+        // Handle error occured in api/response methods
+        return Promise.reject(err);
+    }
     ```
-
+    the `register` method returns an `unregister()` function so that you can unregister the added interceptor.
+    * `api.interceptor.unregister(interceptor)`:
+    Accepts the interceptor reference that you want to delete.
+    * `api.interceptor.clear()`:
+    Removes all the added interceptors.
+    
+    * Note that when interceptors are added in the order A->B->C:
+      * The `request`/`requestError` functions will run in the same order `A->B->C`.
+      * The `response`/`responseError` function will run in an reversed order `C->B->A`.
 
 ## Frequently Asked Questions
 
