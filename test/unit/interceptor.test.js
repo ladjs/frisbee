@@ -5,6 +5,26 @@ import Interceptor from '../../lib/interceptor';
 
 describe('interceptor', () => {
 
+  it('should only intercept passed interceptable methods', async () => {
+    const API = {
+      post: sinon.stub().resolves(true),
+      get: sinon.stub().resolves(true)
+    };
+    const interceptorManager = new Interceptor(API, ['post']);
+    const interceptor = {
+      request: sinon.stub().resolves(true)
+    };
+    interceptorManager.register(interceptor);
+
+    await API.post();
+
+    expect(interceptor.request).to.have.been.calledOnce();
+
+    await API.get();
+
+    expect(interceptor.request).to.have.been.calledOnce();
+  });
+
   it('should call request before the APIMethod', async () => {
     const APIPostMethod = sinon.stub().resolves(true);
     const API = {
@@ -114,7 +134,7 @@ describe('interceptor', () => {
 
   it('should call responseError on APIMethod error', async () => {
     const API = {
-      post: () => { throw new Error('API Error');},
+      post: () => { throw new Error('API Error'); },
       get: () => new Promise((res, rej) => rej()),
       put: () => new Promise((res, rej) => res())
     };
