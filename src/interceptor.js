@@ -6,7 +6,7 @@ export default class Interceptor {
     if (!API)
       throw new Error('API should be passed to the Interceptor');
 
-    if (interceptableMethods.length <= 0)
+    if (interceptableMethods.length === 0)
       throw new Error('no methods were added to interceptableMethods');
 
     interceptableMethods.forEach(methodName => {

@@ -225,7 +225,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         * `api.options(path, options)` - OPTIONS (*does not currently work - see tests*)
         * `api.patch(path, options)` - PATCH
 
-    * Note that you can chain the `auth` method and an HTTP method together:
+    * Note that you can chain the `auth` method and a HTTP method together:
 
         ```js
         const res = await api.auth('foo:bar').get('/');
