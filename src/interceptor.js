@@ -1,8 +1,15 @@
 export default class Interceptor {
 
-  constructor(API, interceptableMethods) {
+  constructor(API, interceptableMethods = []) {
     this.interceptors = [];
-    interceptableMethods.forEach((methodName) => {
+
+    if (!API)
+      throw new Error('API should be passed to the Interceptor');
+
+    if (interceptableMethods.length <= 0)
+      throw new Error('no methods were added to interceptableMethods');
+
+    interceptableMethods.forEach(methodName => {
       const APIMethod = API[methodName];
       API[methodName] = (...args) => {
         return this.interceptedMethod(APIMethod, ...args);
@@ -18,7 +25,7 @@ export default class Interceptor {
     // Register request interceptors
     interceptors.forEach(({ request, requestError }) => {
       if (typeof request === 'function') {
-        promise = promise.then((args) => request(...args));
+        promise = promise.then(args => request(...args));
       }
       if (typeof requestError === 'function') {
         promise = promise.catch(requestError);

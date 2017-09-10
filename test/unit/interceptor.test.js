@@ -44,7 +44,7 @@ describe('interceptor', () => {
 
   it('should call request with interceptedMethod arguments', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptor = {
@@ -60,7 +60,7 @@ describe('interceptor', () => {
 
   it('should call requestError on request error', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptorOne = {
@@ -89,7 +89,7 @@ describe('interceptor', () => {
   it('should call response with what APIMethod returns as argument', async () => {
     const APIResponse = ['foo', { foo: 'foo' }];
     const API = {
-      post: () => new Promise((res, rej) => res(APIResponse))
+      post: () => new Promise(res => res(APIResponse))
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptor = {
@@ -104,7 +104,7 @@ describe('interceptor', () => {
 
   it('should call responseError on response error', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
 
     const APInterceptorManager = new Interceptor(API, ['post']);
@@ -136,7 +136,7 @@ describe('interceptor', () => {
     const API = {
       post: () => { throw new Error('API Error'); },
       get: () => new Promise((res, rej) => rej()),
-      put: () => new Promise((res, rej) => res())
+      put: () => new Promise(res => res())
     };
 
     const APInterceptorManager = new Interceptor(API, ['post', 'get']);
@@ -162,7 +162,7 @@ describe('interceptor', () => {
 
   it('should run request interceptors in the same registration order', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptorOne = {
@@ -187,7 +187,7 @@ describe('interceptor', () => {
 
   it('should run response interceptors in reversed registration order', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptorOne = {
@@ -212,7 +212,7 @@ describe('interceptor', () => {
 
   it('should remove interceptor on unregister', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptorOne = {
@@ -237,7 +237,7 @@ describe('interceptor', () => {
 
   it('should remove all interceptors on clear', async () => {
     const API = {
-      post: () => new Promise((res, rej) => res())
+      post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptor = {

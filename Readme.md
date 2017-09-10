@@ -261,9 +261,9 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     * `api.interceptor.clear()`:
     Removes all the added interceptors.
     
-    * Note that when interceptors are added in the order A->B->C:
-      * The `request`/`requestError` functions will run in the same order `A->B->C`.
-      * The `response`/`responseError` functions will run in reversed order `C->B->A`.
+    * Note that when interceptors are added in the order ONE->TWO->THREE:
+      * The `request`/`requestError` functions will run in the same order `ONE->TWO->THREE`.
+      * The `response`/`responseError` functions will run in reversed order `THREE->TWO->ONE`.
 
 ## Frequently Asked Questions
 
