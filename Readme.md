@@ -35,9 +35,9 @@
 
 1. Install the required package (note that `react-native` provides us with a `fetch` implementation):
 
-  ```bash
-  npm install --save frisbee
-  ```
+   ```bash
+   npm install --save frisbee
+   ```
 
 2. Import the package:
 
