@@ -1,6 +1,8 @@
 
 # Frisbee
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/niftylettuce/frisbee.svg)](https://greenkeeper.io/)
+
 [![Slack Status][slack-image]][slack-url]
 [![MIT License][license-image]][license-url]
 [![Stability][stability-image]][stability-url]
