@@ -11,10 +11,14 @@ global._options = {
 // setup global chai methods
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 chai.config.includeStack = true;
 chai.config.showDiff = true;
 chai.use(dirtyChai);
+chai.use(sinonChai);
 global.chai = chai;
+global.sinon = sinon;
 global.AssertionError = chai.AssertionError;
 global.Assertion = chai.Assertion;
 global.expect = chai.expect;

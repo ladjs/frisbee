@@ -11,12 +11,13 @@
 import caseless from 'caseless';
 import qs from 'qs';
 import { Buffer } from 'buffer';
+import Interceptor from './interceptor';
 
 const fetch = typeof window === 'object' ? window.fetch : global.fetch;
 
 if (!fetch)
   throw new Error(
-      'A global `fetch` method is required as either `window.fetch` '
+    'A global `fetch` method is required as either `window.fetch` '
     + 'for browsers or `global.fetch` for node runtime environments. '
     + 'Please add `require(\'isomorphic-fetch\')` before importing `frisbee`. '
     + 'You may optionally `require(\'es6-promise\').polyfill()` before you '
@@ -128,6 +129,9 @@ export default class Frisbee {
     methods.forEach(method => {
       this[method] = this._setup(method);
     });
+
+    // interceptor should be initialized after methods setup
+    this.interceptor = new Interceptor(this, methods);
   }
 
   _setup(method) {
