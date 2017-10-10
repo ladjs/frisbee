@@ -1,7 +1,6 @@
 {
   "name": "frisbee",
-  "description":
-    "Stripe-inspired API wrapper around WHATWG's fetch() method for making simple HTTP requests (alternative to superagent, request, axios)",
+  "description": "Stripe-inspired API wrapper around WHATWG's fetch() method for making simple HTTP requests (alternative to superagent, request, axios)",
   "version": "1.6.0",
   "author": "Nick Baugh <niftylettuce@gmail.com>",
   "bugs": {
@@ -12,6 +11,7 @@
     "babel-runtime": "^6.9.2",
     "buffer": "^4.6.0",
     "caseless": "^0.11.0",
+    "fetch-ponyfill": "^4.1.0",
     "qs": "^6.2.0"
   },
   "devDependencies": {
@@ -82,20 +82,14 @@
     "url": "https://github.com/joinspontaneous/frisbee"
   },
   "scripts": {
-    "analyze-coverage":
-      "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
-    "browserify":
-      "node_modules/.bin/browserify -t babelify test/unit/browser.js > test/unit/browser.bundled.js",
+    "analyze-coverage": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
+    "browserify": "node_modules/.bin/browserify -t babelify test/unit/browser.js > test/unit/browser.bundled.js",
     "build": "node_modules/.bin/babel src --modules common --out-dir lib",
-    "check-coverage":
-      "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage",
-    "coverage":
-      "npm run lint && npm run build && npm run analyze-coverage && npm run check-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage/",
+    "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage",
+    "coverage": "npm run lint && npm run build && npm run analyze-coverage && npm run check-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage/",
     "lint": "node_modules/.bin/eslint .",
     "prepublish": "npm run build",
-    "test":
-      "npm run lint && npm run browserify && NODE_ENV=test _mocha --compilers js:babel-core/register",
-    "watch":
-      "node_modules/.bin/babel src --watch --modules common --out-dir lib --source-maps"
+    "test": "npm run lint && npm run browserify && NODE_ENV=test _mocha --compilers js:babel-core/register",
+    "watch": "node_modules/.bin/babel src --watch --modules common --out-dir lib --source-maps"
   }
 }

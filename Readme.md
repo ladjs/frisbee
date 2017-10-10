@@ -57,9 +57,6 @@
         # optional (to support older browsers):
         npm install --save es6-promise
 
-        # required (to add global `fetch` method):
-        npm install --save isomorphic-fetch
-
         # required (this package):
         npm install --save frisbee
         ```
@@ -68,9 +65,6 @@
         ```bash
         # optional (to support older browsers):
         bower install --save es6-promise
-
-        # required (to add global `fetch` method):
-        bower install --save isomorphic-fetch
 
         # required (this package):
         bower install --save frisbee
@@ -82,10 +76,6 @@
     // add optional support for older browsers
     import es6promise from 'es6-promise';
     es6promise.polyfill();
-
-    // add required support for global `fetch` method
-    // *this must always come before `frisbee` is imported*
-    import 'isomorphic-fetch';
 
     // require the module
     import Frisbee from 'frisbee';
