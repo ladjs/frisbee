@@ -31,10 +31,6 @@ describe('browser', () => {
     server.close();
   });
 
-  it('should have `fetch` defined', () => {
-    expect(window.fetch).to.exist();
-  });
-
   // <https://github.com/niftylettuce/node-react-native-fetch-api>
   /*
   it('should throw an error if we fail to pass baseURI', () => {

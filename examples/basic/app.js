@@ -3,10 +3,6 @@
 import es6promise from 'es6-promise';
 es6promise.polyfill();
 
-// add required support for global `fetch` method
-// *this must always come before `frisbee` is imported*
-import 'isomorphic-fetch';
-
 // require the module
 import Frisbee from 'frisbee';
 
