@@ -12,7 +12,8 @@
     "buffer": "^4.6.0",
     "caseless": "^0.11.0",
     "fetch-ponyfill": "^4.1.0",
-    "qs": "^6.2.0"
+    "qs": "^6.2.0",
+    "url-join": "^2.0.2"
   },
   "devDependencies": {
     "@earnest/eslint-config-es7": "^2.1.1",
