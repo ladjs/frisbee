@@ -49,7 +49,7 @@
     "source-map-support": "^0.4.0"
   },
   "engines": {
-    "node": "6.x||7.x||8.x"
+    "node": "6.x||7.x||8.x||9.x"
   },
   "homepage": "https://github.com/joinspontaneous/frisbee",
   "keywords": [
