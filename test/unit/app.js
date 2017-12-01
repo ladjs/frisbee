@@ -38,7 +38,7 @@ app.get('/querystring', (req, res, next) => {
   res.json(req.query);
 });
 
-app.del('/querystring', (req, res, next) => {
+app.delete('/querystring', (req, res, next) => {
   res.json(req.query);
 });
 
