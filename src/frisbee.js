@@ -12,6 +12,7 @@ import caseless from 'caseless';
 import qs from 'qs';
 import { Buffer } from 'buffer';
 import fetchPonyfill from 'fetch-ponyfill';
+import urlJoin from 'url-join';
 import Interceptor from './interceptor';
 
 const { fetch } = fetchPonyfill({ Promise });
@@ -180,8 +181,8 @@ export default class Frisbee {
       return new Promise(async (resolve, reject) => {
 
         try {
-
-          const originalRes = await fetch(this.opts.baseURI + path, opts);
+          const fullUri = urlJoin(this.opts.baseURI, path);
+          const originalRes = await fetch(fullUri, opts);
           const res = createFrisbeeResponse(originalRes);
           const contentType = res.headers.get('Content-Type');
 
