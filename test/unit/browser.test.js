@@ -9,10 +9,10 @@ let server;
 describe('browser', () => {
 
   before(done => {
-    jsdom.env({
+    require('jsdom/lib/old-api').env({
       html: '',
       scripts: [ require.resolve('./browser.bundled.js') ],
-      virtualConsole: jsdom.createVirtualConsole().sendTo(console),
+      virtualConsole: new jsdom.VirtualConsole().sendTo(console),
       done(err, _window) {
         if (err) return done(err);
         window = _window;
