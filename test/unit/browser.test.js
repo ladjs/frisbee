@@ -1,5 +1,6 @@
 
 import jsdom from 'jsdom';
+import jsdomOld from 'jsdom/lib/old-api';
 
 const app = require('./app');
 
@@ -9,7 +10,7 @@ let server;
 describe('browser', () => {
 
   before(done => {
-    require('jsdom/lib/old-api').env({
+    jsdomOld.env({
       html: '',
       scripts: [ require.resolve('./browser.bundled.js') ],
       virtualConsole: new jsdom.VirtualConsole().sendTo(console),
