@@ -1,10 +1,8 @@
-
 import Interceptor from '../../lib/interceptor';
 // Interception Flow:
 // Intercepted Method(request* -> requestError* -> APIMethod -> response* -> responseError*)
 
 describe('interceptor', () => {
-
   it('should only intercept passed interceptable methods', async () => {
     const API = {
       post: sinon.stub().resolves(true),
@@ -44,13 +42,14 @@ describe('interceptor', () => {
 
   it('should call request with interceptedMethod arguments', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptor = {
       request: sinon.stub().resolves(true)
     };
-    const interceptedMethodArguments = ['foo', { foo: 'foo' }];
+    const interceptedMethodArguments = ['foo', {foo: 'foo'}];
     interceptorManager.register(interceptor);
 
     await API.post(...interceptedMethodArguments);
@@ -60,11 +59,14 @@ describe('interceptor', () => {
 
   it('should call requestError on request error', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptorOne = {
-      request: () => { throw new Error('Request Error'); },
+      request: () => {
+        throw new Error('Request Error');
+      },
       requestError: sinon.stub().resolves(true)
     };
     const interceptorTwo = {
@@ -87,8 +89,9 @@ describe('interceptor', () => {
   });
 
   it('should call response with what APIMethod returns as argument', async () => {
-    const APIResponse = ['foo', { foo: 'foo' }];
+    const APIResponse = ['foo', {foo: 'foo'}];
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res(APIResponse))
     };
     const interceptorManager = new Interceptor(API, ['post']);
@@ -104,12 +107,15 @@ describe('interceptor', () => {
 
   it('should call responseError on response error', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
 
     const APInterceptorManager = new Interceptor(API, ['post']);
     const APIInterceptorOne = {
-      response: () => { throw new Error('Request Error'); },
+      response: () => {
+        throw new Error('Request Error');
+      },
       responseError: sinon.stub().resolves(true)
     };
     const APIInterceptorTwo = {
@@ -134,9 +140,13 @@ describe('interceptor', () => {
 
   it('should call responseError on APIMethod error', async () => {
     const API = {
-      post: () => { throw new Error('API Error'); },
+      post: () => {
+        throw new Error('API Error');
+      },
+      /* eslint-disable promise/param-names */
       get: () => new Promise((res, rej) => rej()),
       put: () => new Promise(res => res())
+      /* eslint-enable */
     };
 
     const APInterceptorManager = new Interceptor(API, ['post', 'get']);
@@ -162,6 +172,7 @@ describe('interceptor', () => {
 
   it('should run request interceptors in the same registration order', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
@@ -187,6 +198,7 @@ describe('interceptor', () => {
 
   it('should run response interceptors in reversed registration order', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
@@ -212,6 +224,7 @@ describe('interceptor', () => {
 
   it('should remove interceptor on unregister', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);
@@ -237,6 +250,7 @@ describe('interceptor', () => {
 
   it('should remove all interceptors on clear', async () => {
     const API = {
+      // eslint-disable-next-line promise/param-names
       post: () => new Promise(res => res())
     };
     const interceptorManager = new Interceptor(API, ['post']);

@@ -13,6 +13,7 @@
     "caseless": "^0.11.0",
     "fetch-ponyfill": "^4.1.0",
     "qs": "^6.2.0",
+    "safe-buffer": "^5.1.1",
     "url-join": "^2.0.2"
   },
   "devDependencies": {
@@ -95,15 +96,40 @@
       "camelcase": "off",
       "no-warning-comments": "off",
       "ava/no-ignored-test-files": "off",
-      "max-depth": ["error", 6]
+      "max-depth": [
+        "error",
+        6
+      ]
     },
     "space": true,
     "ignore": [
       "lib",
       "media",
-      "test",
       "examples",
+      "test/unit/browser.js",
       "*.bundled.js"
+    ],
+    "overrides": [
+      {
+        "files": "test/**/*.js",
+        "envs": [
+          "node",
+          "browser",
+          "mocha"
+        ],
+        "rules": {
+          "babel/object-curly-spacing": 0,
+          "babel/array-bracket-spacing": 0,
+          "array-bracket-spacing": 0,
+          "curly": 0,
+          "padded-blocks": 0,
+          "no-console": 0
+        },
+        "globals": [
+          "expect",
+          "sinon"
+        ]
+      }
     ]
   },
   "prettier": {

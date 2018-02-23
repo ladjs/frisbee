@@ -7,7 +7,7 @@
 
 // # frisbee
 
-import {Buffer} from 'buffer';
+import {Buffer} from 'safe-buffer';
 import caseless from 'caseless';
 import qs from 'qs';
 import fetchPonyfill from 'fetch-ponyfill';
