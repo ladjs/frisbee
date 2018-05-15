@@ -13,13 +13,12 @@
     "caseless": "^0.11.0",
     "fetch-ponyfill": "^4.1.0",
     "qs": "^6.2.0",
+    "safe-buffer": "^5.1.1",
     "url-join": "^2.0.2"
   },
   "devDependencies": {
-    "@earnest/eslint-config-es7": "^2.1.1",
     "babel-cli": "^6.9.0",
     "babel-core": "^6.9.1",
-    "babel-eslint": "^6.0.4",
     "babel-istanbul": "^0.8.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-runtime": "^6.9.0",
@@ -35,9 +34,6 @@
     "coveralls": "^2.11.9",
     "dirty-chai": "^1.2.2",
     "es6-promise": "^3.2.1",
-    "eslint": "^2.11.1",
-    "eslint-plugin-babel": "^3.2.0",
-    "eslint-plugin-mocha": "~2.0.0",
     "express": "^4.13.4",
     "isomorphic-fetch": "^2.2.1",
     "isparta": "^4.0.0",
@@ -47,7 +43,8 @@
     "mocha": "^2.5.3",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0",
-    "source-map-support": "^0.4.0"
+    "source-map-support": "^0.4.0",
+    "xo": "^0.20.3"
   },
   "engines": {
     "node": "6.x||7.x||8.x||9.x||10.x"
@@ -88,9 +85,55 @@
     "build": "node_modules/.bin/babel src --modules common --out-dir lib",
     "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage",
     "coverage": "npm run lint && npm run build && npm run analyze-coverage && npm run check-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage/",
-    "lint": "node_modules/.bin/eslint .",
+    "lint": "node_modules/.bin/xo",
     "prepublish": "npm run build",
     "test": "npm run lint && npm run browserify && NODE_ENV=test _mocha --compilers js:babel-core/register",
     "watch": "node_modules/.bin/babel src --watch --modules common --out-dir lib --source-maps"
+  },
+  "xo": {
+    "rules": {
+      "capitalized-comments": "off",
+      "camelcase": "off",
+      "no-warning-comments": "off",
+      "ava/no-ignored-test-files": "off",
+      "max-depth": [
+        "error",
+        6
+      ]
+    },
+    "space": true,
+    "ignore": [
+      "lib",
+      "media",
+      "examples",
+      "test/unit/browser.js",
+      "*.bundled.js"
+    ],
+    "overrides": [
+      {
+        "files": "test/**/*.js",
+        "envs": [
+          "node",
+          "browser",
+          "mocha"
+        ],
+        "rules": {
+          "babel/object-curly-spacing": 0,
+          "babel/array-bracket-spacing": 0,
+          "array-bracket-spacing": 0,
+          "curly": 0,
+          "padded-blocks": 0,
+          "no-console": 0
+        },
+        "globals": [
+          "expect",
+          "sinon"
+        ]
+      }
+    ]
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "trailingComma": "none"
   }
 }

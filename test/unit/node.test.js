@@ -1,5 +1,6 @@
-
+import {Buffer} from 'safe-buffer';
 import Frisbee from '../../lib/frisbee';
+
 const app = require('./app');
 
 const standardMethods = [
@@ -12,7 +13,6 @@ const standardMethods = [
 const methods = [].slice.call(standardMethods).concat(['head', 'options']);
 
 describe('node runtime', () => {
-
   let api;
   let server;
 
@@ -44,14 +44,13 @@ describe('node runtime', () => {
       .to.throw(/auth option `user` must be a string/);
     expect(() => api.auth(['', {}]))
       .to.throw(/auth option `pass` must be a string/);
-
   });
 
   it('should accept valid auth("user:pass") usage', () => {
     api = new Frisbee(global._options);
     const creds = 'foo:bar';
     api.auth('foo:bar');
-    const basicAuthHeader = `Basic ${new Buffer(creds).toString('base64')}`;
+    const basicAuthHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
     expect(api.headers.Authorization).to.equal(basicAuthHeader);
   });
 
@@ -112,17 +111,16 @@ describe('node runtime', () => {
   });
 
   standardMethods.forEach(method => {
-
     const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
     it(`should return 200 on ${methodName}`, async () => {
-
       api = new Frisbee(global._options);
 
       const opts = {};
 
-      if (method === 'post')
-        opts.body = { foo: 'bar' };
+      if (method === 'post') {
+        opts.body = {foo: 'bar'};
+      }
 
       try {
         const res = await api[method]('/', opts);
@@ -131,11 +129,8 @@ describe('node runtime', () => {
       } catch (err) {
         throw err;
       }
-
     });
-
   });
-
 
   it('should stringify querystring parameters for GET and DELETE requests', async () => {
     api = new Frisbee(global._options);
@@ -159,7 +154,7 @@ describe('node runtime', () => {
 
   it('should stringify querystring parameters with arrayFormat for GET and DELETE requests',
     async () => {
-      api = new Frisbee(Object.assign({}, global._options, { formatArray: 'brackets' }));
+      api = new Frisbee(Object.assign({}, global._options, {formatArray: 'brackets'}));
       const querystring = {
         a: 'blue',
         b: 'cyan',
@@ -244,11 +239,9 @@ describe('node runtime', () => {
   });
 
   methods.forEach(method => {
-
     const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
     it(`should intercept ${methodName} method`, async () => {
-
       api = new Frisbee(global._options);
       const interceptor = {
         request: sinon.stub().resolves(true)
@@ -261,10 +254,6 @@ describe('node runtime', () => {
       } catch (err) {
         throw err;
       }
-
     });
-
   });
-
-
 });

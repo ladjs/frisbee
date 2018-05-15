@@ -1,13 +1,14 @@
 export default class Interceptor {
-
   constructor(API, interceptableMethods = []) {
     this.interceptors = [];
 
-    if (!API)
+    if (!API) {
       throw new Error('API should be passed to the Interceptor');
+    }
 
-    if (interceptableMethods.length === 0)
+    if (interceptableMethods.length === 0) {
       throw new Error('no methods were added to interceptableMethods');
+    }
 
     interceptableMethods.forEach(methodName => {
       const APIMethod = API[methodName];
@@ -17,13 +18,13 @@ export default class Interceptor {
     });
   }
 
-  interceptedMethod = (APIMethod, ...args) => {
-    const interceptors = this.interceptors;
+  interceptedMethod(APIMethod, ...args) {
+    const {interceptors} = this;
     const reversedInterceptors = interceptors.slice().reverse();
     let promise = Promise.resolve(args);
 
     // Register request interceptors
-    interceptors.forEach(({ request, requestError }) => {
+    interceptors.forEach(({request, requestError}) => {
       if (typeof request === 'function') {
         promise = promise.then(args => request(...args));
       }
@@ -34,11 +35,12 @@ export default class Interceptor {
 
     // Register APIMethod call
     if (typeof APIMethod === 'function') {
+      // eslint-disable-next-line new-cap
       promise = promise.then(args => APIMethod(...args));
     }
 
     // Register response interceptors
-    reversedInterceptors.forEach(({ response, responseError }) => {
+    reversedInterceptors.forEach(({response, responseError}) => {
       if (typeof response === 'function') {
         promise = promise.then(response);
       }
@@ -50,22 +52,21 @@ export default class Interceptor {
     return promise;
   }
 
-  register = (interceptor) => {
+  register(interceptor) {
     this.interceptors.push(interceptor);
     return () => {
       this.unregister(interceptor);
     };
   }
 
-  unregister = (interceptor) => {
+  unregister(interceptor) {
     const index = this.interceptors.indexOf(interceptor);
     if (index >= 0) {
       this.interceptors.splice(index, 1);
     }
   }
 
-  clear = () => {
+  clear() {
     this.interceptors = [];
   }
-
 }
