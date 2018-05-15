@@ -1,4 +1,3 @@
-
 import jsdom from 'jsdom';
 import jsdomOld from 'jsdom/lib/old-api';
 
@@ -8,14 +7,15 @@ let window;
 let server;
 
 describe('browser', () => {
-
   before(done => {
     jsdomOld.env({
       html: '',
       scripts: [ require.resolve('./browser.bundled.js') ],
       virtualConsole: new jsdom.VirtualConsole().sendTo(console),
       done(err, _window) {
-        if (err) return done(err);
+        if (err) {
+          return done(err);
+        }
         window = _window;
         done();
       }
@@ -40,7 +40,6 @@ describe('browser', () => {
   */
 
   it('should create Frisbee instance with all methods', () => {
-
     const api = new window.Frisbee(global._options);
 
     expect(api).to.be.an('object');
@@ -56,7 +55,6 @@ describe('browser', () => {
       'options',
       'patch'
     ].forEach(method => expect(api[method]).to.be.a('function'));
-
   });
 
   // TODO: auth (string)
@@ -77,11 +75,9 @@ describe('browser', () => {
     // 'options',
     'patch'
   ].forEach(method => {
-
     const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
     it(`should return 200 on ${methodName}`, async () => {
-
       const api = new window.Frisbee(global._options);
 
       try {
@@ -91,9 +87,6 @@ describe('browser', () => {
       } catch (err) {
         throw err;
       }
-
     });
-
   });
-
 });
