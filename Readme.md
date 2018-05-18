@@ -10,6 +10,8 @@
 [![npm version][npm-image]][npm-url]
 [![npm downloads][npm-downloads]][npm-url]
 
+Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][]. Great for [React Native][react-native].
+
 
 ## Table of Contents
 
@@ -419,10 +421,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 
 [nodejs]: https://nodejs.org
 
-[react-native]: https://facebook.github.io/react-native
-
-[superagent]: https://github.com/visionmedia/superagent
-
 [fetch-network-method]: https://facebook.github.io/react-native/docs/network.html#fetch
 
 [npm-image]: http://img.shields.io/npm/v/frisbee.svg?style=flat
@@ -476,3 +474,13 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [lad-url]: https://lad.js.org
 
 [qs-url]: https://github.com/ljharb/qs
+
+[axios]: https://github.com/mzabriskie/axios
+
+[fetch]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+
+[react-native]: https://facebook.github.io/react-native
+
+[superagent]: https://github.com/visionmedia/superagent
+
+[request]: https://github.com/request/request
