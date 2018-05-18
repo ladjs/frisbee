@@ -1,30 +1,13 @@
-//     frisbee
-//     Copyright (c) 2015- Nick Baugh <niftylettuce@gmail.com>
-//     MIT Licensed
+const caseless = require('caseless');
+const qs = require('qs');
+const fetchPonyfill = require('fetch-ponyfill');
+const urlJoin = require('url-join');
 
-// * Author: [@niftylettuce](https://twitter.com/#!/niftylettuce)
-// * Source: <https://github.com/niftylettuce/frisbee>
+const Interceptor = require('./interceptor');
 
-// # frisbee
+const { fetch } = fetchPonyfill({ Promise });
 
-import {Buffer} from 'safe-buffer';
-import caseless from 'caseless';
-import qs from 'qs';
-import fetchPonyfill from 'fetch-ponyfill';
-import urlJoin from 'url-join';
-import Interceptor from './interceptor';
-
-const {fetch} = fetchPonyfill({Promise});
-
-const methods = [
-  'get',
-  'head',
-  'post',
-  'put',
-  'del',
-  'options',
-  'patch'
-];
+const methods = ['get', 'head', 'post', 'put', 'del', 'options', 'patch'];
 
 const respProperties = {
   readOnly: [
@@ -37,9 +20,7 @@ const respProperties = {
     'url',
     'bodyUsed'
   ],
-  writable: [
-    'useFinalURL'
-  ],
+  writable: ['useFinalURL'],
   callable: [
     'clone',
     'error',
@@ -57,14 +38,14 @@ function createFrisbeeResponse(origResp) {
     originalResponse: origResp
   };
 
-  respProperties.readOnly.forEach(
-    prop => Object.defineProperty(resp, prop, {
+  respProperties.readOnly.forEach(prop =>
+    Object.defineProperty(resp, prop, {
       value: origResp[prop]
     })
   );
 
-  respProperties.writable.forEach(
-    prop => Object.defineProperty(resp, prop, {
+  respProperties.writable.forEach(prop =>
+    Object.defineProperty(resp, prop, {
       get() {
         return origResp[prop];
       },
@@ -75,16 +56,12 @@ function createFrisbeeResponse(origResp) {
   );
 
   let callable = null;
-  respProperties.callable.forEach(
-    prop => {
-      Object.defineProperty(resp, prop, {
-        value: (
-          callable = origResp[prop],
-          typeof callable === 'function' && callable.bind(origResp)
-        )
-      });
-    }
-  );
+  respProperties.callable.forEach(prop => {
+    Object.defineProperty(resp, prop, {
+      value: ((callable = origResp[prop]),
+      typeof callable === 'function' && callable.bind(origResp))
+    });
+  });
 
   const headersObj = {};
   origResp.headers.forEach(pair => {
@@ -97,13 +74,11 @@ function createFrisbeeResponse(origResp) {
   return resp;
 }
 
-export default class Frisbee {
+module.exports = class Frisbee {
   constructor(opts = {}) {
     this.opts = opts;
 
-    if (!opts.baseURI) {
-      throw new Error('baseURI option is required');
-    }
+    if (!opts.baseURI) throw new Error('baseURI option is required');
 
     this.parseErr = new Error(`Invalid JSON received from ${opts.baseURI}`);
 
@@ -113,9 +88,7 @@ export default class Frisbee {
 
     this.arrayFormat = opts.arrayFormat || 'indices';
 
-    if (opts.auth) {
-      this.auth(opts.auth);
-    }
+    if (opts.auth) this.auth(opts.auth);
 
     methods.forEach(method => {
       this[method] = this._setup(method);
@@ -128,14 +101,12 @@ export default class Frisbee {
   _setup(method) {
     return (path = '/', options = {}) => {
       // path must be string
-      if (typeof path !== 'string') {
+      if (typeof path !== 'string')
         throw new TypeError('`path` must be a string');
-      }
 
       // otherwise check if its an object
-      if (typeof options !== 'object' || Array.isArray(options)) {
+      if (typeof options !== 'object' || Array.isArray(options))
         throw new TypeError('`options` must be an object');
-      }
 
       const opts = {
         ...options,
@@ -149,9 +120,12 @@ export default class Frisbee {
       // remove any nil or blank headers
       // (e.g. to automatically set Content-Type with `FormData` boundary)
       Object.keys(opts.headers).forEach(key => {
-        if (typeof opts.headers[key] === 'undefined' || opts.headers[key] === null || opts.headers[key] === '') {
+        if (
+          typeof opts.headers[key] === 'undefined' ||
+          opts.headers[key] === null ||
+          opts.headers[key] === ''
+        )
           throw new Error('`options` must be an object');
-        }
       });
 
       const c = caseless(opts.headers);
@@ -159,16 +133,17 @@ export default class Frisbee {
       // in order to support Android POST requests
       // we must allow an empty body to be sent
       // https://github.com/facebook/react-native/issues/4890
-      if (typeof opts.body === 'undefined') {
-        if (opts.method === 'POST') {
-          opts.body = '';
-        }
+      if (typeof opts.body === 'undefined' && opts.method === 'POST') {
+        opts.body = '';
       } else if (typeof opts.body === 'object' || Array.isArray(opts.body)) {
         if (opts.method === 'GET' || opts.method === 'DELETE') {
-          const {arrayFormat} = this;
-          path += `?${qs.stringify(opts.body, {arrayFormat})}`;
+          const { arrayFormat } = this;
+          path += `?${qs.stringify(opts.body, { arrayFormat })}`;
           delete opts.body;
-        } else if (c.get('Content-Type') && c.get('Content-Type').split(';')[0] === 'application/json') {
+        } else if (
+          c.get('Content-Type') &&
+          c.get('Content-Type').split(';')[0] === 'application/json'
+        ) {
           try {
             opts.body = JSON.stringify(opts.body);
           } catch (err) {
@@ -198,25 +173,24 @@ export default class Frisbee {
                   res.body = JSON.parse(res.body);
                 }
 
-                // attempt to use Glazed error messages
-                if (typeof res.body === 'object' && typeof res.body.message === 'string') {
+                // attempt to use better and human-friendly error messages
+                if (
+                  typeof res.body === 'object' &&
+                  typeof res.body.message === 'string'
+                ) {
                   res.err = new Error(res.body.message);
-                } else if (!Array.isArray(res.body) &&
+                } else if (
+                  !Array.isArray(res.body) &&
                   // attempt to utilize Stripe-inspired error messages
                   typeof res.body.error === 'object'
                 ) {
-                  if (res.body.error.message) {
+                  if (res.body.error.message)
                     res.err = new Error(res.body.error.message);
-                  }
-                  if (res.body.error.stack) {
+                  if (res.body.error.stack)
                     res.err.stack = res.body.error.stack;
-                  }
-                  if (res.body.error.code) {
-                    res.err.code = res.body.error.code;
-                  }
-                  if (res.body.error.param) {
+                  if (res.body.error.code) res.err.code = res.body.error.code;
+                  if (res.body.error.param)
                     res.err.param = res.body.error.param;
-                  }
                 }
               } catch (e) {
                 res.err = this.parseErr;
@@ -257,12 +231,8 @@ export default class Frisbee {
   auth(creds) {
     if (typeof creds === 'string') {
       const index = creds.indexOf(':');
-      if (index !== -1) {
-        creds = [
-          creds.substr(0, index),
-          creds.substr(index + 1)
-        ];
-      }
+      if (index !== -1)
+        creds = [creds.substr(0, index), creds.substr(index + 1)];
     }
 
     if (!Array.isArray(creds)) {
@@ -283,32 +253,29 @@ export default class Frisbee {
         throw new Error('auth option can only have two keys `[user, pass]`');
     }
 
-    if (typeof creds[0] !== 'string') {
+    if (typeof creds[0] !== 'string')
       throw new TypeError('auth option `user` must be a string');
-    }
 
-    if (typeof creds[1] !== 'string') {
+    if (typeof creds[1] !== 'string')
       throw new TypeError('auth option `pass` must be a string');
-    }
 
     if (!creds[0] && !creds[1]) {
       delete this.headers.Authorization;
     } else {
-      this.headers.Authorization = `Basic ${Buffer.from(creds.join(':')).toString('base64')}`;
+      this.headers.Authorization = `Basic ${Buffer.from(
+        creds.join(':')
+      ).toString('base64')}`;
     }
 
     return this;
   }
 
   jwt(token) {
-    if (token === null) {
-      delete this.headers.Authorization;
-    } else if (typeof token === 'string') {
+    if (token === null) delete this.headers.Authorization;
+    else if (typeof token === 'string')
       this.headers.Authorization = `Bearer ${token}`;
-    } else {
-      throw new TypeError('jwt token must be a string');
-    }
+    else throw new TypeError('jwt token must be a string');
 
     return this;
   }
-}
+};

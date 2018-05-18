@@ -1,65 +1,81 @@
 {
   "name": "frisbee",
-  "description": "Stripe-inspired API wrapper around WHATWG's fetch() method for making simple HTTP requests (alternative to superagent, request, axios)",
-  "version": "1.6.4",
-  "author": "Nick Baugh <niftylettuce@gmail.com>",
+  "description": "Modern fetch-based alternative to axios/superagent/request. Great for React Native.",
+  "version": "2.0.0",
+  "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
+  "ava": {
+    "failFast": true,
+    "verbose": true,
+    "files": [
+      "test/**/*.test.js"
+    ]
+  },
   "bugs": {
-    "url": "https://github.com/joinspontaneous/frisbee/issues",
+    "url": "https://github.com/niftylettuce/frisbee/issues",
     "email": "niftylettuce@gmail.com"
   },
+  "contributors": [
+    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
+    "Alexis Tyler <xo@wvvw.me>",
+    "Assem-Hafez <assem.a.hafez@gmail.com>",
+    "Jordan Denison <jordan@denisonweb.com>",
+    "James <aretecode@gmail.com>",
+    "Sampsa Saarela <sampsa@booni.fi>",
+    "Julien Moutte <julien@ctondemand.com>",
+    "Charles Soetan <casoetan@gmail.com>",
+    "Kesha Antonov <innokenty.longway@gmail.com>",
+    "Ben Turley <benturley@gmail.com>",
+    "Richard Evans <rmevans9@gmail.com>",
+    "Hawken Rives <hawkrives@gmail.com>",
+    "Fernando Montoya <montogeek@gmail.com>",
+    "Brent Vatne <brentvatne@gmail.com>",
+    "Hosmel Quintana <hosmelq@gmail.com>",
+    "Kyle Kirbatski <kkirbatski@gmrmarketing.com>"
+  ],
   "dependencies": {
-    "babel-runtime": "^6.9.2",
-    "buffer": "^5.1.0",
+    "@babel/runtime": "^7.0.0-beta.47",
     "caseless": "^0.12.0",
-    "fetch-ponyfill": "^5.0.1",
-    "qs": "^6.5.1",
-    "safe-buffer": "^5.1.1",
+    "common-tags": "^1.7.2",
+    "fetch-ponyfill": "^6.0.2",
+    "qs": "^6.5.2",
     "url-join": "^4.0.0"
   },
   "devDependencies": {
-    "@earnest/eslint-config-es7": "^4.0.3",
-    "babel-cli": "^6.9.0",
-    "babel-core": "^6.9.1",
-    "babel-eslint": "^8.2.1",
-    "babel-istanbul": "^0.12.2"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.9.0",
-    "babel-core": "^6.9.1",
-    "babel-istanbul": "^0.8.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-runtime": "^6.9.0",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babelify": "^8.0.0",
-    "body-parser": "^1.18.2",
-    "bower": "^1.8.2",
-    "browserify": "^16.1.0",
-    "chai": "^4.1.2",
-    "cors": "^2.7.1",
-    "coveralls": "^3.0.0",
-    "dirty-chai": "^2.0.1",
+    "@babel/cli": "^7.0.0-beta.47",
+    "@babel/core": "^7.0.0-beta.47",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
+    "@babel/preset-env": "^7.0.0-beta.47",
+    "ava": "^1.0.0-beta.4",
+    "body-parser": "^1.18.3",
+    "browserify": "^16.2.2",
+    "codecov": "^3.0.2",
+    "cors": "^2.8.4",
+    "cross-env": "^5.1.5",
     "es6-promise": "^4.2.4",
-    "eslint": "^4.18.0",
-    "eslint-plugin-babel": "^4.1.2",
-    "eslint-plugin-mocha": "~4.11.0",
-    "express": "^4.16.2",
-    "isomorphic-fetch": "^2.2.1",
-    "isparta": "^4.0.0",
-    "istanbul": "^0.4.3",
-    "jsdom": "^11.6.2",
-    "jshint": "^2.9.2",
-    "mocha": "^5.0.1",
-    "sinon": "^4.3.0",
-    "sinon-chai": "^2.14.0",
-    "source-map-support": "^0.5.3",
-    "xo": "^0.20.3"
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-compat": "^2.2.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "express": "^4.16.3",
+    "husky": "^0.14.3",
+    "jsdom": "^11.10.0",
+    "lint-staged": "^7.1.0",
+    "lodash": "^4.17.10",
+    "nyc": "^11.8.0",
+    "prettier": "^1.12.1",
+    "remark-cli": "^5.0.0",
+    "remark-preset-github": "^0.0.8",
+    "sinon": "^5.0.7",
+    "xo": "0.21.0"
   },
   "engines": {
-    "node": "6.x||7.x||8.x||9.x||10.x"
+    "node": ">=6.4"
   },
-  "homepage": "https://github.com/joinspontaneous/frisbee",
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/niftylettuce/frisbee",
   "keywords": [
     "api",
     "boilerplate",
@@ -84,66 +100,71 @@
     "wrapper"
   ],
   "license": "MIT",
-  "main": "lib/frisbee.js",
+  "lint-staged": {
+    "*.md": [
+      "remark . -qfo",
+      "git add"
+    ]
+  },
+  "main": "lib/index.js",
+  "prettier": {
+    "singleQuote": true,
+    "jsxBracketSameLine": true
+  },
+  "remarkConfig": {
+    "plugins": [
+      "preset-github"
+    ]
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joinspontaneous/frisbee"
+    "url": "https://github.com/niftylettuce/frisbee"
   },
   "scripts": {
-    "analyze-coverage": "NODE_ENV=test node_modules/.bin/babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
-    "browserify": "node_modules/.bin/browserify -t babelify test/unit/browser.js > test/unit/browser.bundled.js",
-    "build": "node_modules/.bin/babel src --modules common --out-dir lib",
-    "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage",
-    "coverage": "npm run lint && npm run build && npm run analyze-coverage && npm run check-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage/",
-    "lint": "node_modules/.bin/xo",
-    "prepublish": "npm run build",
-    "test": "npm run lint && npm run browserify && NODE_ENV=test _mocha --compilers js:babel-core/register",
-    "watch": "node_modules/.bin/babel src --watch --modules common --out-dir lib --source-maps"
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "lint": "xo && eslint lib && remark . -qfo",
+    "precommit": "lint-staged && npm test",
+    "test": "npm run build && npm run lint && npm run ava",
+    "test-coverage": "npm run build && npm run lint && npm run nyc",
+    "ava": "cross-env NODE_ENV=test ava",
+    "nyc": "cross-env NODE_ENV=test nyc ava",
+    "build": "node_modules/.bin/babel src --out-dir lib && npm run browserify",
+    "browserify": "browserify test/support/browser.js > test/support/browser.bundled.js",
+    "watch": "node_modules/.bin/babel src --watch --out-dir lib"
   },
   "xo": {
+    "extends": "prettier",
+    "plugins": [
+      "prettier"
+    ],
+    "parserOptions": {
+      "sourceType": "script"
+    },
     "rules": {
-      "capitalized-comments": "off",
-      "camelcase": "off",
-      "no-warning-comments": "off",
-      "ava/no-ignored-test-files": "off",
+      "max-len": [
+        "error",
+        {
+          "code": 80,
+          "ignoreUrls": true
+        }
+      ],
       "max-depth": [
         "error",
         6
-      ]
+      ],
+      "capitalized-comments": "off",
+      "camelcase": "off",
+      "no-warning-comments": "off",
+      "prettier/prettier": "error"
     },
     "space": true,
-    "ignore": [
-      "lib",
-      "media",
-      "examples",
-      "test/unit/browser.js",
-      "*.bundled.js"
-    ],
     "overrides": [
       {
-        "files": "test/**/*.js",
+        "files": "test/support/browser.js",
         "envs": [
-          "node",
-          "browser",
-          "mocha"
-        ],
-        "rules": {
-          "babel/object-curly-spacing": 0,
-          "babel/array-bracket-spacing": 0,
-          "array-bracket-spacing": 0,
-          "curly": 0,
-          "padded-blocks": 0,
-          "no-console": 0
-        },
-        "globals": [
-          "expect",
-          "sinon"
+          "browser"
         ]
       }
     ]
-  },
-  "prettier": {
-    "bracketSpacing": true,
-    "trailingComma": "none"
   }
 }

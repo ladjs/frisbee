@@ -1,9 +1,9 @@
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
-const extended = {extended: false};
+const extended = { extended: false };
 
 app.use(cors());
 
@@ -28,7 +28,7 @@ app.all('/', (req, res) => {
 });
 
 app.get('/400-with-message', (req, res) => {
-  res.status(400).json({message: 'Oops!'});
+  res.status(400).json({ message: 'Oops!' });
 });
 
 app.get('/querystring', (req, res) => {
@@ -44,27 +44,28 @@ app.get('/404', (req, res) => {
 });
 
 app.get('/404-with-valid-json', (req, res) => {
-  res.set('Content-Type', 'application/json')
+  res
+    .set('Content-Type', 'application/json')
     .status(400)
-    .send({foo: 'baz'});
+    .send({ foo: 'baz' });
 });
 
 app.get('/404-with-invalid-json', (req, res) => {
-  res.set('Content-Type', 'application/json')
+  res
+    .set('Content-Type', 'application/json')
     .status(404)
     .send('foobaz');
 });
 
 app.get('/404-with-stripe-error', (req, res) => {
-  res.status(404)
-    .json({
-      error: {
-        message: 'Some error happened',
-        stack: {},
-        code: 23,
-        param: 'hello_world'
-      }
-    });
+  res.status(404).json({
+    error: {
+      message: 'Some error happened',
+      stack: {},
+      code: 23,
+      param: 'hello_world'
+    }
+  });
 });
 
 module.exports = app;

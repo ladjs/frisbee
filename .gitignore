@@ -1,8 +1,8 @@
-node_modules
-bower_components
-lib
-coverage
-*.log
 .DS_Store
-test/unit/browser.bundled.js
-.vscode
+*.log
+.idea
+node_modules
+coverage
+.nyc_output
+lib
+test/support/browser.bundled.js

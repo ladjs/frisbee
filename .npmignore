@@ -1,11 +1,7 @@
 test
-media
 coverage
 src
 .babelrc
 .eslintrc
-.istanbul.yml
-circle.yml
-component.json
-bower.json
-bower_components
+.npmignore
+.travis.yml
