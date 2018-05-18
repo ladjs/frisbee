@@ -1,14 +1,14 @@
 # Frisbee
 
 [![Slack Status][slack-image]][slack-url]
-[![MIT License][license-image]][license-url]
-[![Stability][stability-image]][stability-url]
-[![Build Status][build-image]][build-url]
-[![Coverage Status][coveralls-image]][coveralls-url]
-[![Standard JS Style][standard-image]][standard-url]
-[![Unicorn Approved][unicorn-approved]][unicorn-url]
 [![npm version][npm-image]][npm-url]
 [![npm downloads][npm-downloads]][npm-url]
+[![build status](https://img.shields.io/travis/niftylettuce/frisbee.svg)](https://travis-ci.org/niftylettuce/frisbee)
+[![code coverage](https://img.shields.io/codecov/c/github/niftylettuce/frisbee.svg)](https://codecov.io/gh/niftylettuce/frisbee)
+[![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
+[![license](https://img.shields.io/github/license/niftylettuce/frisbee.svg)](LICENSE)
 
 Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][]. Great for [React Native][react-native].
 
@@ -415,10 +415,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 
 [blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 
-[license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
-
-[license-url]: LICENSE
-
 [nodejs]: https://nodejs.org
 
 [fetch-network-method]: https://facebook.github.io/react-native/docs/network.html#fetch
@@ -446,26 +442,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [issue]: https://github.com/niftylettuce/frisbee/issues
 
 [automatic-ip-configuration]: http://moduscreate.com/automated-ip-configuration-for-react-native-development/
-
-[unicorn-approved]: http://img.shields.io/badge/unicorn-approved-ff69b4.svg
-
-[unicorn-url]: https://www.youtube.com/watch?v=9auOCbH5Ns4
-
-[coveralls-image]: https://coveralls.io/repos/github/niftylettuce/frisbee/badge.svg?branch=master
-
-[coveralls-url]: https://coveralls.io/github/niftylettuce/frisbee?branch=master
-
-[build-image]: https://semaphoreci.com/api/v1/niftylettuce/frisbee/branches/master/shields_badge.svg
-
-[build-url]: https://semaphoreci.com/niftylettuce/frisbee
-
-[standard-image]: https://img.shields.io/badge/code%20style-standard%2Bes7-brightgreen.svg
-
-[standard-url]: https://github.com/meetearnest/eslint-config-earnest-es7
-
-[stability-image]: https://img.shields.io/badge/stability-stable-green.svg
-
-[stability-url]: https://nodejs.org/api/documentation.html#documentation_stability_index
 
 [slack-image]: http://slack.crocodilejs.com/badge.svg
 
