@@ -12,6 +12,8 @@
 
 Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][]. Great for [React Native][react-native].
 
+> **New in v2++**: You can now pass `raw: true` as a global or request-based option to get the raw `fetch()` response (e.g. if you want to use `res.arrayBuffer()` or [any other method][fetch-methods] manually).
+
 
 ## Table of Contents
 
@@ -92,7 +94,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 
    // create a new instance of Frisbee
    const api = new Frisbee({
-     baseURI: 'https://api.startup.com',
+     baseURI: 'https://api.startup.com', // optional
      headers: {
        'Accept': 'application/json',
        'Content-Type': 'application/json'
@@ -171,7 +173,7 @@ const Frisbee = require('frisbee');
 
 * `Frisbee` - accepts an `options` object, with the following accepted options:
 
-  * `baseURI` - the default URI to use as a prefix for all HTTP requests
+  * `baseURI` - the default URI to use as a prefix for all HTTP requests (optional as of v2.0.2)
 
     * If your API server is running on `http://localhost:8080`, then use that as the value for this option
     * If you use [React Native][react-native], then you most likely want to set `baseURI` as follows (e.g. making use of `__DEV__` global variable):
@@ -195,6 +197,8 @@ const Frisbee = require('frisbee');
 
   * `arrayFormat` - how to stringify array in passed body. See [qs][qs-url] for available formats
 
+  * `raw` - return a raw fetch response (new as of v2.0.1)
+
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
 * `api.auth(creds)` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
@@ -211,7 +215,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
   * Accepted method arguments:
 
-    * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` mentioned earlier)
+    * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` if set)
     * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.
 
         Here are a few examples (you can override/merge your set default headers as well per request):
@@ -225,6 +229,8 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
           }
         });
         ```
+
+    * `raw` _optional_ - will override a global `raw` option if set, and if it is `true` it will return a raw `fetch` response (new as of v2.0.1)
 
   * List of available HTTP methods:
 
@@ -460,3 +466,5 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [superagent]: https://github.com/visionmedia/superagent
 
 [request]: https://github.com/request/request
+
+[fetch-methods]: https://developer.mozilla.org/en-US/docs/Web/API/Body

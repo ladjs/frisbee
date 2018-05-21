@@ -24,9 +24,8 @@ test.serial.before(t => {
 test.after(t => t.context.server.close());
 
 // <https://github.com/niftylettuce/node-react-native-fetch-api>
-test('should throw an error if we fail to pass baseURI', t => {
-  const error = t.throws(() => new Frisbee());
-  t.regex(error.message, /baseURI option is required/);
+test('should not throw an error if we fail to pass baseURI', t => {
+  t.notThrows(() => new Frisbee());
 });
 
 test('should create Frisbee instance with all methods', t => {
@@ -245,4 +244,33 @@ methods.forEach(method => {
       throw err;
     }
   });
+});
+
+test('should set global raw', async t => {
+  const api = new Frisbee({
+    ...options,
+    raw: true
+  });
+  t.true(api.raw);
+  const res = await api.get('/querystring');
+  t.true(_.isUndefined(res.body));
+});
+
+test('should set request raw', async t => {
+  const api = new Frisbee({
+    ...options
+  });
+  t.false(api.raw);
+  const res = await api.get('/querystring', { raw: true });
+  t.true(_.isUndefined(res.body));
+});
+
+test('should allow false request raw with global raw', async t => {
+  const api = new Frisbee({
+    ...options,
+    raw: true
+  });
+  t.true(api.raw);
+  const res = await api.get('/querystring', { raw: false });
+  t.true(_.isObject(res.body));
 });

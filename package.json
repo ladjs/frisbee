@@ -152,6 +152,10 @@
         "error",
         6
       ],
+      "complexity": [
+        "error",
+        24
+      ],
       "capitalized-comments": "off",
       "camelcase": "off",
       "no-warning-comments": "off",

@@ -78,15 +78,17 @@ module.exports = class Frisbee {
   constructor(opts = {}) {
     this.opts = opts;
 
-    if (!opts.baseURI) throw new Error('baseURI option is required');
-
-    this.parseErr = new Error(`Invalid JSON received from ${opts.baseURI}`);
+    this.parseErr = new Error(
+      `Invalid JSON received${opts.baseURI ? ` from ${opts.baseURI}` : ''}`
+    );
 
     this.headers = {
       ...opts.headers
     };
 
     this.arrayFormat = opts.arrayFormat || 'indices';
+
+    this.raw = opts.raw === true;
 
     if (opts.auth) this.auth(opts.auth);
 
@@ -108,8 +110,10 @@ module.exports = class Frisbee {
       if (typeof options !== 'object' || Array.isArray(options))
         throw new TypeError('`options` must be an object');
 
+      const { raw, ...noRaw } = options;
+
       const opts = {
-        ...options,
+        ...noRaw,
         headers: {
           ...this.headers,
           ...options.headers
@@ -154,7 +158,9 @@ module.exports = class Frisbee {
 
       return new Promise(async (resolve, reject) => {
         try {
-          const fullUri = urlJoin(this.opts.baseURI, path);
+          const fullUri = this.opts.baseURI
+            ? urlJoin(this.opts.baseURI, path)
+            : path;
           const originalRes = await fetch(fullUri, opts);
           const res = createFrisbeeResponse(originalRes);
           const contentType = res.headers.get('Content-Type');
@@ -199,6 +205,9 @@ module.exports = class Frisbee {
             resolve(res);
             return;
           }
+
+          // if we just want a raw response then return early
+          if (raw === true || (this.raw && raw !== false)) return resolve(res);
 
           // determine whether we're returning text or json for body
           if (contentType && contentType.includes('application/json')) {
