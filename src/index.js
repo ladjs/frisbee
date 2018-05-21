@@ -212,7 +212,8 @@ class Frisbee {
           }
 
           // if we just want a raw response then return early
-          if (raw === true || (this.raw && raw !== false)) return resolve(res);
+          if (raw === true || (this.raw && raw !== false))
+            return resolve(res.originalResponse);
 
           // determine whether we're returning text or json for body
           if (contentType && contentType.includes('application/json')) {

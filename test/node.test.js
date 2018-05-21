@@ -3,6 +3,7 @@ const test = require('ava');
 const _ = require('lodash');
 const sinon = require('sinon');
 const { oneLine } = require('common-tags');
+const isStream = require('is-stream');
 
 const Frisbee = require('../lib');
 const app = require('./support/app');
@@ -253,7 +254,7 @@ test('should set global raw', async t => {
   });
   t.true(api.raw);
   const res = await api.get('/querystring');
-  t.true(_.isUndefined(res.body));
+  t.true(isStream(res.body));
 });
 
 test('should set request raw', async t => {
@@ -262,7 +263,7 @@ test('should set request raw', async t => {
   });
   t.false(api.raw);
   const res = await api.get('/querystring', { raw: true });
-  t.true(_.isUndefined(res.body));
+  t.true(isStream(res.body));
 });
 
 test('should allow false request raw with global raw', async t => {
@@ -272,7 +273,7 @@ test('should allow false request raw with global raw', async t => {
   });
   t.true(api.raw);
   const res = await api.get('/querystring', { raw: false });
-  t.true(_.isObject(res.body));
+  t.false(isStream(res.body));
 });
 
 test('should allow a custom parseErr', t => {
