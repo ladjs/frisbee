@@ -12,7 +12,7 @@
 
 Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][]. Great for [React Native][react-native].
 
-> **New in v2++**: You can now pass `raw: true` as a global or request-based option to get the raw `fetch()` response (e.g. if you want to use `res.arrayBuffer()` or [any other method][fetch-methods] manually).
+> **New in v2.0.2++**: `baseURI` is now optional and you can pass `raw: true` as a global or request-based option to get the raw `fetch()` response (e.g. if you want to use `res.arrayBuffer()` or [any other method][fetch-methods] manually).
 
 
 ## Table of Contents
@@ -173,7 +173,7 @@ const Frisbee = require('frisbee');
 
 * `Frisbee` - accepts an `options` object, with the following accepted options:
 
-  * `baseURI` - the default URI to use as a prefix for all HTTP requests (optional as of v2.0.2)
+  * `baseURI` - the default URI to use as a prefix for all HTTP requests (optional as of v2.0.2+)
 
     * If your API server is running on `http://localhost:8080`, then use that as the value for this option
     * If you use [React Native][react-native], then you most likely want to set `baseURI` as follows (e.g. making use of `__DEV__` global variable):
@@ -197,7 +197,7 @@ const Frisbee = require('frisbee');
 
   * `arrayFormat` - how to stringify array in passed body. See [qs][qs-url] for available formats
 
-  * `raw` - return a raw fetch response (new as of v2.0.1)
+  * `raw` - return a raw fetch response (new as of v2.0.2+)
 
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
@@ -230,7 +230,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         });
         ```
 
-    * `raw` _optional_ - will override a global `raw` option if set, and if it is `true` it will return a raw `fetch` response (new as of v2.0.1)
+    * `raw` _optional_ - will override a global `raw` option if set, and if it is `true` it will return a raw `fetch` response (new as of v2.0.2+)
 
   * List of available HTTP methods:
 
