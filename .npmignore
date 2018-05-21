@@ -7,3 +7,4 @@ src
 .travis.yml
 index.html
 config.js
+.nojekyll
