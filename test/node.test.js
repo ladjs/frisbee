@@ -274,3 +274,13 @@ test('should allow false request raw with global raw', async t => {
   const res = await api.get('/querystring', { raw: false });
   t.true(_.isObject(res.body));
 });
+
+test('should allow a custom parseErr', t => {
+  const api = new Frisbee({ parseErr: 'oops!' });
+  t.is(api.parseErr, 'oops!');
+});
+
+test('should set default parseErr', t => {
+  const api = new Frisbee();
+  t.is(api.parseErr.message, 'Invalid JSON received');
+});

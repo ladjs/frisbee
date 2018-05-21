@@ -74,13 +74,18 @@ function createFrisbeeResponse(origResp) {
   return resp;
 }
 
-module.exports = class Frisbee {
+class Frisbee {
   constructor(opts = {}) {
     this.opts = opts;
 
-    this.parseErr = new Error(
-      `Invalid JSON received${opts.baseURI ? ` from ${opts.baseURI}` : ''}`
-    );
+    Object.defineProperty(this, 'parseErr', {
+      enumerable: false,
+      value:
+        opts.parseErr ||
+        new Error(
+          `Invalid JSON received${opts.baseURI ? ` from ${opts.baseURI}` : ''}`
+        )
+    });
 
     this.headers = {
       ...opts.headers
@@ -287,4 +292,6 @@ module.exports = class Frisbee {
 
     return this;
   }
-};
+}
+
+module.exports = Frisbee;
