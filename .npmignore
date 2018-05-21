@@ -5,3 +5,5 @@ src
 .eslintrc
 .npmignore
 .travis.yml
+index.html
+config.js
