@@ -134,7 +134,7 @@ class Frisbee {
           opts.headers[key] === null ||
           opts.headers[key] === ''
         )
-          throw new Error('`options` must be an object');
+          delete opts.headers[key];
       });
 
       const c = caseless(opts.headers);
