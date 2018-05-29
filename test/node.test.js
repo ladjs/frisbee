@@ -94,6 +94,17 @@ test(
   }
 );
 
+test(
+  oneLine`should not throw an error
+  if headers with value ""|null|undefined`,
+  async t => {
+    const api = new Frisbee(options);
+    await t.notThrows(api.get('', { headers: { empty: '' } }));
+    await t.notThrows(api.get('', { headers: { null: null } }));
+    await t.notThrows(api.get('', { headers: { undefine: undefined } }));
+  }
+);
+
 standardMethods.forEach(method => {
   const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
