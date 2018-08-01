@@ -10,6 +10,8 @@
 [![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
 [![license](https://img.shields.io/github/license/niftylettuce/frisbee.svg)](LICENSE)
 
+> :heart: Love this project? Support <a href="https://github.com/niftylettuce" target="_blank">@niftylettuce's</a> [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) on <a href="https://patreon.com/niftylettuce" target="_blank">Patreon</a> or <a href="https://paypal.me/niftylettuce">PayPal</a> :unicorn:
+
 Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][]. Great for [React Native][react-native].
 
 > **New in v2.0.4++**: `baseURI` is now optional and you can pass `raw: true` as a global or request-based option to get the raw `fetch()` response (e.g. if you want to use `res.arrayBuffer()` or [any other method][fetch-methods] manually).
@@ -417,7 +419,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [MIT](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
 
-## 
+##
 
 [blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 
