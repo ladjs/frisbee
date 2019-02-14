@@ -153,9 +153,7 @@ test(
     should stringify querystring parameters with
     arrayFormat for GET and DELETE requests`,
   async t => {
-    const api = new Frisbee(
-      Object.assign({}, options, { formatArray: 'brackets' })
-    );
+    const api = new Frisbee({ ...options, formatArray: 'brackets' });
     const querystring = {
       a: 'blue',
       b: 'cyan',
