@@ -68,21 +68,21 @@ test('should allow removal of auth() header', t => {
 
 test('should throw an error if we fail to pass a string `path`', async t => {
   const api = new Frisbee(options);
-  const error = await t.throws(() => api.get({}));
+  const error = await t.throwsAsync(api.get({}));
   t.is(error.message, '`path` must be a string');
 });
 
 test(`should throw an error if we fail to pass an object options`, async t => {
   const api = new Frisbee(options);
-  let error = await t.throws(() => api.get('', []));
+  let error = await t.throwsAsync(() => api.get('', []));
   t.is(error.message, '`options` must be an object');
-  error = await t.throws(() => api.get('', 1));
+  error = await t.throwsAsync(() => api.get('', 1));
   t.is(error.message, '`options` must be an object');
 });
 
 test('should throw an error if we pass a non object `options`', async t => {
   const api = new Frisbee(options);
-  const error = await t.throws(() => api.get('', false));
+  const error = await t.throwsAsync(() => api.get('', false));
   t.is(error.message, '`options` must be an object');
 });
 
