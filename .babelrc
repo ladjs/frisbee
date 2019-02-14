@@ -9,7 +9,6 @@
   "plugins": [
     [ "@babel/transform-runtime", {
       "helpers": false,
-      "polyfill": false,
       "regenerator": true
     }],
     "@babel/plugin-proposal-object-rest-spread"
