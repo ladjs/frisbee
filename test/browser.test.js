@@ -82,8 +82,8 @@ test('should create Frisbee instance with all methods', t => {
       const res = await api[method]('/', {});
       t.true(_.isObject(res));
       t.true(_.isObject(res.body));
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   });
 });

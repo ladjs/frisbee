@@ -153,8 +153,8 @@ class Frisbee {
         ) {
           try {
             opts.body = JSON.stringify(opts.body);
-          } catch (err) {
-            throw err;
+          } catch (error) {
+            throw error;
           }
         }
       }
@@ -201,7 +201,7 @@ class Frisbee {
                   if (res.body.error.param)
                     res.err.param = res.body.error.param;
                 }
-              } catch (e) {
+              } catch (error) {
                 res.err = this.parseErr;
               }
             }
@@ -222,7 +222,7 @@ class Frisbee {
                 res.body = await res.text();
                 res.body = JSON.parse(res.body);
               }
-            } catch (err) {
+            } catch (error) {
               if (contentType === 'application/json') {
                 res.err = this.parseErr;
                 resolve(res);
@@ -234,8 +234,8 @@ class Frisbee {
           }
 
           resolve(res);
-        } catch (err) {
-          reject(err);
+        } catch (error) {
+          reject(error);
         }
       });
     };

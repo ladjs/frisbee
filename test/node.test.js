@@ -119,8 +119,8 @@ standardMethods.forEach(method => {
       const res = await api[method]('/', opts);
       t.true(_.isObject(res));
       t.true(_.isObject(res.body));
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   });
 });
@@ -252,8 +252,8 @@ methods.forEach(method => {
     try {
       await api[method]('/');
       t.true(interceptor.request.calledOnce);
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   });
 });
