@@ -1,11 +1,9 @@
 const caseless = require('caseless');
 const qs = require('qs');
-const fetchPonyfill = require('fetch-ponyfill');
+const fetch = require('cross-fetch');
 const urlJoin = require('url-join');
 
 const Interceptor = require('./interceptor');
-
-const { fetch } = fetchPonyfill({ Promise });
 
 const methods = ['get', 'head', 'post', 'put', 'del', 'options', 'patch'];
 
