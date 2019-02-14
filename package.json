@@ -68,7 +68,7 @@
     "remark-cli": "^5.0.0",
     "remark-preset-github": "^0.0.8",
     "sinon": "^5.0.7",
-    "xo": "0.21.0"
+    "xo": "0.24.0"
   },
   "engines": {
     "node": ">=8.9.4"
