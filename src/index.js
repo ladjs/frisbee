@@ -205,6 +205,7 @@ class Frisbee {
                 res.err = this.parseErr;
               }
             }
+
             resolve(res);
             return;
           }
