@@ -13,6 +13,7 @@ module.exports = class Interceptor {
     });
   }
 
+  /* eslint-disable promise/prefer-await-to-then */
   interceptedMethod(methodFn, ...args) {
     const { interceptors } = this;
     const reversedInterceptors = interceptors.slice().reverse();
@@ -40,6 +41,7 @@ module.exports = class Interceptor {
 
     return promise;
   }
+  /* eslint-enable promise/prefer-await-to-then */
 
   register(interceptor) {
     this.interceptors.push(interceptor);
