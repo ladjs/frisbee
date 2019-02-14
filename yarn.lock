@@ -2178,6 +2178,14 @@ cross-env@^5.1.5:
     cross-spawn "^6.0.5"
     is-windows "^1.0.0"
 
+cross-fetch@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.1.tgz#3f207bbd829a76e9aa2a953348bd1f2a3cf388a7"
+  integrity sha512-qWtpgBAF8ioqBOddRD+pHhrdzm/UWOArkrlIU7c08DlNbOxo5GfUbSY2vr90ZypWf0raW+HNN1F38pi5CEOjiQ==
+  dependencies:
+    node-fetch "2.3.0"
+    whatwg-fetch "3.0.0"
+
 cross-spawn@^4:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-4.0.2.tgz#7b9247621c23adfdd3856004a823cbe397424d41"
@@ -3121,13 +3129,6 @@ fault@^1.0.0:
   integrity sha512-o2eo/X2syzzERAtN5LcGbiVQ0WwZSlN3qLtadwAz3X8Bu+XWD16dja/KMsjZLiQr+BLGPDnHGkc4yUJf1Xpkpw==
   dependencies:
     format "^0.2.2"
-
-fetch-ponyfill@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/fetch-ponyfill/-/fetch-ponyfill-6.0.2.tgz#bc2d92afd0140e39518beccd2fd0682ab4491cb6"
-  integrity sha512-hBWVb6Z0chjr9r0g4N5uknldAnyFstWTnX6oFxMsL9ZlSL7fa66Keis3y4SCMgpTggY4GeGbB4z3z5g5SmrgkQ==
-  dependencies:
-    node-fetch "~2.1.0"
 
 figures@^1.7.0:
   version "1.7.0"
@@ -5360,10 +5361,10 @@ nlcst-to-string@^2.0.0:
   resolved "https://registry.yarnpkg.com/nlcst-to-string/-/nlcst-to-string-2.0.2.tgz#7125af4d4d369850c697192a658f01f36af9937b"
   integrity sha512-DV7wVvMcAsmZ5qEwvX1JUNF4lKkAAKbChwNlIH7NLsPR7LWWoeIt53YlZ5CQH5KDXEXQ9Xa3mw0PbPewymrtew==
 
-node-fetch@~2.1.0:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
-  integrity sha1-q4hOjn5X44qUR1POxwb3iNF2i7U=
+node-fetch@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.3.0.tgz#1a1d940bbfb916a1d3e0219f037e89e71f8c5fa5"
+  integrity sha512-MOd8pV3fxENbryESLgVIeaGKrdl+uaYhCSSVkjeOb/31/njTpcis5aWfdqgNlHIrKOLRbMnfPINPOML2CIFeXA==
 
 node-pre-gyp@^0.10.0:
   version "0.10.3"
@@ -6469,7 +6470,7 @@ remark-heading-gap@^3.0.0:
   resolved "https://registry.yarnpkg.com/remark-heading-gap/-/remark-heading-gap-3.1.0.tgz#6a1851b4226fa82441ae1365bbd599d34b12d812"
   integrity sha512-KxH9CTgfDnVTZVMMLJRw73zxZSWGX+p6x/trG7ed2UsEYqMRr8Dqtu/SXp2vD1ZZhPM8CpS7SjS+qjmiaRFotw==
 
-"remark-license@github:niftylettuce/remark-license":
+remark-license@niftylettuce/remark-license:
   version "4.0.1"
   resolved "https://codeload.github.com/niftylettuce/remark-license/tar.gz/17ecb8f64f8f6082414d14f9267a12764e6ddbfb"
   dependencies:
@@ -8696,6 +8697,11 @@ whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
   integrity sha512-b5lim54JOPN9HtzvK9HFXvBma/rnfFeqsic0hSpjtDbVxR3dJKLc+KB4V6GgiGOvl7CY/KNh8rxSo9DKQrnUEw==
   dependencies:
     iconv-lite "0.4.24"
+
+whatwg-fetch@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.0.0.tgz#fc804e458cc460009b1a2b966bc8817d2578aefb"
+  integrity sha512-9GSJUgz1D4MfyKU7KRqwOjXCXTqWdFNvEr7eUBYchQiVc744mqK/MzXPNR2WsPkmkOa4ywfg8C2n8h+13Bey1Q==
 
 whatwg-mimetype@^2.1.0, whatwg-mimetype@^2.2.0:
   version "2.3.0"
