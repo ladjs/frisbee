@@ -160,8 +160,7 @@
       "capitalized-comments": "off",
       "camelcase": "off",
       "no-warning-comments": "off",
-      "prettier/prettier": "error",
-      "ava/use-t-well": "off"
+      "prettier/prettier": "error"
     },
     "space": true,
     "overrides": [
