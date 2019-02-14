@@ -57,7 +57,7 @@ test('should accept valid auth("user:pass") usage', t => {
 
 test('should allow chaining of `auth` and an HTTP method', async t => {
   const api = new Frisbee(options);
-  await t.notThrows(api.auth('foo', 'bar').get('/'));
+  await t.notThrows(() => api.auth('foo', 'bar').get('/'));
 });
 
 test('should allow removal of auth() header', t => {
@@ -68,21 +68,21 @@ test('should allow removal of auth() header', t => {
 
 test('should throw an error if we fail to pass a string `path`', async t => {
   const api = new Frisbee(options);
-  const error = await t.throws(api.get({}));
+  const error = await t.throwsAsync(api.get({}));
   t.is(error.message, '`path` must be a string');
 });
 
 test(`should throw an error if we fail to pass an object options`, async t => {
   const api = new Frisbee(options);
-  let error = await t.throws(api.get('', []));
+  let error = await t.throwsAsync(() => api.get('', []));
   t.is(error.message, '`options` must be an object');
-  error = await t.throws(api.get('', 1));
+  error = await t.throwsAsync(() => api.get('', 1));
   t.is(error.message, '`options` must be an object');
 });
 
 test('should throw an error if we pass a non object `options`', async t => {
   const api = new Frisbee(options);
-  const error = await t.throws(api.get('', false));
+  const error = await t.throwsAsync(() => api.get('', false));
   t.is(error.message, '`options` must be an object');
 });
 
@@ -90,7 +90,7 @@ test(
   oneLine`should automatically set options to an empty object if not set`,
   async t => {
     const api = new Frisbee(options);
-    await t.notThrows(api.get(''));
+    await t.notThrows(() => api.get(''));
   }
 );
 
@@ -99,9 +99,9 @@ test(
   if headers with value ""|null|undefined`,
   async t => {
     const api = new Frisbee(options);
-    await t.notThrows(api.get('', { headers: { empty: '' } }));
-    await t.notThrows(api.get('', { headers: { null: null } }));
-    await t.notThrows(api.get('', { headers: { undefine: undefined } }));
+    await t.notThrows(() => api.get('', { headers: { empty: '' } }));
+    await t.notThrows(() => api.get('', { headers: { null: null } }));
+    await t.notThrows(() => api.get('', { headers: { undefine: undefined } }));
   }
 );
 

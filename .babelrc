@@ -2,14 +2,14 @@
   "presets": [
     ["@babel/env", {
       "targets": {
-        "node": "6.4.0"
+        "node": "6.4.0",
+        "browsers": "last 2 versions"
       }
     }]
   ],
   "plugins": [
     [ "@babel/transform-runtime", {
       "helpers": false,
-      "polyfill": false,
       "regenerator": true
     }],
     "@babel/plugin-proposal-object-rest-spread"
