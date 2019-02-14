@@ -159,6 +159,7 @@ class Frisbee {
         }
       }
 
+      // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         try {
           const fullUri = this.opts.baseURI
