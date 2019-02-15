@@ -14,6 +14,11 @@
     "url": "https://github.com/niftylettuce/frisbee/issues",
     "email": "niftylettuce@gmail.com"
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "contributors": [
     "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
     "Alexis Tyler <xo@wvvw.me>",
@@ -33,50 +38,66 @@
     "Kyle Kirbatski <kkirbatski@gmrmarketing.com>"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.47",
+    "@babel/runtime": "^7.3.1",
     "caseless": "^0.12.0",
-    "common-tags": "^1.7.2",
+    "common-tags": "^1.8.0",
     "cross-fetch": "^3.0.1",
-    "qs": "^6.5.2",
+    "qs": "^6.6.0",
     "url-join": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.47",
-    "@babel/core": "^7.0.0-beta.47",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
-    "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
-    "@babel/preset-env": "^7.0.0-beta.47",
-    "ava": "^1.0.0-beta.4",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
+    "ava": "^1.2.1",
+    "babelify": "^10.0.0",
     "body-parser": "^1.18.3",
-    "browserify": "^16.2.2",
-    "codecov": "^3.0.2",
-    "cors": "^2.8.4",
-    "cross-env": "^5.1.5",
-    "es6-promise": "^4.2.4",
-    "eslint": "^4.19.1",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-compat": "^2.2.0",
-    "eslint-plugin-prettier": "^2.6.0",
-    "express": "^4.16.3",
-    "husky": "^0.14.3",
+    "browserify": "^16.2.3",
+    "caniuse-lite": "^1.0.30000938",
+    "codecov": "^3.2.0",
+    "cors": "^2.8.5",
+    "cross-env": "^5.2.0",
+    "es6-promise": "^4.2.5",
+    "eslint": "^5.13.0",
+    "eslint-config-xo-lass": "^1.0.3",
+    "eslint-plugin-compat": "^2.7.0",
+    "eslint-plugin-node": "^8.0.1",
+    "express": "^4.16.4",
+    "fixpack": "^2.3.1",
+    "husky": "^1.3.1",
     "is-stream": "^1.1.0",
-    "jsdom": "^11.10.0",
-    "lint-staged": "^7.1.0",
-    "lodash": "^4.17.10",
-    "nyc": "^11.8.0",
-    "prettier": "^1.12.1",
-    "remark-cli": "^5.0.0",
-    "remark-preset-github": "^0.0.8",
-    "sinon": "^5.0.7",
+    "jsdom": "^13.2.0",
+    "lint-staged": "^8.1.4",
+    "lodash": "^4.17.11",
+    "nyc": "^13.3.0",
+    "prettier": "^1.16.4",
+    "remark-cli": "^6.0.1",
+    "remark-preset-github": "^0.0.13",
+    "rimraf": "^2.6.3",
+    "sinon": "^7.2.3",
+    "tinyify": "^2.5.0",
+    "uglify-js": "^3.4.9",
     "xo": "0.24.0"
   },
   "engines": {
     "node": ">=8.9.4"
   },
   "files": [
-    "lib"
+    "lib",
+    "dist"
   ],
   "homepage": "https://github.com/niftylettuce/frisbee",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "jsdelivr": "dist/frisbee.min.js",
   "keywords": [
     "api",
     "boilerplate",
@@ -102,15 +123,26 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.md": [
-      "remark . -qfo",
-      "git add"
-    ]
+    "linters": {
+      "*.js": [
+        "xo --fix",
+        "git add"
+      ],
+      "*.md": [
+        "remark . -qfo",
+        "git add"
+      ],
+      "package.json": [
+        "fixpack",
+        "git add"
+      ]
+    }
   },
   "main": "lib/index.js",
   "prettier": {
     "singleQuote": true,
-    "jsxBracketSameLine": true
+    "bracketSpacing": true,
+    "trailingComma": "none"
   },
   "remarkConfig": {
     "plugins": [
@@ -122,55 +154,37 @@
     "url": "https://github.com/niftylettuce/frisbee"
   },
   "scripts": {
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "xo && eslint lib && remark . -qfo",
-    "precommit": "lint-staged && npm test",
-    "test": "npm run build && npm run lint && npm run ava",
-    "test-coverage": "npm run build && npm run lint && npm run nyc",
     "ava": "cross-env NODE_ENV=test ava",
+    "browserify": "browserify src/index.js -o dist/frisbee.js -s Frisbee -d -t babelify",
+    "build": "npm run build:clean && npm run build:lib && npm run build:dist",
+    "build:clean": "rimraf lib dist",
+    "build:dist": "npm run browserify && npm run minify",
+    "build:lib": "babel src --out-dir lib",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "lint": "xo && remark . -qfo && eslint lib",
+    "minify": "cross-env NODE_ENV=production browserify src/index.js -o dist/frisbee.min.js -s Frisbee -t babelify -p tinyify",
     "nyc": "cross-env NODE_ENV=test nyc ava",
-    "build": "node_modules/.bin/babel src --out-dir lib && npm run browserify",
-    "browserify": "browserify test/support/browser.js > test/support/browser.bundled.js",
-    "watch": "node_modules/.bin/babel src --watch --out-dir lib"
+    "test": "npm run build && npm run lint && npm run ava",
+    "test-coverage": "npm run build && npm run lint && npm run nyc"
   },
+  "unpkg": "dist/frisbee.min.js",
   "xo": {
-    "extends": "prettier",
-    "plugins": [
-      "prettier"
-    ],
-    "parserOptions": {
-      "sourceType": "script"
-    },
-    "rules": {
-      "max-len": [
-        "error",
-        {
-          "code": 80,
-          "ignoreUrls": true
-        }
-      ],
-      "max-depth": [
-        "error",
-        6
-      ],
-      "complexity": [
-        "error",
-        24
-      ],
-      "capitalized-comments": "off",
-      "camelcase": "off",
-      "no-warning-comments": "off",
-      "prettier/prettier": "error"
-    },
+    "prettier": true,
     "space": true,
-    "overrides": [
-      {
-        "files": "test/support/browser.js",
-        "envs": [
-          "browser"
-        ]
-      }
+    "extends": [
+      "xo-lass"
     ],
-    "ignores": [ "config.js" ]
+    "env": [
+      "node",
+      "browser"
+    ],
+    "ignore": [
+      "config.js"
+    ],
+    "rules": {
+      "no-async-promise-executor": "off",
+      "complexity": "off",
+      "max-depth": "off"
+    }
   }
 }

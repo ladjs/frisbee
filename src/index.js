@@ -153,13 +153,12 @@ class Frisbee {
         ) {
           try {
             opts.body = JSON.stringify(opts.body);
-          } catch (error) {
-            throw error;
+          } catch (err) {
+            throw err;
           }
         }
       }
 
-      // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         try {
           const fullUri = this.opts.baseURI
@@ -202,7 +201,7 @@ class Frisbee {
                   if (res.body.error.param)
                     res.err.param = res.body.error.param;
                 }
-              } catch (error) {
+              } catch (err) {
                 res.err = this.parseErr;
               }
             }
@@ -224,7 +223,7 @@ class Frisbee {
                 res.body = await res.text();
                 res.body = JSON.parse(res.body);
               }
-            } catch (error) {
+            } catch (err) {
               if (contentType === 'application/json') {
                 res.err = this.parseErr;
                 resolve(res);
@@ -236,8 +235,8 @@ class Frisbee {
           }
 
           resolve(res);
-        } catch (error) {
-          reject(error);
+        } catch (err) {
+          reject(err);
         }
       });
     };
@@ -286,7 +285,8 @@ class Frisbee {
   }
 
   jwt(token) {
-    if (token === null || token === undefined) delete this.headers.Authorization;
+    if (token === null || token === undefined)
+      delete this.headers.Authorization;
     else if (typeof token === 'string')
       this.headers.Authorization = `Bearer ${token}`;
     else throw new TypeError('jwt token must be a string');
