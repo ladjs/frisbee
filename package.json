@@ -68,10 +68,10 @@
     "remark-cli": "^5.0.0",
     "remark-preset-github": "^0.0.8",
     "sinon": "^5.0.7",
-    "xo": "0.21.0"
+    "xo": "0.24.0"
   },
   "engines": {
-    "node": ">=6.12.3 <7 || >=8.9.4"
+    "node": ">=8.9.4"
   },
   "files": [
     "lib"
@@ -160,8 +160,7 @@
       "capitalized-comments": "off",
       "camelcase": "off",
       "no-warning-comments": "off",
-      "prettier/prettier": "error",
-      "ava/use-t-well": "off"
+      "prettier/prettier": "error"
     },
     "space": true,
     "overrides": [

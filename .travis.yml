@@ -1,11 +1,7 @@
 language: node_js
 node_js:
-  - '6'
   - '8'
-  - '9'
   - '10'
-install:
-  - yarn install --ignore-engines
 script:
   npm run test-coverage
 after_success:

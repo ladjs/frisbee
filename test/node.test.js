@@ -119,8 +119,8 @@ standardMethods.forEach(method => {
       const res = await api[method]('/', opts);
       t.true(_.isObject(res));
       t.true(_.isObject(res.body));
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   });
 });
@@ -153,9 +153,7 @@ test(
     should stringify querystring parameters with
     arrayFormat for GET and DELETE requests`,
   async t => {
-    const api = new Frisbee(
-      Object.assign({}, options, { formatArray: 'brackets' })
-    );
+    const api = new Frisbee({ ...options, formatArray: 'brackets' });
     const querystring = {
       a: 'blue',
       b: 'cyan',
@@ -252,8 +250,8 @@ methods.forEach(method => {
     try {
       await api[method]('/');
       t.true(interceptor.request.calledOnce);
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   });
 });

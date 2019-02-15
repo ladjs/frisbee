@@ -63,7 +63,7 @@ function createFrisbeeResponse(origResp) {
 
   const headersObj = {};
   origResp.headers.forEach(pair => {
-    headersObj[pair[0]] = pair[1]; // eslint-disable-line prefer-destructuring
+    headersObj[pair[0]] = pair[1];
   });
   Object.defineProperty(resp, 'headersObj', {
     value: headersObj
@@ -153,12 +153,13 @@ class Frisbee {
         ) {
           try {
             opts.body = JSON.stringify(opts.body);
-          } catch (err) {
-            throw err;
+          } catch (error) {
+            throw error;
           }
         }
       }
 
+      // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         try {
           const fullUri = this.opts.baseURI
@@ -201,10 +202,11 @@ class Frisbee {
                   if (res.body.error.param)
                     res.err.param = res.body.error.param;
                 }
-              } catch (e) {
+              } catch (error) {
                 res.err = this.parseErr;
               }
             }
+
             resolve(res);
             return;
           }
@@ -222,7 +224,7 @@ class Frisbee {
                 res.body = await res.text();
                 res.body = JSON.parse(res.body);
               }
-            } catch (err) {
+            } catch (error) {
               if (contentType === 'application/json') {
                 res.err = this.parseErr;
                 resolve(res);
@@ -234,8 +236,8 @@ class Frisbee {
           }
 
           resolve(res);
-        } catch (err) {
-          reject(err);
+        } catch (error) {
+          reject(error);
         }
       });
     };
