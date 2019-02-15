@@ -284,7 +284,7 @@ class Frisbee {
   }
 
   jwt(token) {
-    if (token === null) delete this.headers.Authorization;
+    if (token === null || token === undefined) delete this.headers.Authorization;
     else if (typeof token === 'string')
       this.headers.Authorization = `Bearer ${token}`;
     else throw new TypeError('jwt token must be a string');
