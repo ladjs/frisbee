@@ -46,6 +46,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.47",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
+    "abort-controller": "^2.0.2",
     "ava": "^1.0.0-beta.4",
     "body-parser": "^1.18.3",
     "browserify": "^16.2.2",

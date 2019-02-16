@@ -12,8 +12,8 @@ const Interceptor = require('../lib/interceptor');
 //
 test('should only intercept passed interceptable methods', async t => {
   const API = {
-    post: sinon.stub().resolves(),
-    get: sinon.stub().resolves()
+    post: () => () => sinon.stub().resolves(),
+    get: () => () => sinon.stub().resolves()
   };
   const interceptorManager = new Interceptor(API, ['post']);
   const interceptor = {
@@ -31,7 +31,7 @@ test('should only intercept passed interceptable methods', async t => {
 test('should call request before the APIMethod', async t => {
   const APIPostMethod = sinon.stub().resolves();
   const API = {
-    post: APIPostMethod
+    post: () => APIPostMethod
   };
   const interceptorManager = new Interceptor(API, ['post']);
   const interceptor = {
@@ -46,7 +46,7 @@ test('should call request before the APIMethod', async t => {
 
 test('should call request with interceptedMethod arguments', async t => {
   const API = {
-    post: () => Promise.resolve()
+    post: () => () => Promise.resolve()
   };
   const interceptorManager = new Interceptor(API, ['post']);
   const interceptor = {
@@ -62,7 +62,7 @@ test('should call request with interceptedMethod arguments', async t => {
 
 test('should call requestError on request error', async t => {
   const API = {
-    post: () => Promise.resolve()
+    post: () => () => Promise.resolve()
   };
   const interceptorManager = new Interceptor(API, ['post']);
   const interceptorOne = {
@@ -94,7 +94,7 @@ test(
   async t => {
     const APIResponse = ['foo', { foo: 'foo' }];
     const API = {
-      post: () => Promise.resolve(APIResponse)
+      post: () => () => Promise.resolve(APIResponse)
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptor = {
@@ -110,7 +110,7 @@ test(
 
 test('should call responseError on response error', async t => {
   const API = {
-    post: () => Promise.resolve()
+    post: () => () => Promise.resolve()
   };
 
   const APInterceptorManager = new Interceptor(API, ['post']);
@@ -141,11 +141,11 @@ test('should call responseError on response error', async t => {
 
 test('should call responseError on APIMethod error', async t => {
   const API = {
-    post: () => {
+    post: () => () => {
       throw new Error('API Error');
     },
-    get: () => Promise.reject(),
-    put: () => Promise.resolve()
+    get: () => () => Promise.reject(),
+    put: () => () => Promise.resolve()
   };
 
   const APInterceptorManager = new Interceptor(API, ['post', 'get']);
@@ -197,7 +197,7 @@ test(
   oneLine`should run response interceptors in reversed registration order`,
   async t => {
     const API = {
-      post: () => Promise.resolve()
+      post: () => () => Promise.resolve()
     };
     const interceptorManager = new Interceptor(API, ['post']);
     const interceptorOne = {
@@ -223,7 +223,7 @@ test(
 
 test('should remove interceptor on unregister', async t => {
   const API = {
-    post: () => Promise.resolve()
+    post: () => () => Promise.resolve()
   };
   const interceptorManager = new Interceptor(API, ['post']);
   const interceptorOne = {
@@ -246,7 +246,7 @@ test('should remove interceptor on unregister', async t => {
 
 test('should remove all interceptors on clear', async t => {
   const API = {
-    post: () => Promise.resolve()
+    post: () => () => Promise.resolve()
   };
   const interceptorManager = new Interceptor(API, ['post']);
   const interceptor = {
