@@ -8,3 +8,4 @@ src
 index.html
 config.js
 .nojekyll
+.nyc_output

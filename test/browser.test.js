@@ -1,24 +1,32 @@
 const http = require('http');
-const jsdom = require('jsdom');
-const jsdomOld = require('jsdom/lib/old-api');
-const _ = require('lodash');
+const path = require('path');
+const { readFileSync } = require('fs');
+const { Script } = require('vm');
 const test = require('ava');
+const _ = require('lodash');
+const { JSDOM, VirtualConsole } = require('jsdom');
 
 const app = require('./support/app');
 const options = require('./support/options');
 
-test.before.cb(t => {
-  jsdomOld.env({
-    html: '',
-    scripts: [require.resolve('./support/browser.bundled.js')],
-    virtualConsole: new jsdom.VirtualConsole().sendTo(console),
-    done(err, window) {
-      if (err) return t.end(err);
-      t.context.window = window;
-      t.end();
-    }
-  });
+const virtualConsole = new VirtualConsole();
+virtualConsole.sendTo(console);
+
+const script = new Script(
+  readFileSync(path.join(__dirname, '..', 'dist', 'frisbee.min.js'))
+);
+
+const dom = new JSDOM(``, {
+  url: 'http://localhost:3000/',
+  referrer: 'http://localhost:3000/',
+  contentType: 'text/html',
+  includeNodeLocations: true,
+  resources: 'usable',
+  runScripts: 'dangerously',
+  virtualConsole
 });
+
+dom.runVMScript(script);
 
 test.before.cb(t => {
   t.context.server = http.createServer(app).listen(() => {
@@ -30,9 +38,6 @@ test.serial.before(t => {
   options.baseURI = `http://localhost:${t.context.server.address().port}`;
 });
 
-test.after(t => t.context.server.close());
-test.after(t => t.context.window.close());
-
 /*
   it('should throw an error if we fail to pass baseURI', () => {
     expect(new Frisbee).to.throw(new Error('baseURI option is required'));
@@ -40,7 +45,7 @@ test.after(t => t.context.window.close());
   */
 
 test('should create Frisbee instance with all methods', t => {
-  const api = new t.context.window.Frisbee(options);
+  const api = new dom.window.Frisbee(options);
   t.true(_.isObject(api));
   [
     'auth',
@@ -76,14 +81,14 @@ test('should create Frisbee instance with all methods', t => {
   const methodName = method === 'del' ? 'DELETE' : method.toUpperCase();
 
   test(`should return 200 on ${methodName}`, async t => {
-    const api = new t.context.window.Frisbee(options);
+    const api = new dom.window.Frisbee(options);
 
     try {
       const res = await api[method]('/', {});
       t.true(_.isObject(res));
       t.true(_.isObject(res.body));
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      throw err;
     }
   });
 });

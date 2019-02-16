@@ -19,10 +19,13 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 
 ## Table of Contents
 
-* [React Native Usage](#react-native-usage)
-* [Browser and Server-Side Usage](#browser-and-server-side-usage)
-* [Common Issues](#common-issues)
-* [API](#api)
+* [Install](#install)
+  * [Node (Koa, Express, React Native, ...)](#node-koa-express-react-native-)
+  * [Browser](#browser)
+* [Usage](#usage)
+  * [Example](#example)
+  * [API](#api)
+  * [Common Issues](#common-issues)
 * [Frequently Asked Questions](#frequently-asked-questions)
   * [How do I unset a default header](#how-do-i-unset-a-default-header)
   * [Why do my form uploads randomly fail with React Native](#why-do-my-form-uploads-randomly-fail-with-react-native)
@@ -43,129 +46,145 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 * [License](#license)
 
 
-## React Native Usage
+## Install
 
-1. Install the required package (note that `react-native` provides us with a `fetch` implementation):
+### Node (Koa, Express, React Native, ...)
 
-   ```bash
+1. Install the required package:
+
+   ```sh
    npm install --save frisbee
    ```
 
-2. Require the package:
+2. See [usage example and API below](#usage)
 
-   ```js
-   const Frisbee = require('frisbee');
+### Browser
+
+#### VanillaJS
+
+See [usage example and API below](#usage) for a more complete example.
+
+```html
+<!-- until this PR is merged we will need to use specific path for es6-promise -->
+<!-- https://github.com/stefanpenner/es6-promise/pull/343 -->
+<script src="https://unpkg.com/es6-promise/dist/es6-promise.auto.min.js"></script>
+<script src="https://unpkg.com/frisbee"></script>
+<script type="text/javascript">
+  (function() {
+    // create a new instance of Frisbee
+    var api = new Frisbee({
+      baseURI: 'https://api.startup.com', // optional
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // this is a simple example using `.then` and `.catch`
+    api.get('/hello-world').then(console.log).catch(console.error);
+
+    //
+    // see the Usage section below in Frisbee's README for more information
+    // https://github.com/niftylettuce/frisbee
+    //
+  })();
+</script>
+```
+
+#### Bundler
+
+1. Install the required package:
+
+   ```sh
+   npm install frisbee
    ```
 
-3. See [usage example and API below](#browser-and-server-side-usage)!
+2. (Optional) Install `es6-promise` to polyfill older browsers with `Promise`:
 
-
-## Browser and Server-Side Usage
-
-1. Install the required packages:
-
-   * npm:
-
-     ```bash
-     # optional (to support older browsers):
-     npm install es6-promise
-
-     # required (this package):
-     npm install frisbee
-     ```
-
-   * yarn:
-
-     ```bash
-     # optional (to support older browsers):
-     yarn add es6-promise
-
-     # required (this package):
-     yarn add frisbee
-     ```
-
-2. Require it, set default options, and make some requests:
-
-   ```js
-   // add optional support for older browsers
-   const es6promise = require('es6-promise');
-   es6promise.polyfill();
-
-   // require the module
-   const Frisbee = require('frisbee');
-
-   // create a new instance of Frisbee
-   const api = new Frisbee({
-     baseURI: 'https://api.startup.com', // optional
-     headers: {
-       'Accept': 'application/json',
-       'Content-Type': 'application/json'
-     }
-   });
-
-   // this is just an example of an anonymous
-   // function invoked immediately with async/await
-   (async () => {
-     // log in to our API with a user/pass
-     try {
-       // make the request
-       let res = await api.post('/v1/login');
-       console.log('response', res.body);
-
-       // handle HTTP or API errors
-       if (res.err) throw res.err;
-
-       // set basic auth headers for all
-       // future API requests we make
-       api.auth(res.body.api_token);
-
-       // now let's post a message to our API
-       res = await api.post('/v1/messages', { body: 'Hello' });
-       console.log('response', res.body);
-
-       // handle HTTP or API errors
-       if (res.err) throw res.err;
-
-       // now let's get a list of messages filtered by page and limit
-       res = await api.get('/v1/messages', {
-         body: {
-           limit: 10,
-           page: 2
-         }
-       });
-
-       // handle HTTP or API errors
-       if (res.err) throw res.err;
-
-       // now let's logout
-       res = api.post('/v1/logout');
-       console.log('response', res.body);
-
-       // handle HTTP or API errors
-       if (res.err) throw res.err;
-
-       // unset auth now since we logged out
-       api.auth();
-
-       // for more information on `fetch` headers and
-       // how to send and expect various types of data:
-       // <https://github.com/github/fetch>
-
-     } catch (err) {
-       throw err;
-     }
-   })();
+   ```sh
+   npm install es6-promise
    ```
 
+3. (Optional) Ensure that you invoke the polyfill for `es6-promise` if you are using it:
 
-## Common Issues
+   ```js
+    // add optional support for older browsers
+    const es6promise = require('es6-promise');
+    es6promise.polyfill();
+   ```
 
-1. If you're using `node-fetch`, you need `node-fetch@v1.5.3+` to use `form-data` with files properly (due to [bitinn/node-fetch#102](https://github.com/bitinn/node-fetch/issues/102))
-
-2. If you experience form file upload issues, please see [facebook/react-native#7564 (comment)](https://github.com/facebook/react-native/issues/7564#issuecomment-266323928).
+4. See [usage example and API below](#usage)
 
 
-## API
+## Usage
+
+### Example
+
+```js
+const Frisbee = require('frisbee');
+
+// create a new instance of Frisbee
+const api = new Frisbee({
+  baseURI: 'https://api.startup.com', // optional
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
+
+// this is a simple example using `.then` and `.catch`
+api.get('/hello-world').then(console.log).catch(console.error);
+
+// this is a more complex example using async/await and basic auth
+(async () => {
+  // log in to our API with a user/pass
+  try {
+    // make the request
+    let res = await api.post('/v1/login');
+
+    // handle HTTP or API errors
+    if (res.err) throw res.err;
+
+    // set basic auth headers for all
+    // future API requests we make
+    api.auth(res.body.api_token);
+
+    // now let's post a message to our API
+    res = await api.post('/v1/messages', { body: 'Hello' });
+
+    // handle HTTP or API errors
+    if (res.err) throw res.err;
+
+    // now let's get a list of messages filtered by page and limit
+    res = await api.get('/v1/messages', {
+      body: {
+        limit: 10,
+        page: 2
+      }
+    });
+
+    // handle HTTP or API errors
+    if (res.err) throw res.err;
+
+    // now let's logout
+    res = api.post('/v1/logout');
+
+    // handle HTTP or API errors
+    if (res.err) throw res.err;
+
+    // unset auth now since we logged out
+    api.auth();
+
+    // for more information on `fetch` headers and
+    // how to send and expect various types of data:
+    // <https://github.com/github/fetch>
+  } catch (err) {
+    console.error(err);
+  }
+})();
+```
+
+### API
 
 ```js
 const Frisbee = require('frisbee');
@@ -178,6 +197,7 @@ const Frisbee = require('frisbee');
   * `baseURI` - the default URI to use as a prefix for all HTTP requests (optional as of v2.0.4+)
 
     * If your API server is running on `http://localhost:8080`, then use that as the value for this option
+
     * If you use [React Native][react-native], then you most likely want to set `baseURI` as follows (e.g. making use of `__DEV__` global variable):
 
       ```js
@@ -189,6 +209,7 @@ const Frisbee = require('frisbee');
       ```
 
     * You could also set `API_BASE_URI` as an environment variable, and then set the value of this option to `process.env.API_BASE_URI` (e.g. `API_BASE_URI=http://localhost:8080 node app`)
+
     * Using [React Native][react-native]?  You might want to read this article about [automatic IP configuration][automatic-ip-configuration].
 
   * `headers` - an object containing default headers to send with every request
@@ -224,6 +245,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
   * Accepted method arguments:
 
     * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` if set)
+
     * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.
 
         Here are a few examples (you can override/merge your set default headers as well per request):
@@ -283,14 +305,21 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     }
     ```
     the `register` method returns an `unregister()` function so that you can unregister the added interceptor.
+
   * `api.interceptor.unregister(interceptor)`:
     Accepts the interceptor reference that you want to delete.
+
   * `api.interceptor.clear()`:
     Removes all the added interceptors.
 
   * Note that when interceptors are added in the order ONE->TWO->THREE:
     * The `request`/`requestError` functions will run in the same order `ONE->TWO->THREE`.
     * The `response`/`responseError` functions will run in reversed order `THREE->TWO->ONE`.
+
+### Common Issues
+
+* If you're using `node-fetch`, you need `node-fetch@v1.5.3+` to use `form-data` with files properly (due to [bitinn/node-fetch#102](https://github.com/bitinn/node-fetch/issues/102))
+* If you experience form file upload issues, please see [facebook/react-native#7564 (comment)](https://github.com/facebook/react-native/issues/7564#issuecomment-266323928).
 
 
 ## Frequently Asked Questions
