@@ -2,6 +2,7 @@ const caseless = require('caseless');
 const qs = require('qs');
 const fetch = require('cross-fetch');
 const urlJoin = require('url-join');
+// eslint-disable-next-line import/no-unassigned-import
 require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 
 const Interceptor = require('./interceptor');
@@ -234,13 +235,12 @@ class Frisbee {
           ) {
             try {
               opts.body = JSON.stringify(opts.body);
-            } catch (error) {
-              throw error;
+            } catch (err) {
+              throw err;
             }
           }
         }
 
-        // eslint-disable-next-line no-async-promise-executor
         const response = new Promise(async (resolve, reject) => {
           try {
             const fullUri = this.opts.baseURI
@@ -283,7 +283,7 @@ class Frisbee {
                     if (res.body.error.param)
                       res.err.param = res.body.error.param;
                   }
-                } catch (error) {
+                } catch (err) {
                   res.err = this.parseErr;
                 }
               }
@@ -305,7 +305,7 @@ class Frisbee {
                   res.body = await res.text();
                   res.body = JSON.parse(res.body);
                 }
-              } catch (error) {
+              } catch (err) {
                 if (contentType === 'application/json') {
                   res.err = this.parseErr;
                   resolve(res);
@@ -317,8 +317,8 @@ class Frisbee {
             }
 
             resolve(res);
-          } catch (error) {
-            reject(error);
+          } catch (err) {
+            reject(err);
           }
         });
 
@@ -327,9 +327,16 @@ class Frisbee {
         } catch (err) {}
 
         // update the abortTokenMap
-        let mapValue = this.abortTokenMap.get(options.abortToken);
-        if (mapValue && !--mapValue.count) {
-          this.abortTokenMap.delete(options.abortToken);
+        const mapValue = this.abortTokenMap.get(options.abortToken);
+        if (mapValue) {
+          if (!mapValue.count - 1) {
+            this.abortTokenMap.delete(options.abortToken);
+          } else {
+            this.abortTokenMap.set(options.abortToken, {
+              ...mapValue,
+              count: --mapValue.count
+            });
+          }
         }
 
         return response;

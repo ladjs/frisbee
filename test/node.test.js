@@ -4,7 +4,6 @@ const _ = require('lodash');
 const sinon = require('sinon');
 const { oneLine } = require('common-tags');
 const isStream = require('is-stream');
-const AbortController = require('abort-controller');
 
 const Frisbee = require('../lib');
 const app = require('./support/app');
@@ -90,27 +89,27 @@ test('should throw an error if we pass a non object `options`', async t => {
 test('should throw an error if we fail to pass a string `path` after intercept', async t => {
   const api = new Frisbee(options);
   api.interceptor.register({
-    request:sinon.stub().resolves([null,{}])
-  })
-  let error = await t.throwsAsync(() => api.get('/', {}));
+    request: sinon.stub().resolves([null, {}])
+  });
+  const error = await t.throwsAsync(() => api.get('/', {}));
   t.is(error.message, '`path` must be a string');
 });
 
 test(`should throw an error if we fail to pass an object options after intercept`, async t => {
   const api = new Frisbee(options);
   api.interceptor.register({
-    request:sinon.stub().resolves(['/',1])
-  })
-  let error = await t.throwsAsync(() => api.get('/', {}));
+    request: sinon.stub().resolves(['/', 1])
+  });
+  const error = await t.throwsAsync(() => api.get('/', {}));
   t.is(error.message, '`options` must be an object');
 });
 
 test('should throw an error if we pass a non object `options` after intercept', async t => {
   const api = new Frisbee(options);
   api.interceptor.register({
-    request: sinon.stub().resolves(['/','not an object'])
-  })
-  let error = await t.throwsAsync(() => api.get('/', {}));
+    request: sinon.stub().resolves(['/', 'not an object'])
+  });
+  const error = await t.throwsAsync(() => api.get('/', {}));
   t.is(error.message, '`options` must be an object');
 });
 
@@ -328,12 +327,11 @@ test('should abort with AbortController signal native style', async t => {
     ...options
   });
   const controller = new AbortController();
-  const req = api.get('/',{signal:controller.signal});
+  const req = api.get('/', { signal: controller.signal });
   controller.abort();
 
   const { type } = await t.throwsAsync(req);
-  t.is(type,'aborted');
-
+  t.is(type, 'aborted');
 });
 
 test('should abort using a token', async t => {
@@ -341,70 +339,66 @@ test('should abort using a token', async t => {
     ...options
   });
   const abortToken = 'some token';
-  const req = api.get('/',{abortToken});
+  const req = api.get('/', { abortToken });
   api.abort(abortToken);
 
   const { type } = await t.throwsAsync(req);
-  t.is(type,'aborted');
-
-})
+  t.is(type, 'aborted');
+});
 
 test('should not abort if different token is passed in', async t => {
   const api = new Frisbee({
     ...options
   });
   const abortToken = 'some token';
-  const req = api.get('/',{abortToken});
+  const req = api.get('/', { abortToken });
   api.abort('some other token');
 
   await t.notThrowsAsync(req);
-
-})
+});
 
 test('should only abort one request when aborting with a token', async t => {
   const api = new Frisbee({
     ...options
   });
   const abortToken = 'some token';
-  const abortedReq = api.get('/',{abortToken});
+  const abortedReq = api.get('/', { abortToken });
   const nonAbortedReq = api.get('/');
-  const nonAbortedReqTwo = api.get('/',{abortToken:'some other token'});
+  const nonAbortedReqTwo = api.get('/', { abortToken: 'some other token' });
   api.abort(abortToken);
 
   const { type } = await t.throwsAsync(abortedReq);
   await t.notThrowsAsync(nonAbortedReq);
   await t.notThrowsAsync(nonAbortedReqTwo);
-  t.is(type,'aborted');
-
-})
+  t.is(type, 'aborted');
+});
 
 test('should abort all', async t => {
   const api = new Frisbee({
     ...options
   });
   const abortToken = 'some token';
-  const req = api.get('/',{abortToken});
+  const req = api.get('/', { abortToken });
   const reqTwo = api.get('/');
   api.abortAll();
 
   const reason = await t.throwsAsync(req);
   const reasonTwo = await t.throwsAsync(reqTwo);
-  t.is(reason.type,'aborted');
-  t.is(reasonTwo.type,'aborted');
-
-})
+  t.is(reason.type, 'aborted');
+  t.is(reasonTwo.type, 'aborted');
+});
 
 test('should abort using abortAll when using their own signal', async t => {
   const api = new Frisbee({
     ...options
   });
   const controller = new AbortController();
-  const req = api.get('/',{signal:controller.signal});
+  const req = api.get('/', { signal: controller.signal });
   api.abortAll();
 
   const { type } = await t.throwsAsync(req);
-  t.is(type,'aborted');
-})
+  t.is(type, 'aborted');
+});
 
 test('should abort using abortToken when using their own signal', async t => {
   const api = new Frisbee({
@@ -412,34 +406,33 @@ test('should abort using abortToken when using their own signal', async t => {
   });
   const controller = new AbortController();
   const abortToken = 'some token';
-  const req = api.get('/',{signal:controller.signal,abortToken});
+  const req = api.get('/', { signal: controller.signal, abortToken });
   api.abort(abortToken);
 
   const { type } = await t.throwsAsync(req);
-  t.is(type,'aborted');
-})
+  t.is(type, 'aborted');
+});
 
 test('should not abort new requests after abortAll has been called ', async t => {
   const api = new Frisbee(options);
   const controller = new AbortController();
   const abortToken = 'some token';
-  const req = api.get('/',{signal:controller.signal,abortToken});
+  const req = api.get('/', { signal: controller.signal, abortToken });
   api.abortAll();
   const reqTwo = api.get('/');
   await t.notThrowsAsync(reqTwo);
   const { type } = await t.throwsAsync(req);
-  t.is(type,'aborted');
-})
+  t.is(type, 'aborted');
+});
 
 test('should cancel all requests that use the same abort token', async t => {
   const api = new Frisbee(options);
-  const controller = new AbortController();
   const abortToken = 'some token';
   const newAbortToken = 'another token';
-  const reqOne = api.get('/',{abortToken});
-  const reqTwo = api.get('/',{abortToken});
-  const reqThree = api.get('/',{abortToken});
-  const reqFour = api.get('/',{abortToken:newAbortToken});
+  const reqOne = api.get('/', { abortToken });
+  const reqTwo = api.get('/', { abortToken });
+  const reqThree = api.get('/', { abortToken });
+  const reqFour = api.get('/', { abortToken: newAbortToken });
 
   api.abort(abortToken);
 
@@ -447,26 +440,35 @@ test('should cancel all requests that use the same abort token', async t => {
   await t.throwsAsync(reqTwo);
   await t.throwsAsync(reqThree);
   await t.notThrowsAsync(reqFour);
-})
+});
 
 test('should throw if abortToken or signal are modified by an interceptor', async t => {
   const api = new Frisbee(options);
   let i = 0;
   api.interceptor.register({
-    request:async (path,config) => {
+    request: async (path, config) => {
       i++;
       const abortToken = 'new abort token';
-      const signal = abortController.signal
-      switch(i) {
-        case 1: return [path,{...config,abortToken}];
-        case 2: return [path,{...config,signal}];
-        default: return [path,config];
+      const { signal } = abortController;
+      switch (i) {
+        case 1:
+          return [path, { ...config, abortToken }];
+        case 2:
+          return [path, { ...config, signal }];
+        default:
+          return [path, config];
       }
     }
-  })
+  });
   const abortController = new AbortController();
-  const signal = abortController.signal;
-  await t.throwsAsync(() => api.get('/',{abortToken:Math.random(),signal}));
-  await t.throwsAsync(() => api.get('/',{abortToken:Math.random(),signal}));
-  await t.notThrowsAsync(() => api.get('/',{abortToken:Math.random(),signal}));
-})
+  const { signal } = abortController;
+  await t.throwsAsync(() =>
+    api.get('/', { abortToken: Math.random(), signal })
+  );
+  await t.throwsAsync(() =>
+    api.get('/', { abortToken: Math.random(), signal })
+  );
+  await t.notThrowsAsync(() =>
+    api.get('/', { abortToken: Math.random(), signal })
+  );
+});

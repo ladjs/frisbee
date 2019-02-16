@@ -221,7 +221,9 @@ const Frisbee = require('frisbee');
   * `arrayFormat` - how to stringify array in passed body. See [qs][qs-url] for available formats
 
   * `raw` - return a raw fetch response (new as of v2.0.4+)
+
   * `abortToken` - some Symbol that you can use to abort one or more frisbee requests
+
   * `signal` - an [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) Signal used to cancel a fetch request
 
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
