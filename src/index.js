@@ -2,7 +2,7 @@ const caseless = require('caseless');
 const qs = require('qs');
 const fetch = require('cross-fetch');
 const urlJoin = require('url-join');
-const AbortController = require('abort-controller');
+require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 
 const Interceptor = require('./interceptor');
 
