@@ -173,6 +173,7 @@ class Frisbee {
           );
         }
 
+        // abort this request whenever this.abortController.abort() gets called - a.k.a. - abortAll()
         overwriteOnAbortWith(this.abortController.signal, () =>
           abortController.abort()
         );
