@@ -89,11 +89,12 @@ class Frisbee {
             localAbortController = null;
           });
         }
+
         return localAbortController;
       }
     });
 
-    let localAbortTokenMap = new Map();
+    const localAbortTokenMap = new Map();
     Object.defineProperty(this, 'abortTokenMap', {
       enumerable: false,
       value: localAbortTokenMap
@@ -150,6 +151,7 @@ class Frisbee {
               count: 0
             };
           }
+
           mapValue.count++;
 
           this.abortTokenMap.set(originalOptions.abortToken, mapValue);
@@ -160,11 +162,15 @@ class Frisbee {
 
         // the user has defined their own signal we won't use it directly, but we'll listen to it
         if (originalOptions.signal) {
-          originalOptions.signal.addEventListener('abort',() => abortController.abort());
+          originalOptions.signal.addEventListener('abort', () =>
+            abortController.abort()
+          );
         }
 
         // abort this request whenever this.abortController.abort() gets called - a.k.a. - abortAll()
-        this.abortController.signal.addEventListener('abort',() => abortController.abort());
+        this.abortController.signal.addEventListener('abort', () =>
+          abortController.abort()
+        );
         originalOptions.signal = abortController.signal;
       }
 
@@ -318,7 +324,7 @@ class Frisbee {
 
         try {
           await response;
-        } catch (e) {}
+        } catch (err) {}
 
         // update the abortTokenMap
         let mapValue = this.abortTokenMap.get(options.abortToken);
