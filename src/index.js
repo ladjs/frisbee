@@ -98,7 +98,9 @@ class Frisbee {
     const localAbortTokenMap = new Map();
     Object.defineProperty(this, 'abortTokenMap', {
       enumerable: false,
-      value: localAbortTokenMap
+      get() {
+        return localAbortTokenMap;
+      }
     });
 
     Object.defineProperty(this, 'parseErr', {
@@ -240,7 +242,6 @@ class Frisbee {
             }
           }
         }
-
         const response = new Promise(async (resolve, reject) => {
           try {
             const fullUri = this.opts.baseURI
@@ -321,7 +322,6 @@ class Frisbee {
             reject(err);
           }
         });
-
         try {
           await response;
         } catch (err) {}
@@ -329,7 +329,7 @@ class Frisbee {
         // update the abortTokenMap
         const mapValue = this.abortTokenMap.get(options.abortToken);
         if (mapValue) {
-          if (!mapValue.count - 1) {
+          if (!(mapValue.count - 1)) {
             this.abortTokenMap.delete(options.abortToken);
           } else {
             this.abortTokenMap.set(options.abortToken, {

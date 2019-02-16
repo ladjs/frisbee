@@ -472,3 +472,28 @@ test('should throw if abortToken or signal are modified by an interceptor', asyn
     api.get('/', { abortToken: Math.random(), signal })
   );
 });
+
+test('should remove everything from abortTokenMap after requests have completed', async t => {
+  const api = new Frisbee(options);
+  const abortToken = 'abort token';
+  const newAbortToken = 'new abort token';
+  const one = api.get('/delay', { abortToken, body: { delay: 1000 } });
+  const two = api.get('/delay', { abortToken, body: { delay: 2000 } });
+  const three = api.get('/delay', { abortToken, body: { delay: 3000 } });
+  const four = api.get('/', { abortToken: newAbortToken });
+
+  t.is(api.abortTokenMap.size, 2);
+
+  api.abort(newAbortToken);
+  await t.throwsAsync(four);
+  t.is(api.abortTokenMap.size, 1);
+
+  await one;
+  t.is(api.abortTokenMap.size, 1);
+
+  await two;
+  t.is(api.abortTokenMap.size, 1);
+
+  await three;
+  t.is(api.abortTokenMap.size, 0);
+});
