@@ -165,7 +165,7 @@
     "lint": "xo && remark . -qfo && eslint lib",
     "minify": "cross-env NODE_ENV=production browserify src/index.js -o dist/frisbee.min.js -s Frisbee -t babelify -p tinyify",
     "nyc": "cross-env NODE_ENV=test nyc ava",
-    "test": "npm run build && npm run ava",
+    "test": "npm run build && npm run lint && npm run ava",
     "test-coverage": "npm run build && npm run lint && npm run nyc"
   },
   "unpkg": "dist/frisbee.min.js",
