@@ -32,14 +32,6 @@ const respProperties = {
   ]
 };
 
-function overwriteOnAbortWith(signal, callback) {
-  const _onAbort = signal.onabort;
-  signal.onabort = () => {
-    _onAbort && _onAbort();
-    callback();
-  };
-}
-
 function createFrisbeeResponse(origResp) {
   const resp = {
     originalResponse: origResp
@@ -91,11 +83,11 @@ class Frisbee {
       get() {
         if (!localAbortController) {
           localAbortController = new AbortController();
-          localAbortController.signal.onabort = () => {
+          localAbortController.signal.addEventListener('abort', () => {
             // when this is aborted, null out the localAbortController
             // so we'll create a new one next time we need it
             localAbortController = null;
-          };
+          });
         }
         return localAbortController;
       }
@@ -168,15 +160,11 @@ class Frisbee {
 
         // the user has defined their own signal we won't use it directly, but we'll listen to it
         if (originalOptions.signal) {
-          overwriteOnAbortWith(originalOptions.signal, () =>
-            abortController.abort()
-          );
+          originalOptions.signal.addEventListener('abort',() => abortController.abort());
         }
 
         // abort this request whenever this.abortController.abort() gets called - a.k.a. - abortAll()
-        overwriteOnAbortWith(this.abortController.signal, () =>
-          abortController.abort()
-        );
+        this.abortController.signal.addEventListener('abort',() => abortController.abort());
         originalOptions.signal = abortController.signal;
       }
 
