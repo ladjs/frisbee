@@ -419,6 +419,18 @@ test('should abort using abortToken when using their own signal', async t => {
   t.is(type,'aborted');
 })
 
+test('should not abort new requests after abortAll has been called ', async t => {
+  const api = new Frisbee(options);
+  const controller = new AbortController();
+  const abortToken = 'some token';
+  const req = api.get('/',{signal:controller.signal,abortToken});
+  api.abortAll();
+  const reqTwo = api.get('/');
+  await t.notThrowsAsync(reqTwo);
+  const { type } = await t.throwsAsync(req);
+  t.is(type,'aborted');
+})
+
 test('should cancel all requests that use the same abort token', async t => {
   const api = new Frisbee(options);
   const controller = new AbortController();
