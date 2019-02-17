@@ -242,6 +242,7 @@ class Frisbee {
             }
           }
         }
+
         const response = new Promise(async (resolve, reject) => {
           try {
             const fullUri = this.opts.baseURI
@@ -329,7 +330,7 @@ class Frisbee {
         // update the abortTokenMap
         const mapValue = this.abortTokenMap.get(options.abortToken);
         if (mapValue) {
-          if (!(mapValue.count - 1)) {
+          if (mapValue.count - 1 === 0) {
             this.abortTokenMap.delete(options.abortToken);
           } else {
             this.abortTokenMap.set(options.abortToken, {
