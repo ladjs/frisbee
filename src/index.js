@@ -1,6 +1,7 @@
 const caseless = require('caseless');
 const qs = require('qs');
-const fetch = require('cross-fetch');
+// eslint-disable-next-line import/no-unassigned-import
+require('cross-fetch/polyfill');
 const urlJoin = require('url-join');
 
 const Interceptor = require('./interceptor');
