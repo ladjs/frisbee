@@ -65,9 +65,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 See [usage example and API below](#usage) for a more complete example.
 
 ```html
-<!-- until this PR is merged we will need to use specific path for es6-promise -->
-<!-- https://github.com/stefanpenner/es6-promise/pull/343 -->
-<script src="https://unpkg.com/es6-promise/dist/es6-promise.auto.min.js"></script>
+<script src="https://unpkg.com/es6-promise"></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
@@ -448,7 +446,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [MIT](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
 
-## 
+##
 
 [blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 
