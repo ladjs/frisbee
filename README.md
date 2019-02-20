@@ -446,7 +446,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [MIT](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
 
-##
+## 
 
 [blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 
