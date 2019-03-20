@@ -63,7 +63,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 
 #### VanillaJS
 
-1. Load the package via `<script>` tag (note you will need to polyfill with [required ES6 features](#required-es6-features):
+1. Load the package via `<script>` tag (note you will need to polyfill with [required ES6 features](#required-es6-features)):
 
 ```html
 <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf"></script>
@@ -449,7 +449,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [MIT](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
 
-## 
+##
 
 [blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 
