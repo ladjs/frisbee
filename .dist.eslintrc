@@ -1,0 +1,36 @@
+{
+  "extends": ["eslint:recommended"],
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "amd": true
+  },
+  "plugins": ["compat"],
+  "rules": {
+    "compat/compat": "error",
+    "no-func-assign": "off",
+    "no-redeclare": "off",
+    "no-console": "off",
+    "no-constant-condition": "off",
+    "no-unused-vars": "off",
+    "no-empty": "off",
+    "no-useless-escape": "off",
+    "no-fallthrough": "off",
+    "getter-return": "off"
+  },
+  "settings": {
+    "polyfills": [
+      "fetch",
+      "Promise",
+      "Symbol",
+      "Array.from",
+      "ArrayBuffer.isView",
+      "Headers",
+      "Request",
+      "Response",
+      "Object.setPrototypeOf",
+      "Object.getOwnPropertySymbols"
+    ]
+  }
+}

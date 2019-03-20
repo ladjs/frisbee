@@ -165,7 +165,7 @@ class Frisbee {
           const fullUri = this.opts.baseURI
             ? urlJoin(this.opts.baseURI, path)
             : path;
-          const originalRes = await fetch(fullUri, opts);
+          const originalRes = await global.fetch(fullUri, opts);
           const res = createFrisbeeResponse(originalRes);
           const contentType = res.headers.get('Content-Type');
 
