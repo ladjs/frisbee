@@ -3,8 +3,8 @@
   "env": {
     "node": true,
     "browser": true,
-    "es6": true,
-    "amd": true
+    "amd": true,
+    "es6": true
   },
   "plugins": ["compat"],
   "rules": {
@@ -18,6 +18,9 @@
     "no-useless-escape": "off",
     "no-fallthrough": "off",
     "getter-return": "off"
+  },
+  "globals": {
+    "regeneratorRuntime": "writable"
   },
   "settings": {
     "polyfills": [
