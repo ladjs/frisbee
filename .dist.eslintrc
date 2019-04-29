@@ -33,7 +33,8 @@
       "Request",
       "Response",
       "Object.setPrototypeOf",
-      "Object.getOwnPropertySymbols"
+      "Object.getOwnPropertySymbols",
+      "Uint8Array"
     ]
   }
 }

@@ -66,7 +66,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 1. Load the package via `<script>` tag (note you will need to polyfill with [required ES6 features](#required-es6-features)):
 
 ```html
-<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf"></script>
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf%2CUint8Array"></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
@@ -315,6 +315,7 @@ This list is sourced from ESLint output and polyfilled settings through [eslint-
 * `ArrayBuffer.isView`
 * `Object.setPrototypeOf`
 * `Object.getOwnPropertySymbols`
+* `Uint8Array`
 
 
 ## Frequently Asked Questions
