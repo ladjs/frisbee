@@ -26,6 +26,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
   * [Example](#example)
   * [API](#api)
   * [Common Issues](#common-issues)
+  * [Required ES6 Features](#required-es6-features)
 * [Frequently Asked Questions](#frequently-asked-questions)
   * [How do I unset a default header](#how-do-i-unset-a-default-header)
   * [Why do my form uploads randomly fail with React Native](#why-do-my-form-uploads-randomly-fail-with-react-native)
@@ -62,12 +63,10 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 
 #### VanillaJS
 
-See [usage example and API below](#usage) for a more complete example.
+1. Load the package via `<script>` tag (note you will need to polyfill with [required ES6 features](#required-es6-features)):
 
 ```html
-<!-- until this PR is merged we will need to use specific path for es6-promise -->
-<!-- https://github.com/stefanpenner/es6-promise/pull/343 -->
-<script src="https://unpkg.com/es6-promise/dist/es6-promise.auto.min.js"></script>
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf%2CUint8Array"></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
@@ -91,6 +90,8 @@ See [usage example and API below](#usage) for a more complete example.
 </script>
 ```
 
+2. See [usage example and API below](#usage) for a more complete example.
+
 #### Bundler
 
 1. Install the required package:
@@ -99,21 +100,9 @@ See [usage example and API below](#usage) for a more complete example.
    npm install frisbee
    ```
 
-2. (Optional) Install `es6-promise` to polyfill older browsers with `Promise`:
+2. Ensure that your environment is polyfilled with [required ES6 features](#required-es6-features) (e.g. use [@babel/polyfill][babel-polyfill] globally or a service like [polyfill.io](https://polyfill.io))
 
-   ```sh
-   npm install es6-promise
-   ```
-
-3. (Optional) Ensure that you invoke the polyfill for `es6-promise` if you are using it:
-
-   ```js
-    // add optional support for older browsers
-    const es6promise = require('es6-promise');
-    es6promise.polyfill();
-   ```
-
-4. See [usage example and API below](#usage)
+3. See [usage example and API below](#usage)
 
 
 ## Usage
@@ -323,6 +312,19 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 * If you're using `node-fetch`, you need `node-fetch@v1.5.3+` to use `form-data` with files properly (due to [bitinn/node-fetch#102](https://github.com/bitinn/node-fetch/issues/102))
 * If you experience form file upload issues, please see [facebook/react-native#7564 (comment)](https://github.com/facebook/react-native/issues/7564#issuecomment-266323928).
 
+### Required ES6 Features
+
+This list is sourced from ESLint output and polyfilled settings through [eslint-plugin-compat][].
+
+* `fetch`
+* `Promise`
+* `Symbol`
+* `Array.from`
+* `ArrayBuffer.isView`
+* `Object.setPrototypeOf`
+* `Object.getOwnPropertySymbols`
+* `Uint8Array`
+
 
 ## Frequently Asked Questions
 
@@ -507,3 +509,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [request]: https://github.com/request/request
 
 [fetch-methods]: https://developer.mozilla.org/en-US/docs/Web/API/Body
+
+[babel-polyfill]: https://babeljs.io/docs/en/babel-polyfill
+
+[eslint-plugin-compat]: https://github.com/amilajack/eslint-plugin-compat
