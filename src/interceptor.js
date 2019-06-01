@@ -9,7 +9,8 @@ module.exports = class Interceptor {
 
     interceptableMethods.forEach(methodName => {
       const methodFn = API[methodName];
-      API[methodName] = (...args) => this.interceptedMethod(methodFn, ...args);
+      API[methodName] = (...args) =>
+        this.interceptedMethod(methodFn(...args), ...args);
     });
   }
 

@@ -35,6 +35,10 @@ app.get('/querystring', (req, res) => {
   res.json(req.query);
 });
 
+app.get('/delay', (req, res) => {
+  setTimeout(() => res.json(req.query), req.query.delay);
+});
+
 app.delete('/querystring', (req, res) => {
   res.json(req.query);
 });

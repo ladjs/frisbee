@@ -211,6 +211,10 @@ const Frisbee = require('frisbee');
 
   * `raw` - return a raw fetch response (new as of v2.0.4+)
 
+  * `abortToken` - some Symbol that you can use to abort one or more frisbee requests
+
+  * `signal` - an [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) Signal used to cancel a fetch request
+
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
 * `api.auth(creds)` - helper function that sets BasicAuth headers, and it accepts `user` and `pass` arguments
@@ -222,6 +226,10 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
   * If you pass more than two keys, then it will throw an error (since BasicAuth only consists of `user` and `pass` anyways)
 
 * `api.jwt(token)` - helper function that sets a JWT Bearer header. It accepts the `jwt_token` as a single string argument.  If you simply invoke the function `null` as the argument for your token, it will remove JWT headers.
+
+* `api.abort(token)` - aborts all current/queued requests that were created using `token`
+
+* `api.abortAll()` - aborts all current/queued - i.e. `await`-ing in an interceptor - requests
 
 * All exposed HTTP methods return a Promise, and they require a `path` string, and accept an optional `options` object:
 

@@ -1,6 +1,8 @@
 const caseless = require('caseless');
 const qs = require('qs');
 const urlJoin = require('url-join');
+// eslint-disable-next-line import/no-unassigned-import
+require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('cross-fetch/polyfill');
@@ -78,6 +80,31 @@ class Frisbee {
   constructor(opts = {}) {
     this.opts = opts;
 
+    let localAbortController;
+    Object.defineProperty(this, 'abortController', {
+      enumerable: false,
+      get() {
+        if (!localAbortController) {
+          localAbortController = new AbortController();
+          localAbortController.signal.addEventListener('abort', () => {
+            // when this is aborted, null out the localAbortController
+            // so we'll create a new one next time we need it
+            localAbortController = null;
+          });
+        }
+
+        return localAbortController;
+      }
+    });
+
+    const localAbortTokenMap = new Map();
+    Object.defineProperty(this, 'abortTokenMap', {
+      enumerable: false,
+      get() {
+        return localAbortTokenMap;
+      }
+    });
+
     Object.defineProperty(this, 'parseErr', {
       enumerable: false,
       value:
@@ -105,142 +132,218 @@ class Frisbee {
     this.interceptor = new Interceptor(this, methods);
   }
 
+  abort(token) {
+    const mapValue = this.abortTokenMap.get(token);
+    if (mapValue && mapValue.abortController) {
+      mapValue.abortController.abort();
+    }
+  }
+
+  abortAll() {
+    this.abortController.abort();
+  }
+
   _setup(method) {
-    return (path = '/', options = {}) => {
-      // path must be string
-      if (typeof path !== 'string')
-        throw new TypeError('`path` must be a string');
-
-      // otherwise check if its an object
-      if (typeof options !== 'object' || Array.isArray(options))
-        throw new TypeError('`options` must be an object');
-
-      const { raw, ...noRaw } = options;
-
-      const opts = {
-        ...noRaw,
-        headers: {
-          ...this.headers,
-          ...options.headers
-        },
-        method: method === 'del' ? 'DELETE' : method.toUpperCase()
-      };
-
-      // remove any nil or blank headers
-      // (e.g. to automatically set Content-Type with `FormData` boundary)
-      Object.keys(opts.headers).forEach(key => {
-        if (
-          typeof opts.headers[key] === 'undefined' ||
-          opts.headers[key] === null ||
-          opts.headers[key] === ''
-        )
-          delete opts.headers[key];
-      });
-
-      const c = caseless(opts.headers);
-
-      // in order to support Android POST requests
-      // we must allow an empty body to be sent
-      // https://github.com/facebook/react-native/issues/4890
-      if (typeof opts.body === 'undefined' && opts.method === 'POST') {
-        opts.body = '';
-      } else if (typeof opts.body === 'object' || Array.isArray(opts.body)) {
-        if (opts.method === 'GET' || opts.method === 'DELETE') {
-          const { arrayFormat } = this;
-          path += `?${qs.stringify(opts.body, { arrayFormat })}`;
-          delete opts.body;
-        } else if (
-          c.get('Content-Type') &&
-          c.get('Content-Type').split(';')[0] === 'application/json'
-        ) {
-          try {
-            opts.body = JSON.stringify(opts.body);
-          } catch (err) {
-            throw err;
+    return (originalPath = '/', originalOptions = {}) => {
+      if (originalOptions && typeof originalOptions === 'object') {
+        let abortController;
+        if (originalOptions.abortToken) {
+          // allow to use a single token to cancel multiple requests
+          let mapValue = this.abortTokenMap.get(originalOptions.abortToken);
+          if (!mapValue) {
+            mapValue = {
+              abortController: new AbortController(),
+              count: 0
+            };
           }
+
+          mapValue.count++;
+
+          this.abortTokenMap.set(originalOptions.abortToken, mapValue);
+          abortController = mapValue.abortController;
+        } else {
+          abortController = new AbortController();
         }
+
+        // the user has defined their own signal we won't use it directly, but we'll listen to it
+        if (originalOptions.signal) {
+          originalOptions.signal.addEventListener('abort', () =>
+            abortController.abort()
+          );
+        }
+
+        // abort this request whenever this.abortController.abort() gets called - a.k.a. - abortAll()
+        this.abortController.signal.addEventListener('abort', () =>
+          abortController.abort()
+        );
+        originalOptions.signal = abortController.signal;
       }
 
-      return new Promise(async (resolve, reject) => {
-        try {
-          const fullUri = this.opts.baseURI
-            ? urlJoin(this.opts.baseURI, path)
-            : path;
-          const originalRes = await global.fetch(fullUri, opts);
-          const res = createFrisbeeResponse(originalRes);
-          const contentType = res.headers.get('Content-Type');
+      // these can't change with interceptors, otherwise we're in weird behaviour land
+      const { signal, abortToken } = originalOptions;
 
-          if (!res.ok) {
-            res.err = new Error(res.statusText);
+      return async (path = originalPath, options = originalOptions) => {
+        // path must be string
+        if (typeof path !== 'string')
+          throw new TypeError('`path` must be a string');
 
-            // check if the response was JSON, and if so, better the error
+        // otherwise check if its an object
+        if (typeof options !== 'object' || Array.isArray(options))
+          throw new TypeError('`options` must be an object');
+
+        if (options.abortToken !== abortToken) {
+          throw new Error('abortToken cannot be modified via an interceptor');
+        }
+
+        if (options.signal !== signal) {
+          throw new Error('signal cannot be modified via an interceptor');
+        }
+
+        const { raw, ...noRaw } = options;
+
+        const opts = {
+          ...noRaw,
+          headers: {
+            ...this.headers,
+            ...options.headers
+          },
+          method: method === 'del' ? 'DELETE' : method.toUpperCase()
+        };
+
+        // remove any nil or blank headers
+        // (e.g. to automatically set Content-Type with `FormData` boundary)
+        Object.keys(opts.headers).forEach(key => {
+          if (
+            typeof opts.headers[key] === 'undefined' ||
+            opts.headers[key] === null ||
+            opts.headers[key] === ''
+          )
+            delete opts.headers[key];
+        });
+
+        const c = caseless(opts.headers);
+
+        // in order to support Android POST requests
+        // we must allow an empty body to be sent
+        // https://github.com/facebook/react-native/issues/4890
+        if (typeof opts.body === 'undefined' && opts.method === 'POST') {
+          opts.body = '';
+        } else if (typeof opts.body === 'object' || Array.isArray(opts.body)) {
+          if (opts.method === 'GET' || opts.method === 'DELETE') {
+            const { arrayFormat } = this;
+            path += `?${qs.stringify(opts.body, { arrayFormat })}`;
+            delete opts.body;
+          } else if (
+            c.get('Content-Type') &&
+            c.get('Content-Type').split(';')[0] === 'application/json'
+          ) {
+            try {
+              opts.body = JSON.stringify(opts.body);
+            } catch (err) {
+              throw err;
+            }
+          }
+        }
+
+        const response = new Promise(async (resolve, reject) => {
+          try {
+            const fullUri = this.opts.baseURI
+              ? urlJoin(this.opts.baseURI, path)
+              : path;
+            const originalRes = await fetch(fullUri, opts);
+            const res = createFrisbeeResponse(originalRes);
+            const contentType = res.headers.get('Content-Type');
+
+            if (!res.ok) {
+              res.err = new Error(res.statusText);
+
+              // check if the response was JSON, and if so, better the error
+              if (contentType && contentType.includes('application/json')) {
+                try {
+                  // attempt to parse json body to use as error message
+                  if (typeof res.json === 'function') {
+                    res.body = await res.json();
+                  } else {
+                    res.body = await res.text();
+                    res.body = JSON.parse(res.body);
+                  }
+
+                  // attempt to use better and human-friendly error messages
+                  if (
+                    typeof res.body === 'object' &&
+                    typeof res.body.message === 'string'
+                  ) {
+                    res.err = new Error(res.body.message);
+                  } else if (
+                    !Array.isArray(res.body) &&
+                    // attempt to utilize Stripe-inspired error messages
+                    typeof res.body.error === 'object'
+                  ) {
+                    if (res.body.error.message)
+                      res.err = new Error(res.body.error.message);
+                    if (res.body.error.stack)
+                      res.err.stack = res.body.error.stack;
+                    if (res.body.error.code) res.err.code = res.body.error.code;
+                    if (res.body.error.param)
+                      res.err.param = res.body.error.param;
+                  }
+                } catch (err) {
+                  res.err = this.parseErr;
+                }
+              }
+
+              resolve(res);
+              return;
+            }
+
+            // if we just want a raw response then return early
+            if (raw === true || (this.raw && raw !== false))
+              return resolve(res.originalResponse);
+
+            // determine whether we're returning text or json for body
             if (contentType && contentType.includes('application/json')) {
               try {
-                // attempt to parse json body to use as error message
                 if (typeof res.json === 'function') {
                   res.body = await res.json();
                 } else {
                   res.body = await res.text();
                   res.body = JSON.parse(res.body);
                 }
-
-                // attempt to use better and human-friendly error messages
-                if (
-                  typeof res.body === 'object' &&
-                  typeof res.body.message === 'string'
-                ) {
-                  res.err = new Error(res.body.message);
-                } else if (
-                  !Array.isArray(res.body) &&
-                  // attempt to utilize Stripe-inspired error messages
-                  typeof res.body.error === 'object'
-                ) {
-                  if (res.body.error.message)
-                    res.err = new Error(res.body.error.message);
-                  if (res.body.error.stack)
-                    res.err.stack = res.body.error.stack;
-                  if (res.body.error.code) res.err.code = res.body.error.code;
-                  if (res.body.error.param)
-                    res.err.param = res.body.error.param;
-                }
               } catch (err) {
-                res.err = this.parseErr;
+                if (contentType === 'application/json') {
+                  res.err = this.parseErr;
+                  resolve(res);
+                  return;
+                }
               }
+            } else {
+              res.body = await res.text();
             }
 
             resolve(res);
-            return;
+          } catch (err) {
+            reject(err);
           }
+        });
+        try {
+          await response;
+        } catch (err) {}
 
-          // if we just want a raw response then return early
-          if (raw === true || (this.raw && raw !== false))
-            return resolve(res.originalResponse);
-
-          // determine whether we're returning text or json for body
-          if (contentType && contentType.includes('application/json')) {
-            try {
-              if (typeof res.json === 'function') {
-                res.body = await res.json();
-              } else {
-                res.body = await res.text();
-                res.body = JSON.parse(res.body);
-              }
-            } catch (err) {
-              if (contentType === 'application/json') {
-                res.err = this.parseErr;
-                resolve(res);
-                return;
-              }
-            }
+        // update the abortTokenMap
+        const mapValue = this.abortTokenMap.get(options.abortToken);
+        if (mapValue) {
+          if (mapValue.count - 1 === 0) {
+            this.abortTokenMap.delete(options.abortToken);
           } else {
-            res.body = await res.text();
+            this.abortTokenMap.set(options.abortToken, {
+              ...mapValue,
+              count: --mapValue.count
+            });
           }
-
-          resolve(res);
-        } catch (err) {
-          reject(err);
         }
-      });
+
+        return response;
+      };
     };
   }
 
