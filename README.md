@@ -237,9 +237,15 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
     * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` if set)
 
-    * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.
+    * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.  **This `options` object is passed to the native Fetch API method, which means you can use native Fetch API method options as well from here <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>**
 
         Here are a few examples (you can override/merge your set default headers as well per request):
+
+      * To turn off caching, pass `cache: 'reload'` to native fetch options:
+
+        ```js
+        const res = await api.get('/v1/messages', { cache: 'reload' });
+        ```
 
       * To set a custom header value of `X-Reply-To` on a `POST` request:
 
