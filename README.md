@@ -26,7 +26,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
   * [Example](#example)
   * [API](#api)
   * [Common Issues](#common-issues)
-  * [Required ES6 Features](#required-es6-features)
+  * [Required Features](#required-features)
 * [Frequently Asked Questions](#frequently-asked-questions)
   * [How do I unset a default header](#how-do-i-unset-a-default-header)
   * [Why do my form uploads randomly fail with React Native](#why-do-my-form-uploads-randomly-fail-with-react-native)
@@ -63,10 +63,10 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 
 #### VanillaJS
 
-1. Load the package via `<script>` tag (note you will need to polyfill with [required ES6 features](#required-es6-features)):
+1. Load the package via `<script>` tag (note you will need to polyfill with [required features](#required-features)):
 
 ```html
-<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf%2CUint8Array"></script>
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf%2CUint8Array%2CMap%2CReflect"></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
@@ -100,7 +100,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
    npm install frisbee
    ```
 
-2. Ensure that your environment is polyfilled with [required ES6 features](#required-es6-features) (e.g. use [@babel/polyfill][babel-polyfill] globally or a service like [polyfill.io](https://polyfill.io))
+2. Ensure that your environment is polyfilled with [required features](#required-features) (e.g. use [@babel/polyfill][babel-polyfill] globally or a service like [polyfill.io](https://polyfill.io))
 
 3. See [usage example and API below](#usage)
 
@@ -312,7 +312,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 * If you're using `node-fetch`, you need `node-fetch@v1.5.3+` to use `form-data` with files properly (due to [bitinn/node-fetch#102](https://github.com/bitinn/node-fetch/issues/102))
 * If you experience form file upload issues, please see [facebook/react-native#7564 (comment)](https://github.com/facebook/react-native/issues/7564#issuecomment-266323928).
 
-### Required ES6 Features
+### Required Features
 
 This list is sourced from ESLint output and polyfilled settings through [eslint-plugin-compat][].
 
@@ -324,6 +324,8 @@ This list is sourced from ESLint output and polyfilled settings through [eslint-
 * `Object.setPrototypeOf`
 * `Object.getOwnPropertySymbols`
 * `Uint8Array`
+* `Reflect`
+* `Map`
 
 
 ## Frequently Asked Questions
@@ -444,6 +446,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 | **Brent Vatne**      |                            |
 | **Hosmel Quintana**  |                            |
 | **Kyle Kirbatski**   |                            |
+| **Adam Jenkins**     |                            |
 
 
 ## Credits

@@ -34,7 +34,9 @@
       "Response",
       "Object.setPrototypeOf",
       "Object.getOwnPropertySymbols",
-      "Uint8Array"
+      "Uint8Array",
+      "Reflect",
+      "Map"
     ]
   }
 }

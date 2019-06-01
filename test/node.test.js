@@ -330,8 +330,8 @@ test('should abort with AbortController signal native style', async t => {
   const req = api.get('/', { signal: controller.signal });
   controller.abort();
 
-  const { type } = await t.throwsAsync(req);
-  t.is(type, 'aborted');
+  const { name } = await t.throwsAsync(req);
+  t.is(name, 'AbortError');
 });
 
 test('should abort using a token', async t => {
@@ -342,8 +342,8 @@ test('should abort using a token', async t => {
   const req = api.get('/', { abortToken });
   api.abort(abortToken);
 
-  const { type } = await t.throwsAsync(req);
-  t.is(type, 'aborted');
+  const { name } = await t.throwsAsync(req);
+  t.is(name, 'AbortError');
 });
 
 test('should not abort if different token is passed in', async t => {
@@ -367,10 +367,10 @@ test('should only abort one request when aborting with a token', async t => {
   const nonAbortedReqTwo = api.get('/', { abortToken: 'some other token' });
   api.abort(abortToken);
 
-  const { type } = await t.throwsAsync(abortedReq);
+  const { name } = await t.throwsAsync(abortedReq);
   await t.notThrowsAsync(nonAbortedReq);
   await t.notThrowsAsync(nonAbortedReqTwo);
-  t.is(type, 'aborted');
+  t.is(name, 'AbortError');
 });
 
 test('should abort all', async t => {
@@ -384,8 +384,8 @@ test('should abort all', async t => {
 
   const reason = await t.throwsAsync(req);
   const reasonTwo = await t.throwsAsync(reqTwo);
-  t.is(reason.type, 'aborted');
-  t.is(reasonTwo.type, 'aborted');
+  t.is(reason.name, 'AbortError');
+  t.is(reasonTwo.name, 'AbortError');
 });
 
 test('should abort using abortAll when using their own signal', async t => {
@@ -396,8 +396,8 @@ test('should abort using abortAll when using their own signal', async t => {
   const req = api.get('/', { signal: controller.signal });
   api.abortAll();
 
-  const { type } = await t.throwsAsync(req);
-  t.is(type, 'aborted');
+  const { name } = await t.throwsAsync(req);
+  t.is(name, 'AbortError');
 });
 
 test('should abort using abortToken when using their own signal', async t => {
@@ -409,8 +409,8 @@ test('should abort using abortToken when using their own signal', async t => {
   const req = api.get('/', { signal: controller.signal, abortToken });
   api.abort(abortToken);
 
-  const { type } = await t.throwsAsync(req);
-  t.is(type, 'aborted');
+  const { name } = await t.throwsAsync(req);
+  t.is(name, 'AbortError');
 });
 
 test('should not abort new requests after abortAll has been called ', async t => {
@@ -421,8 +421,8 @@ test('should not abort new requests after abortAll has been called ', async t =>
   api.abortAll();
   const reqTwo = api.get('/');
   await t.notThrowsAsync(reqTwo);
-  const { type } = await t.throwsAsync(req);
-  t.is(type, 'aborted');
+  const { name } = await t.throwsAsync(req);
+  t.is(name, 'AbortError');
 });
 
 test('should cancel all requests that use the same abort token', async t => {

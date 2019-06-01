@@ -1,6 +1,11 @@
 {
   "extends": ["eslint:recommended", "plugin:node/recommended"],
   "rules": {
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "no-console": "off"
+  },
+  "globals": {
+    "fetch": "readonly",
+    "AbortController": "readonly"
   }
 }
