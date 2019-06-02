@@ -152,6 +152,30 @@ standardMethods.forEach(method => {
   });
 });
 
+test.serial(
+  oneLine`should not strip trailing slash on GET requests with params`,
+  async t => {
+    // Since `express` does not distinguish `path/?param` from `path?param`,
+    // we instead spy on the URL passed to the `fetch()` call.
+    // `test.serial` is used to prevent global-stub errors.
+    sinon.stub(global, 'fetch');
+    try {
+      const api = new Frisbee(options);
+      try {
+        await api.get('/querystring/', { body: { param: 'foo' } });
+      } catch (err) {
+        // We broke `fetch`, so this is expected
+      }
+
+      const [url] = fetch.getCall(0).args;
+      const hasTrailingSlash = url.indexOf('querystring/?') !== -1;
+      t.true(hasTrailingSlash, 'Trailing slash is still present');
+    } finally {
+      fetch.restore();
+    }
+  }
+);
+
 test(
   oneLine`should stringify querystring parameters for GET and DELETE requests`,
   async t => {
