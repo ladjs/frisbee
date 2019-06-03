@@ -184,7 +184,7 @@ const Frisbee = require('frisbee');
 
 * `Frisbee` - accepts an `options` object, with the following accepted options:
 
-  * `baseURI` - the default URI to use as a prefix for all HTTP requests (optional as of v2.0.4+)
+  * `baseURI` (String) - the default URI to use as a prefix for all HTTP requests (optional as of v2.0.4+)
 
     * If your API server is running on `http://localhost:8080`, then use that as the value for this option
 
@@ -202,19 +202,47 @@ const Frisbee = require('frisbee');
 
     * Using [React Native][react-native]?  You might want to read this article about [automatic IP configuration][automatic-ip-configuration].
 
-  * `headers` - an object containing default headers to send with every request
+  * `headers` (Object) - an object containing default headers to send with every request
 
     * **Tip**: You'll most likely want to set the `"Accept"` header to `"application/json"` and the `"Content-Type"` header to `"application/json"`
 
+  * `body` (Object) - an object containing default body payload to send with every request  (API method specific `params` options will override or extend properties defined here, but not deep merge)
+
+  * `params` (Object) an object containing default querystring parameters to send with every request (API method specific `params` options will override or extend properties defined here, but will not deep merge)
+
   * `auth` - will call the `auth()` function below and set it as a default
 
-  * `arrayFormat` - how to stringify array in passed body. See [qs][qs-url] for available formats
+  * `parse` - options passed to `qs.parse` method (see [qs][qs-url] for all available options)
 
-  * `raw` - return a raw fetch response (new as of v2.0.4+)
+    * `ignoreQueryPrefix` (Boolean) - defaults to `true`, and parses querystrings from URL's properly
 
-  * `abortToken` - some Symbol that you can use to abort one or more frisbee requests
+  * `stringify` - options passed to `qs.stringify` method (see [qs][qs-url] for all available options)
 
-  * `signal` - an [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) Signal used to cancel a fetch request
+    * `addQueryPrefix` (Boolean) - defaults to `true`, and affixes the path with required `?` parameter if a querystring is to be passed
+
+    * `format` (String) - defaults to `RFC1738`
+
+    * `arrayFormat` (String) - defaults to `'indices'`
+
+  * `preventBodyOnMethods` (Array) - defaults to `[ 'GET', 'HEAD', 'DELETE', 'CONNECT' ]`, and is an Array of HTTP method names that we will convert a `body` option to be querystringified URL parameters (e.g. `api.get('/v1/users', { search: 'foo' })` will result in `GET /v1/users?search=foo`).  According to [RFC 7231](https://tools.ietf.org/html/rfc7231), the default methods defined here have no defined semantics for having a payload body, and having one may cause some implementations to reject the request (which is why we set this as a default).  If you wish to disable this, you may pass `preventBodyOnMethods: false` or your own custom Array `preventBodyOnMethods: [ ... ]`
+
+  * `interceptableMethods` (Array) - defaults to all API methods supported below (defaults to `GET`, `HEAD`, `POST`, `PUT`, `DELETE`, `OPTIONS`, `PATCH`)
+
+  * `raw` (Boolean) - return a raw fetch response (new as of v2.0.4+)
+
+  * `abortToken` (Symbol) - some Symbol that you can use to abort one or more frisbee requests
+
+  * `signal` (Object) - an [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) Signal used to cancel a fetch request
+
+  * `mode` (String) - passed to fetch, defaults to "same-origin" (see [Fetch's documentation][fetch-documentation] for more info)
+
+  * `cache` (String) - passed to fetch, defaults to "default" (see [Fetch's documentation][fetch-documentation] for more info)
+
+  * `credentials` (String) - passed to fetch, defaults to "same-origin" (see [Fetch's documentation][fetch-documentation] for more info)
+
+  * `redirect` (String) - passed to fetch, defaults to "follow" (see [Fetch's documentation][fetch-documentation] for more info)
+
+  * `referrer` (String) - passed to fetch, defaults to "client" (see [Fetch's documentation][fetch-documentation] for more info)
 
 Upon being invoked, `Frisbee` returns an object with the following chainable methods:
 
@@ -238,9 +266,15 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
     * `path` **required** - the path for the HTTP request (e.g. `/v1/login`, will be prefixed with the value of `baseURI` if set)
 
-    * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.  **This `options` object is passed to the native Fetch API method, which means you can use native Fetch API method options as well from here <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>**
+    * `options` _optional_ - an object containing options, such as header values, a request body, form data, or a querystring to send along with the request. These options by default are inherited from global options passed to `new Frisbee({ options })`.  For the `GET` method (and the `DELETE` method as of version `1.3.0`), `body` data will be encoded in the query string.  \*\*This `options` object is passed to the native Fetch API method, which means you can use native Fetch API method options as well from [Fetch's documentation][fetch-documentation]
 
-        Here are a few examples (you can override/merge your set default headers as well per request):
+      > To make only a certain request be raw and not parsed by Frisbee:
+
+      ```js
+      const res = await api.get('/v1/messages', { raw: false });
+      ```
+
+      > Here are a few examples (you can override/merge your set default headers as well per request):
 
       * To turn off caching, pass `cache: 'reload'` to native fetch options:
 
@@ -267,6 +301,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     * `api.post(path, options)` - POST
     * `api.put(path, options)` - PUT
     * `api.del(path, options)` - DELETE
+    * `api.delete(path, options)` - DELETE
     * `api.options(path, options)` - OPTIONS (_does not currently work - see tests_)
     * `api.patch(path, options)` - PATCH
 
@@ -316,7 +351,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
 ### Debugging
 
-If you want to debug request and responses, we recommend to use [xhook][].
+Out of the box you can run your application with `DEBUG=frisbee node app.js` to output debug logging with Frisbee, but if you want to further debug request and responses, we recommend to use [xhook][].
 
 We also **highly recommend** to [use CabinJS as your Node.js and JavaScript logging utility][cabin] (see [Automatic Request Logging](https://cabinjs.com/#/?id=automatic-request-logging) for complete examples).
 
@@ -533,3 +568,5 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [xhook]: https://github.com/jpillora/xhook
 
 [cabin]: https://cabinjs.com
+
+[fetch-documentation]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch

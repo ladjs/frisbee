@@ -52,7 +52,7 @@ test('should accept valid auth("user:pass") usage', t => {
   const creds = 'foo:bar';
   api.auth('foo:bar');
   const basicAuthHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
-  t.is(api.headers.Authorization, basicAuthHeader);
+  t.is(api.opts.headers.Authorization, basicAuthHeader);
 });
 
 test('should allow chaining of `auth` and an HTTP method', async t => {
@@ -63,7 +63,7 @@ test('should allow chaining of `auth` and an HTTP method', async t => {
 test('should allow removal of auth() header', t => {
   const api = new Frisbee(options);
   api.auth('foo').auth();
-  t.true(_.isUndefined(api.headers.Authorization));
+  t.true(_.isUndefined(api.opts.headers.Authorization));
 });
 
 test('should throw an error if we fail to pass a string `path`', async t => {
@@ -151,6 +151,30 @@ standardMethods.forEach(method => {
     }
   });
 });
+
+test.serial(
+  oneLine`should not strip trailing slash on GET requests with params`,
+  async t => {
+    // Since `express` does not distinguish `path/?param` from `path?param`,
+    // we instead spy on the URL passed to the `fetch()` call.
+    // `test.serial` is used to prevent global-stub errors.
+    sinon.stub(global, 'fetch');
+    try {
+      const api = new Frisbee(options);
+      try {
+        await api.get('/querystring/', { body: { param: 'foo' } });
+      } catch (err) {
+        // We broke `fetch`, so this is expected
+      }
+
+      const [url] = fetch.getCall(0).args;
+      const hasTrailingSlash = url.indexOf('querystring/?') !== -1;
+      t.true(hasTrailingSlash, 'Trailing slash is still present');
+    } finally {
+      fetch.restore();
+    }
+  }
+);
 
 test(
   oneLine`should stringify querystring parameters for GET and DELETE requests`,
@@ -288,7 +312,7 @@ test('should set global raw', async t => {
     ...options,
     raw: true
   });
-  t.true(api.raw);
+  t.true(api.opts.raw);
   const res = await api.get('/querystring');
   t.true(isStream(res.body));
 });
@@ -297,7 +321,7 @@ test('should set request raw', async t => {
   const api = new Frisbee({
     ...options
   });
-  t.false(api.raw);
+  t.false(api.opts.raw);
   const res = await api.get('/querystring', { raw: true });
   t.true(isStream(res.body));
 });
@@ -307,7 +331,7 @@ test('should allow false request raw with global raw', async t => {
     ...options,
     raw: true
   });
-  t.true(api.raw);
+  t.true(api.opts.raw);
   const res = await api.get('/querystring', { raw: false });
   t.false(isStream(res.body));
 });
@@ -497,3 +521,111 @@ test('should remove everything from abortTokenMap after requests have completed'
   await three;
   t.is(api.abortTokenMap.size, 0);
 });
+
+test.serial(oneLine`should allow params into querystring`, async t => {
+  sinon.stub(global, 'fetch');
+  try {
+    const api = new Frisbee(options);
+    try {
+      await api.get('/', { params: { foo: 'bar' } });
+    } catch (err) {
+      // We broke `fetch`, so this is expected
+    }
+
+    const [url] = fetch.getCall(0).args;
+    t.is(url, `${options.baseURI}/?foo=bar`);
+  } finally {
+    fetch.restore();
+  }
+});
+
+test.serial(oneLine`should merge params into querystring`, async t => {
+  sinon.stub(global, 'fetch');
+  try {
+    const api = new Frisbee(options);
+    try {
+      await api.get('/?foo=bar', { params: { beep: 'boop' } });
+    } catch (err) {
+      // We broke `fetch`, so this is expected
+    }
+
+    const [url] = fetch.getCall(0).args;
+    t.is(url, `${options.baseURI}/?beep=boop&foo=bar`);
+  } finally {
+    fetch.restore();
+  }
+});
+
+test.serial(
+  oneLine`should allow global and method specific params into querystring`,
+  async t => {
+    sinon.stub(global, 'fetch');
+    try {
+      const api = new Frisbee({
+        ...options,
+        params: {
+          hello: 'world'
+        }
+      });
+      try {
+        await api.get('/?foo=bar', { params: { beep: 'boop' } });
+      } catch (err) {
+        // We broke `fetch`, so this is expected
+      }
+
+      const [url] = fetch.getCall(0).args;
+      t.is(url, `${options.baseURI}/?hello=world&beep=boop&foo=bar`);
+    } finally {
+      fetch.restore();
+    }
+  }
+);
+
+test.serial(
+  oneLine`should allow params in URL to override all others`,
+  async t => {
+    sinon.stub(global, 'fetch');
+    try {
+      const api = new Frisbee(options);
+      try {
+        await api.get('/?foo=beep', { params: { foo: 'bar' } });
+      } catch (err) {
+        // We broke `fetch`, so this is expected
+      }
+
+      const [url] = fetch.getCall(0).args;
+      t.is(url, `${options.baseURI}/?foo=beep`);
+    } finally {
+      fetch.restore();
+    }
+  }
+);
+
+test.serial(
+  oneLine`should allow params in method to override global`,
+  async t => {
+    sinon.stub(global, 'fetch');
+    try {
+      const api = new Frisbee({
+        ...options,
+        params: {
+          hello: 'world'
+        }
+      });
+      try {
+        await api.get('/', { params: { hello: 'bar' } });
+      } catch (err) {
+        // We broke `fetch`, so this is expected
+      }
+
+      const [url] = fetch.getCall(0).args;
+      t.is(url, `${options.baseURI}/?hello=bar`);
+    } finally {
+      fetch.restore();
+    }
+  }
+);
+
+test.todo('body');
+test.todo('body inherited');
+test.todo('body with override');

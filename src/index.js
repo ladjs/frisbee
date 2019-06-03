@@ -1,6 +1,9 @@
 const caseless = require('caseless');
 const qs = require('qs');
 const urlJoin = require('url-join');
+const URL = require('url-parse');
+const debug = require('debug')('frisbee');
+const boolean = require('boolean');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('cross-fetch/polyfill');
@@ -10,7 +13,18 @@ require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
 
 const Interceptor = require('./interceptor');
 
-const methods = ['get', 'head', 'post', 'put', 'del', 'options', 'patch'];
+const METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'];
+const MODES = ['no-cors', 'cors', 'same-origin'];
+const CACHE = [
+  'default',
+  'no-cache',
+  'reload',
+  'force-cache',
+  'only-if-cached'
+];
+const CREDENTIALS = ['include', 'same-origin', 'omit'];
+const REDIRECT = ['manual', 'follow', 'error'];
+const REFERRER = ['no-referrer', 'client'];
 
 const respProperties = {
   readOnly: [
@@ -79,7 +93,26 @@ function createFrisbeeResponse(origResp) {
 
 class Frisbee {
   constructor(opts = {}) {
-    this.opts = opts;
+    this.opts = {
+      parse: {
+        ignoreQueryPrefix: true
+      },
+      stringify: {
+        addQueryPrefix: true,
+        format: 'RFC1738',
+        arrayFormat: 'indices'
+      },
+      preventBodyOnMethods: ['GET', 'HEAD', 'DELETE', 'CONNECT'],
+      interceptableMethods: METHODS,
+      mode: 'same-origin',
+      cache: 'default',
+      credentials: 'same-origin',
+      redirect: 'follow',
+      referrer: 'client',
+      body: null,
+      params: null,
+      ...opts
+    };
 
     let localAbortController;
     Object.defineProperty(this, 'abortController', {
@@ -111,26 +144,35 @@ class Frisbee {
       value:
         opts.parseErr ||
         new Error(
-          `Invalid JSON received${opts.baseURI ? ` from ${opts.baseURI}` : ''}`
+          `Invalid JSON received${
+            this.opts.baseURI ? ` from ${this.opts.baseURI}` : ''
+          }`
         )
     });
 
-    this.headers = {
-      ...opts.headers
-    };
+    if (opts.arrayFormat) {
+      this.opts.parse.arrayFormat = 'indices';
+      delete opts.arrayFormat;
+    }
 
-    this.arrayFormat = opts.arrayFormat || 'indices';
+    if (Array.isArray(opts.preventBodyOnMethods))
+      this.opts.preventBodyOnMethods = this.opts.preventBodyOnMethods.map(
+        method => method.toUpperCase().trim()
+      );
 
-    this.raw = opts.raw === true;
+    this.opts.raw = boolean(this.opts.raw);
 
-    if (opts.auth) this.auth(opts.auth);
+    if (this.opts.auth) this.auth(this.opts.auth);
 
-    methods.forEach(method => {
-      this[method] = this._setup(method);
+    METHODS.forEach(method => {
+      this[method.toLowerCase()] = this._setup(method.toLowerCase());
     });
 
+    // alias for `this.del` -> `this.delete`
+    this.del = this._setup('delete');
+
     // interceptor should be initialized after methods setup
-    this.interceptor = new Interceptor(this, methods);
+    this.interceptor = new Interceptor(this, this.opts.interceptableMethods);
 
     // bind scope to method
     this.auth = this.auth.bind(this);
@@ -204,6 +246,7 @@ class Frisbee {
 
   _request({ method, originalPath, originalOptions, signal, abortToken }) {
     return async (path = originalPath, options = originalOptions) => {
+      debug('frisbee', method, path, options);
       // path must be string
       if (typeof path !== 'string')
         throw new TypeError('`path` must be a string');
@@ -220,16 +263,25 @@ class Frisbee {
         throw new Error('signal cannot be modified via an interceptor');
       }
 
-      const { raw, ...noRaw } = options;
-
       const opts = {
-        ...noRaw,
+        method: method === 'del' ? 'DELETE' : method.toUpperCase(),
+        mode: options.mode || this.opts.mode,
+        cache: options.cache || this.opts.cache,
+        credentials: options.credentials || this.opts.credentials,
         headers: {
-          ...this.headers,
+          ...this.opts.headers,
           ...options.headers
         },
-        method: method === 'del' ? 'DELETE' : method.toUpperCase()
+        redirect: options.redirect || this.opts.redirect,
+        referrer: options.referrer || this.opts.referrer,
+        signal
       };
+
+      if (this.opts.body || options.body)
+        opts.body = { ...this.opts.body, ...options.body };
+
+      if (this.opts.params || options.params)
+        opts.params = { ...this.opts.params, ...options.params };
 
       // remove any nil or blank headers
       // (e.g. to automatically set Content-Type with `FormData` boundary)
@@ -244,15 +296,48 @@ class Frisbee {
 
       const c = caseless(opts.headers);
 
+      // parse the path so that we can support
+      // mixed params in body and in url path
+      // e.g. `api.get('/v1/users?search=nifty`
+      // = /v1/users?search=nifty
+      // e.g. `api.get('/v1/users?search=nifty', { foo: 'bar' });
+      // = /v1/users?search=nifty&foo=bar
+      const url = new URL(path, {}, false);
+      const href =
+        url.origin === 'null'
+          ? this.opts.baseURI
+            ? urlJoin(this.opts.baseURI, url.pathname)
+            : url.pathname
+          : `${url.origin}${url.pathname}`;
+      let query = qs.parse(url.query, options.parse || this.opts.parse);
+
+      // allow params to be passed
+      if (options.params || this.opts.params)
+        query = { ...this.opts.params, ...options.params, ...query };
+
       // in order to support Android POST requests
       // we must allow an empty body to be sent
       // https://github.com/facebook/react-native/issues/4890
       if (typeof opts.body === 'undefined' && opts.method === 'POST') {
         opts.body = '';
-      } else if (typeof opts.body === 'object' || Array.isArray(opts.body)) {
-        if (opts.method === 'GET' || opts.method === 'DELETE') {
-          const { arrayFormat } = this;
-          path += `?${qs.stringify(opts.body, { arrayFormat })}`;
+      } else if (typeof opts.body === 'object') {
+        //
+        // according to RFC7231, `GET`, `HEAD`, `DELETE`, and `CONNECT`:
+        //
+        // > A payload within a $METHOD request message has no defined semantics;
+        // > sending a payload body on a $METHOD request might cause some existing
+        // > implementations to reject the request.
+        //
+        // <https://tools.ietf.org/html/rfc7231>
+        //
+        const preventBodyOnMethods =
+          options.preventBodyOnMethods || this.opts.preventBodyOnMethods;
+        debug('preventBodyOnMethods', preventBodyOnMethods);
+        if (
+          Array.isArray(preventBodyOnMethods) &&
+          preventBodyOnMethods.includes(opts.method)
+        ) {
+          query = { ...opts.body, ...query };
           delete opts.body;
         } else if (
           c.get('Content-Type') &&
@@ -266,10 +351,19 @@ class Frisbee {
         }
       }
 
+      const querystring = qs.stringify(
+        query,
+        options.stringify || this.opts.stringify
+      );
+
       let response;
       let error;
       try {
-        response = await this._fetch(path, opts, raw);
+        response = await this._fetch(
+          href + querystring,
+          opts,
+          typeof options.raw === 'boolean' ? options.raw : this.opts.raw
+        );
       } catch (err) {
         error = err;
       }
@@ -326,15 +420,61 @@ class Frisbee {
   }
 
   async _fetch(path, opts, raw) {
-    const fullUri = this.opts.baseURI ? urlJoin(this.opts.baseURI, path) : path;
-    const originalRes = await fetch(fullUri, opts);
+    debug('fetch', path, opts);
+    debug('raw', raw);
+    // <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>
+    // mode - no-cors, cors, *same-origin
+    // cache - *default, no-cache, reload, force-cache, only-if-cached
+    // credentials - include, *same-origin, omit
+    // redirect - manual, follow*, error
+    // referrer - no-referrer, *client
+    if (!METHODS.includes(opts.method))
+      throw new Error(
+        `Invalid "method" of "${opts.method}", must be one of: ${METHODS.join(
+          ', '
+        )}`
+      );
+
+    if (!MODES.includes(opts.mode))
+      throw new Error(
+        `Invalid "mode" of "${opts.mode}", must be one of: ${MODES.join(', ')}`
+      );
+
+    if (!CACHE.includes(opts.cache))
+      throw new Error(
+        `Invalid "cache" of "${opts.cache}", must be one of: ${CACHE.join(
+          ', '
+        )}`
+      );
+
+    if (!CREDENTIALS.includes(opts.credentials))
+      throw new Error(
+        `Invalid "credentials" of "${
+          opts.credentials
+        }", must be one of: ${CREDENTIALS.join(', ')}`
+      );
+
+    if (!REDIRECT.includes(opts.redirect))
+      throw new Error(
+        `Invalid "redirect" of "${
+          opts.redirect
+        }", must be one of: ${REDIRECT.join(', ')}`
+      );
+
+    if (!REFERRER.includes(opts.referrer))
+      throw new Error(
+        `Invalid "referrer" of "${
+          opts.referrer
+        }", must be one of: ${REFERRER.join(', ')}`
+      );
+
+    const originalRes = await fetch(path, opts);
     const res = createFrisbeeResponse(originalRes);
     const contentType = res.headers.get('Content-Type');
 
     if (res.ok) {
       // if we just want a raw response then return early
-      if (raw === true || (this.raw && raw !== false))
-        return res.originalResponse;
+      if (raw) return res.originalResponse;
 
       // determine whether we're returning text or json for body
       if (contentType && contentType.includes('application/json')) {
@@ -399,9 +539,9 @@ class Frisbee {
       throw new TypeError('auth option `pass` must be a string');
 
     if (!creds[0] && !creds[1]) {
-      delete this.headers.Authorization;
+      delete this.opts.headers.Authorization;
     } else {
-      this.headers.Authorization = `Basic ${Buffer.from(
+      this.opts.headers.Authorization = `Basic ${Buffer.from(
         creds.join(':')
       ).toString('base64')}`;
     }
@@ -411,9 +551,9 @@ class Frisbee {
 
   jwt(token) {
     if (token === null || token === undefined)
-      delete this.headers.Authorization;
+      delete this.opts.headers.Authorization;
     else if (typeof token === 'string')
-      this.headers.Authorization = `Bearer ${token}`;
+      this.opts.headers.Authorization = `Bearer ${token}`;
     else throw new TypeError('jwt token must be a string');
 
     return this;

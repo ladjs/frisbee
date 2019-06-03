@@ -7,9 +7,25 @@ module.exports = class Interceptor {
     if (interceptableMethods.length === 0)
       throw new Error('no methods were added to interceptableMethods');
 
+    interceptableMethods = interceptableMethods.map(method =>
+      method.toLowerCase()
+    );
+
+    if (
+      interceptableMethods.includes('delete') &&
+      !interceptableMethods.includes('del')
+    )
+      interceptableMethods.push('del');
+
+    if (
+      interceptableMethods.includes('del') &&
+      !interceptableMethods.includes('delete')
+    )
+      interceptableMethods.push('delete');
+
     interceptableMethods.forEach(methodName => {
-      const methodFn = API[methodName];
-      API[methodName] = (...args) =>
+      const methodFn = API[methodName.toLowerCase()];
+      API[methodName.toLowerCase()] = (...args) =>
         this.interceptedMethod(methodFn(...args), ...args);
     });
   }

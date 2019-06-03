@@ -17,7 +17,9 @@
     "no-empty": "off",
     "no-useless-escape": "off",
     "no-fallthrough": "off",
-    "getter-return": "off"
+    "getter-return": "off",
+    "no-control-regex": "off",
+    "no-cond-assign": "off"
   },
   "globals": {
     "regeneratorRuntime": "writable"

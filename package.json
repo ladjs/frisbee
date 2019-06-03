@@ -41,11 +41,14 @@
   "dependencies": {
     "@babel/runtime": "^7.4.5",
     "abortcontroller-polyfill": "^1.3.0",
+    "boolean": "^1.0.0",
     "caseless": "^0.12.0",
     "common-tags": "^1.8.0",
     "cross-fetch": "^3.0.3",
+    "debug": "^4.1.1",
     "qs": "^6.7.0",
-    "url-join": "^4.0.0"
+    "url-join": "^4.0.0",
+    "url-parse": "^1.4.7"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -179,6 +182,12 @@
     ],
     "ignore": [
       "config.js"
-    ]
+    ],
+    "rules": {
+      "complexity": [
+        "error",
+        38
+      ]
+    }
   }
 }
