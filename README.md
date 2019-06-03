@@ -25,6 +25,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 * [Usage](#usage)
   * [Example](#example)
   * [API](#api)
+  * [Debugging](#debugging)
   * [Common Issues](#common-issues)
   * [Required Features](#required-features)
 * [Frequently Asked Questions](#frequently-asked-questions)
@@ -313,6 +314,12 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     * The `request`/`requestError` functions will run in the same order `ONE->TWO->THREE`.
     * The `response`/`responseError` functions will run in reversed order `THREE->TWO->ONE`.
 
+### Debugging
+
+If you want to debug request and responses, we recommend to use [xhook][].
+
+We also **highly recommend** to [use CabinJS as your Node.js and JavaScript logging utility][cabin] (see [Automatic Request Logging](https://cabinjs.com/#/?id=automatic-request-logging) for complete examples).
+
 ### Common Issues
 
 * If you're using `node-fetch`, you need `node-fetch@v1.5.3+` to use `form-data` with files properly (due to [bitinn/node-fetch#102](https://github.com/bitinn/node-fetch/issues/102))
@@ -522,3 +529,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [babel-polyfill]: https://babeljs.io/docs/en/babel-polyfill
 
 [eslint-plugin-compat]: https://github.com/amilajack/eslint-plugin-compat
+
+[xhook]: https://github.com/jpillora/xhook
+
+[cabin]: https://cabinjs.com
