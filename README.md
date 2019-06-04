@@ -212,7 +212,7 @@ const Frisbee = require('frisbee');
 
   * `logRequest` (Function) - a function that accepts two arguments `path` (String) and `opts` (Object) and will be called with before a fetch request is made with (e.g. `fetch(path, opts)` – see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log request function is called out of the box
 
-  * `logResponse` (Function) - a function that accepts one argument `response` (Object) and is the raw response object returned from fetch (see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log response function is called out of the box
+  * `logResponse` (Function) - a function that accepts three arguments `path` (String), `opts` (Object), and `response` (Object) and has the same parameters as `logRequest`, with the exception of the third `response`, which is the raw response object returned from fetch (see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log response function is called out of the box
 
   * `auth` - will call the `auth()` function below and set it as a default
 
@@ -387,7 +387,7 @@ const api = new Frisbee({
 });
 ```
 
-> `logResponse` accepts one argument `response` (Object) and is the raw response object returned from fetch (e.g. `const response = await fetch(path, opts)`):
+> `logResponse` accepts three arguments, the first two are the same as `logRequest` (e.g. `path` and `opts`), but the third argument is `response` (Object) and is the raw response object returned from fetch (e.g. `const response = await fetch(path, opts)`):
 
 ```js
 const cabin = require('cabin');
@@ -405,8 +405,8 @@ const logger = new Cabin({
 });
 
 const api = new Frisbee({
-  logResponse: res => {
-    logger.info('fetch response', { res });
+  logResponse: (path, opts, res) => {
+    logger.info('fetch response', { path, opts, res });
   }
 });
 ```

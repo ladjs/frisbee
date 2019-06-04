@@ -482,7 +482,7 @@ class Frisbee {
     const originalRes = await fetch(path, opts);
 
     if (typeof this.opts.logResponse === 'function')
-      this.opts.logResponse(originalRes);
+      this.opts.logResponse(path, opts, originalRes);
 
     const res = createFrisbeeResponse(originalRes);
     const contentType = res.headers.get('Content-Type');
