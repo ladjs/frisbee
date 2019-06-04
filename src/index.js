@@ -111,6 +111,8 @@ class Frisbee {
       referrer: 'client',
       body: null,
       params: null,
+      logRequest: false,
+      logResponse: false,
       ...opts
     };
 
@@ -175,6 +177,7 @@ class Frisbee {
     this.interceptor = new Interceptor(this, this.opts.interceptableMethods);
 
     // bind scope to method
+    this.setOptions = this.setOptions.bind(this);
     this.auth = this.auth.bind(this);
     this.jwt = this.jwt.bind(this);
     this.abort = this.abort.bind(this);
@@ -182,6 +185,11 @@ class Frisbee {
     this._request = this._request.bind(this);
     this._parseJSON = this._parseJSON.bind(this);
     this._fetch = this._fetch.bind(this);
+  }
+
+  setOptions(opts) {
+    this.opts = { ...this.opts, ...opts };
+    return this.opts;
   }
 
   abort(token) {
@@ -468,7 +476,14 @@ class Frisbee {
         }", must be one of: ${REFERRER.join(', ')}`
       );
 
+    if (typeof this.opts.logRequest === 'function')
+      this.opts.logRequest(path, opts);
+
     const originalRes = await fetch(path, opts);
+
+    if (typeof this.opts.logResponse === 'function')
+      this.opts.logResponse(originalRes);
+
     const res = createFrisbeeResponse(originalRes);
     const contentType = res.headers.get('Content-Type');
 

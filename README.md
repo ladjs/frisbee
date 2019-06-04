@@ -25,7 +25,9 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 * [Usage](#usage)
   * [Example](#example)
   * [API](#api)
-  * [Debugging](#debugging)
+  * [Logging and Debugging](#logging-and-debugging)
+  * [Logging Requests and Responses](#logging-requests-and-responses)
+  * [Debug Statements](#debug-statements)
   * [Common Issues](#common-issues)
   * [Required Features](#required-features)
 * [Frequently Asked Questions](#frequently-asked-questions)
@@ -208,7 +210,11 @@ const Frisbee = require('frisbee');
 
   * `body` (Object) - an object containing default body payload to send with every request  (API method specific `params` options will override or extend properties defined here, but not deep merge)
 
-  * `params` (Object) an object containing default querystring parameters to send with every request (API method specific `params` options will override or extend properties defined here, but will not deep merge)
+  * `params` (Object) - an object containing default querystring parameters to send with every request (API method specific `params` options will override or extend properties defined here, but will not deep merge)
+
+  * `logRequest` (Function) - a function that accepts two arguments `path` (String) and `opts` (Object) and will be called with before a fetch request is made with (e.g. `fetch(path, opts)` – see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log request function is called out of the box
+
+  * `logResponse` (Function) - a function that accepts one argument `response` (Object) and is the raw response object returned from fetch (see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log response function is called out of the box
 
   * `auth` - will call the `auth()` function below and set it as a default
 
@@ -253,6 +259,8 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
   * If you pass only a `user`, then it will set `pass` to an empty string `''`)
   * If you pass `:` then it will assume you are trying to set BasicAuth headers using your own `user:pass` string
   * If you pass more than two keys, then it will throw an error (since BasicAuth only consists of `user` and `pass` anyways)
+
+* `api.setOptions(opts)` - helper function to update instance options (note this does not call `api.auth` internally again even if `opts.auth` is passed)
 
 * `api.jwt(token)` - helper function that sets a JWT Bearer header. It accepts the `jwt_token` as a single string argument.  If you simply invoke the function `null` as the argument for your token, it will remove JWT headers.
 
@@ -349,11 +357,65 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
     * The `request`/`requestError` functions will run in the same order `ONE->TWO->THREE`.
     * The `response`/`responseError` functions will run in reversed order `THREE->TWO->ONE`.
 
-### Debugging
+### Logging and Debugging
 
-Out of the box you can run your application with `DEBUG=frisbee node app.js` to output debug logging with Frisbee, but if you want to further debug request and responses, we recommend to use [xhook][].
+> We **highly recommend** to [use CabinJS as your Node.js and JavaScript logging utility][cabin] (see [Automatic Request Logging](https://cabinjs.com/#/?id=automatic-request-logging) for complete examples).
 
-We also **highly recommend** to [use CabinJS as your Node.js and JavaScript logging utility][cabin] (see [Automatic Request Logging](https://cabinjs.com/#/?id=automatic-request-logging) for complete examples).
+### Logging Requests and Responses
+
+You can log both requests and/or responses made to fetch internally in Frisbee.  Simply pass a `logRequest` and/or `logResponse` function.
+
+> `logRequest` accepts two arguments `path` (String) and `opts` (Object) and these two arguments are what we call `fetch` with internally (e.g. `fetch(path, opts)`):
+
+```js
+const cabin = require('cabin');
+const frisbee = require('frisbee');
+const pino = require('pino')({
+  customLevels: {
+    log: 30
+  }
+});
+
+const logger = new Cabin({
+  // (optional: your free API key from https://cabinjs.com)
+  // key: 'YOUR-CABIN-API-KEY',
+  axe: { logger: pino }
+});
+
+const api = new Frisbee({
+  logRequest: (path, opts) => {
+    logger.info('fetch request', { path, opts });
+  }
+});
+```
+
+> `logResponse` accepts one argument `response` (Object) and is the raw response object returned from fetch (e.g. `const response = await fetch(path, opts)`):
+
+```js
+const cabin = require('cabin');
+const frisbee = require('frisbee');
+const pino = require('pino')({
+  customLevels: {
+    log: 30
+  }
+});
+
+const logger = new Cabin({
+  // (optional: your free API key from https://cabinjs.com)
+  // key: 'YOUR-CABIN-API-KEY',
+  axe: { logger: pino }
+});
+
+const api = new Frisbee({
+  logResponse: res => {
+    logger.info('fetch response', { res });
+  }
+});
+```
+
+### Debug Statements
+
+You can run your application with `DEBUG=frisbee node app.js` to output debug logging statements with Frisbee.
 
 ### Common Issues
 
@@ -564,8 +626,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [babel-polyfill]: https://babeljs.io/docs/en/babel-polyfill
 
 [eslint-plugin-compat]: https://github.com/amilajack/eslint-plugin-compat
-
-[xhook]: https://github.com/jpillora/xhook
 
 [cabin]: https://cabinjs.com
 
