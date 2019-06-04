@@ -26,8 +26,6 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
   * [Example](#example)
   * [API](#api)
   * [Logging and Debugging](#logging-and-debugging)
-  * [Logging Requests and Responses](#logging-requests-and-responses)
-  * [Debug Statements](#debug-statements)
   * [Common Issues](#common-issues)
   * [Required Features](#required-features)
 * [Frequently Asked Questions](#frequently-asked-questions)
@@ -361,7 +359,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 
 > We **highly recommend** to [use CabinJS as your Node.js and JavaScript logging utility][cabin] (see [Automatic Request Logging](https://cabinjs.com/#/?id=automatic-request-logging) for complete examples).
 
-### Logging Requests and Responses
+#### Logging Requests and Responses
 
 You can log both requests and/or responses made to fetch internally in Frisbee.  Simply pass a `logRequest` and/or `logResponse` function.
 
@@ -413,7 +411,7 @@ const api = new Frisbee({
 });
 ```
 
-### Debug Statements
+#### Debug Statements
 
 You can run your application with `DEBUG=frisbee node app.js` to output debug logging statements with Frisbee.
 
