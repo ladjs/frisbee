@@ -12,20 +12,18 @@
 
 > :heart: Love this project? Support <a href="https://github.com/niftylettuce" target="_blank">@niftylettuce's</a> [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software) on <a href="https://patreon.com/niftylettuce" target="_blank">Patreon</a> or <a href="https://paypal.me/niftylettuce">PayPal</a> :unicorn:
 
-Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][]. Great for [React Native][react-native].
-
-> **New in v2.0.4++**: `baseURI` is now optional and you can pass `raw: true` as a global or request-based option to get the raw `fetch()` response (e.g. if you want to use `res.arrayBuffer()` or [any other method][fetch-methods] manually).
+**Modern** and **universal** HTTP requests using [Fetch][fetch] for Node.js and browsers.  Supports retries, timeouts, queues, interceptors/hooks, Retry-After header, and more.  The best alternative to [axios][], [superagent][], [request][], [ky][], [got][], and [jQuery's $.ajax][ajax]. Perfect for [React Native][react-native] and [React][react] apps – built for [Lad][lad-url].
 
 
 ## Table of Contents
 
 * [Install](#install)
-  * [Node (Koa, Express, React Native, ...)](#node-koa-express-react-native-)
+  * [Node (Koa, Express, React Native)](#node-koa-express-react-native)
   * [Browser](#browser)
 * [Usage](#usage)
   * [Example](#example)
   * [API](#api)
-  * [Logging and Debugging](#logging-and-debugging)
+  * [Hooks, Logging, and Debugging](#hooks-logging-and-debugging)
   * [Common Issues](#common-issues)
   * [Required Features](#required-features)
 * [Frequently Asked Questions](#frequently-asked-questions)
@@ -34,8 +32,8 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
   * [Does this support callbacks, promises, or both](#does-this-support-callbacks-promises-or-both)
   * [What is the fetch method](#what-is-the-fetch-method)
   * [Does the Browser or Node.js support fetch yet](#does-the-browser-or-nodejs-support-fetch-yet)
-  * [If my engine does not support fetch yet, is there a polyfill](#if-my-engine-does-not-support-fetch-yet-is-there-a-polyfill)
-  * [Can I make fetch support older browsers](#can-i-make-fetch-support-older-browsers)
+  * [Does this package automatically polyfill Fetch and AbortController](#does-this-package-automatically-polyfill-fetch-and-abortcontroller)
+  * [Does Frisbee work in older browsers](#does-frisbee-work-in-older-browsers)
   * [What is this project about](#what-is-this-project-about)
   * [Why not just use superagent or fetch](#why-not-just-use-superagent-or-fetch)
   * [Want to build an API back-end with Node.js](#want-to-build-an-api-back-end-with-nodejs)
@@ -50,7 +48,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 
 ## Install
 
-### Node (Koa, Express, React Native, ...)
+### Node (Koa, Express, React Native)
 
 1. Install the required package:
 
@@ -67,13 +65,13 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 1. Load the package via `<script>` tag (note you will need to polyfill with [required features](#required-features)):
 
 ```html
-<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf%2CUint8Array%2CMap%2CReflect"></script>
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features="></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
     // create a new instance of Frisbee
     var api = new Frisbee({
-      baseURI: 'https://api.startup.com', // optional
+      baseURI: 'https://api.cabinjs.com', // optional
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -115,7 +113,7 @@ const Frisbee = require('frisbee');
 
 // create a new instance of Frisbee
 const api = new Frisbee({
-  baseURI: 'https://api.startup.com', // optional
+  baseURI: 'https://api.cabinjs.com', // optional
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
@@ -194,7 +192,7 @@ const Frisbee = require('frisbee');
       const api = new Frisbee({
         baseURI: __DEV__
           ? process.env.API_BASE_URI || 'http://localhost:8080'
-          : 'https://api.startup.com'
+          : 'https://api.cabinjs.com'
       });
       ```
 
@@ -209,10 +207,6 @@ const Frisbee = require('frisbee');
   * `body` (Object) - an object containing default body payload to send with every request  (API method specific `params` options will override or extend properties defined here, but not deep merge)
 
   * `params` (Object) - an object containing default querystring parameters to send with every request (API method specific `params` options will override or extend properties defined here, but will not deep merge)
-
-  * `logRequest` (Function) - a function that accepts two arguments `path` (String) and `opts` (Object) and will be called with before a fetch request is made with (e.g. `fetch(path, opts)` – see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log request function is called out of the box
-
-  * `logResponse` (Function) - a function that accepts three arguments `path` (String), `opts` (Object), and `response` (Object) and has the same parameters as `logRequest`, with the exception of the third `response`, which is the raw response object returned from fetch (see [Logging and Debugging](#logging-and-debugging) below for example usage) - this defaults to `false` so no log response function is called out of the box
 
   * `auth` - will call the `auth()` function below and set it as a default
 
@@ -258,7 +252,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
   * If you pass `:` then it will assume you are trying to set BasicAuth headers using your own `user:pass` string
   * If you pass more than two keys, then it will throw an error (since BasicAuth only consists of `user` and `pass` anyways)
 
-* `api.setOptions(opts)` - helper function to update instance options (note this does not call `api.auth` internally again even if `opts.auth` is passed)
+* `api.setOptions(opts)` - helper function to update instance options
 
 * `api.jwt(token)` - helper function that sets a JWT Bearer header. It accepts the `jwt_token` as a single string argument.  If you simply invoke the function `null` as the argument for your token, it will remove JWT headers.
 
@@ -320,30 +314,34 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
 * `interceptor` - object that can be used to manipulate request and response interceptors. It has the following methods:
 
   * `api.interceptor.register(interceptor)`:
-    Accepts an interceptor object that can have one or more of the following functions
+
+    > Accepts an interceptor object that can have one or more of the following functions
+
     ```js
     {
-    request: function (path, options) {
+      request: function (path, options) {
         // Read/Modify the path or options
         // ...
         return [path, options];
-    },
-    requestError: function (err) {
+      },
+      requestError: function (err) {
         // Handle an error occured in the request method
         // ...
         return Promise.reject(err);
-    },
-    response: function (response) {
+      },
+      response: function (response) {
         // Read/Modify the response
         // ...
         return response;
-    },
-    responseError: function (err) {
+      },
+      responseError: function (err) {
         // Handle error occured in api/response methods
         return Promise.reject(err);
+      }
     }
     ```
-    the `register` method returns an `unregister()` function so that you can unregister the added interceptor.
+
+    > The `register` method returns an `unregister()` function so that you can unregister the added interceptor.
 
   * `api.interceptor.unregister(interceptor)`:
     Accepts the interceptor reference that you want to delete.
@@ -351,19 +349,15 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
   * `api.interceptor.clear()`:
     Removes all the added interceptors.
 
-  * Note that when interceptors are added in the order ONE->TWO->THREE:
-    * The `request`/`requestError` functions will run in the same order `ONE->TWO->THREE`.
-    * The `response`/`responseError` functions will run in reversed order `THREE->TWO->ONE`.
+  * Note that when interceptors are added in the order ONE → TWO → THREE:
+    * The `request` and `requestError` functions will run in the same order ONE → TWO → THREE.
+    * The `response` and `responseError` functions will run in reversed order THREE → TWO → ONE.
 
-### Logging and Debugging
+### Hooks, Logging, and Debugging
 
 > We **highly recommend** to [use CabinJS as your Node.js and JavaScript logging utility][cabin] (see [Automatic Request Logging](https://cabinjs.com/#/?id=automatic-request-logging) for complete examples).
 
-#### Logging Requests and Responses
-
-You can log both requests and/or responses made to fetch internally in Frisbee.  Simply pass a `logRequest` and/or `logResponse` function.
-
-> `logRequest` accepts two arguments `path` (String) and `opts` (Object) and these two arguments are what we call `fetch` with internally (e.g. `fetch(path, opts)`):
+#### Hooks and Logging
 
 ```js
 const cabin = require('cabin');
@@ -381,37 +375,21 @@ const logger = new Cabin({
 });
 
 const api = new Frisbee({
-  logRequest: (path, opts) => {
-    logger.info('fetch request', { path, opts });
+  baseURI: 'https://api.cabinjs.com'
+});
+
+api.interceptor.register({
+  request: (path, options) => {
+    logger.info('fetch request', { path, options });
+    return [path, options];
+  },
+  response: response => {
+    logger.info('fetch response', { response });
   }
 });
 ```
 
-> `logResponse` accepts three arguments, the first two are the same as `logRequest` (e.g. `path` and `opts`), but the third argument is `response` (Object) and is the raw response object returned from fetch (e.g. `const response = await fetch(path, opts)`):
-
-```js
-const cabin = require('cabin');
-const frisbee = require('frisbee');
-const pino = require('pino')({
-  customLevels: {
-    log: 30
-  }
-});
-
-const logger = new Cabin({
-  // (optional: your free API key from https://cabinjs.com)
-  // key: 'YOUR-CABIN-API-KEY',
-  axe: { logger: pino }
-});
-
-const api = new Frisbee({
-  logResponse: (path, opts, res) => {
-    logger.info('fetch response', { path, opts, res });
-  }
-});
-```
-
-#### Debug Statements
+#### Debugging
 
 You can run your application with `DEBUG=frisbee node app.js` to output debug logging statements with Frisbee.
 
@@ -424,16 +402,24 @@ You can run your application with `DEBUG=frisbee node app.js` to output debug lo
 
 This list is sourced from ESLint output and polyfilled settings through [eslint-plugin-compat][].
 
-* `fetch`
-* `Promise`
-* `Symbol`
-* `Array.from`
-* `ArrayBuffer.isView`
-* `Object.setPrototypeOf`
-* `Object.getOwnPropertySymbols`
-* `Uint8Array`
-* `Reflect`
-* `Map`
+* Array.from() is not supported in IE 10
+* ArrayBuffer.isView() is not supported in IE 10
+* Map is not supported in IE 10
+* Number.isNaN() is not supported in IE 10
+* Object.getOwnPropertySymbols() is not supported in IE 10
+* Object.setPrototypeOf() is not supported in IE 10
+* Promise is not supported in Opera Mobile 12.1, Opera Mini all, IE Mobile 10, IE 10, Blackberry Browser 7
+* Promise.prototype() is not supported in IE 10
+* Promise.race() is not supported in Opera Mobile 12.1, Opera Mini all, IE Mobile 10, IE 10, Blackberry Browser 7
+* Promise.reject() is not supported in Opera Mobile 12.1, Opera Mini all, IE Mobile 10, IE 10, Blackberry Browser 7
+* Promise.resolve() is not supported in Opera Mobile 12.1, Opera Mini all, IE Mobile 10, IE 10, Blackberry Browser 7
+* Reflect is not supported in IE 10
+* Symbol.iterator() is not supported in IE 10
+* Symbol.prototype() is not supported in IE 10
+* Symbol.species() is not supported in IE 10
+* Symbol.toPrimitive() is not supported in IE 10
+* Symbol.toStringTag() is not supported in IE 10
+* Uint8Array is not supported in IE Mobile 10, IE 10, Blackberry Browser 7
 
 
 ## Frequently Asked Questions
@@ -461,17 +447,23 @@ It is a WHATWG browser API specification.  You can read more about at the follow
 
 ### Does the Browser or Node.js support `fetch` yet
 
-Yes, a lot of browsers are now supporting it!  See this reference for more information <http://caniuse.com/#feat=fetch>.
+Yes, see this reference for more information <http://caniuse.com/#feat=fetch>.
 
-### If my engine does not support `fetch` yet, is there a polyfill
+Note that this package automatically polyfills fetch for you (see the next question below for more insight).
 
-Yes you can use the `fetch` method (polyfill) from [whatwg-fetch][whatwg-fetch] or [node-fetch][node-fetch].
+### Does this package automatically polyfill Fetch and AbortController
 
-By default, React Native already has a built-in `fetch` out of the box!
+Yes this package includes both polyfills using [cross-fetch][] and [abort-controller][].  You should not need to polyfill these yourself.
 
-### Can I make `fetch` support older browsers
+### Does Frisbee work in older browsers
 
-Yes, but you'll need a [promise polyfill][promise-polyfill] for [older browsers][older-browsers].
+Yes, but you'll need to polyfill older browser environments with the list above in [Required Features](#required-features).
+
+The easiest approach is to just use the polyfill.io example script:
+
+```html
+polyfill.io
+```
 
 ### What is this project about
 
@@ -489,7 +481,7 @@ See [Background](#background) for more information.
 
 ### Want to build an API back-end with Node.js
 
-See [Lad][lad-url] as a great starting point, and read this article about [building Node.js API's with authentication][blog-article].
+See [Lad][lad-url] as a great starting point.
 
 ### Need help or want to request a feature
 
@@ -562,6 +554,7 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 * Thanks to [James Ide][ide] for coining the name "Frisbee" (it used to be called `fetch-api`, and `frisbee` was surprisingly available on npm)
 * Inspiration from <https://gist.github.com/anthonator/0dc0310a931398490fab>, [superagent][superagent], and from writing dozens of API wrappers!
 * Google for being an awesome search engine to help me discover stuff on GitHub (haha)
+* Thanks to [Sindre Sorhus](https://github.com/sindresorhus) for his inspirational work
 
 
 ## License
@@ -570,8 +563,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 
 
 ## 
-
-[blog-article]: http://niftylettuce.com/posts/nodejs-auth-google-facebook-ios-android-eskimo/
 
 [nodejs]: https://nodejs.org
 
@@ -582,14 +573,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [npm-url]: https://npmjs.org/package/frisbee
 
 [npm-downloads]: http://img.shields.io/npm/dm/frisbee.svg?style=flat
-
-[whatwg-fetch]: https://github.com/github/fetch
-
-[node-fetch]: https://github.com/bitinn/node-fetch
-
-[promise-polyfill]: https://github.com/jakearchibald/es6-promise
-
-[older-browsers]: http://caniuse.com/#feat=promises
 
 [ide]: https://github.com/ide
 
@@ -619,8 +602,6 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 
 [request]: https://github.com/request/request
 
-[fetch-methods]: https://developer.mozilla.org/en-US/docs/Web/API/Body
-
 [babel-polyfill]: https://babeljs.io/docs/en/babel-polyfill
 
 [eslint-plugin-compat]: https://github.com/amilajack/eslint-plugin-compat
@@ -628,3 +609,13 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 [cabin]: https://cabinjs.com
 
 [fetch-documentation]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+[cross-fetch]: https://github.com/lquixada/cross-fetch
+
+[abort-controller]: https://github.com/mysticatea/abort-controller
+
+[ky]: https://github.com/sindresorhus/ky
+
+[got]: https://github.com/sindresorhus/got
+
+[ajax]: https://api.jquery.com/jquery.ajax/

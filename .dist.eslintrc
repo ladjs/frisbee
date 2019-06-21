@@ -1,44 +1,55 @@
 {
   "extends": ["eslint:recommended"],
   "env": {
-    "node": true,
+    "node": false,
     "browser": true,
     "amd": true,
-    "es6": true
+    "es6": true,
+    "commonjs": true
   },
   "plugins": ["compat"],
   "rules": {
     "compat/compat": "error",
-    "no-func-assign": "off",
-    "no-redeclare": "off",
+    "getter-return": "off",
+    "no-cond-assign": "off",
     "no-console": "off",
     "no-constant-condition": "off",
-    "no-unused-vars": "off",
-    "no-empty": "off",
-    "no-useless-escape": "off",
-    "no-fallthrough": "off",
-    "getter-return": "off",
     "no-control-regex": "off",
-    "no-cond-assign": "off"
+    "no-empty": "off",
+    "no-fallthrough": "off",
+    "no-func-assign": "off",
+    "no-redeclare": "off",
+    "no-unsafe-finally": "off",
+    "no-unused-vars": "off",
+    "no-useless-escape": "off"
   },
   "globals": {
     "regeneratorRuntime": "writable"
   },
   "settings": {
     "polyfills": [
-      "fetch",
-      "Promise",
-      "Symbol",
+      "AbortController",
       "Array.from",
       "ArrayBuffer.isView",
-      "Headers",
-      "Request",
-      "Response",
-      "Object.setPrototypeOf",
+      "Map",
+      "Number.isNaN",
       "Object.getOwnPropertySymbols",
-      "Uint8Array",
+      "Object.setPrototypeOf",
+      "Promise",
+      "Promise.prototype",
+      "Promise.race",
+      "Promise.reject",
+      "Promise.resolve",
       "Reflect",
-      "Map"
+      "Symbol.iterator",
+      "Symbol.prototype",
+      "Symbol.species",
+      "Symbol.toPrimitive",
+      "Symbol.toStringTag",
+      "Uint8Array",
+      "fetch"
     ]
   }
 }
+
+

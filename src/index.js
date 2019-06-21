@@ -4,12 +4,14 @@ const urlJoin = require('url-join');
 const URL = require('url-parse');
 const debug = require('debug')('frisbee');
 const boolean = require('boolean');
+const pRetry = require('p-retry');
+const ms = require('ms');
+const delay = require('delay');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('cross-fetch/polyfill');
-
 // eslint-disable-next-line import/no-unassigned-import
-require('abortcontroller-polyfill/dist/polyfill-patch-fetch');
+require('abort-controller/polyfill');
 
 const Interceptor = require('./interceptor');
 
@@ -111,8 +113,49 @@ class Frisbee {
       referrer: 'client',
       body: null,
       params: null,
-      logRequest: false,
-      logResponse: false,
+      // TODO: json: true should set `application/json` accepts
+      queue: {}, // TODO
+      timeout: ms('60s'), // TODO
+      // default is 5 retries in 5 minutes and then bail
+      // <https://github.com/tim-kos/node-retry#retryoperationoptions>
+      // <https://www.wolframalpha.com/input/?i=Sum%5B1000*x%5Ek,+%7Bk,+0,+4%7D%5D+%3D+5+*+60+*+1000>
+      retry: {
+        onFailedAttempt: () => {},
+        retries: 5,
+        factor: 3.8626,
+        minTimeout: ms('1s'),
+        maxTimeout: ms('60s')
+      },
+      retryStatusCodes: [408, 413, 429, 500, 502, 503, 504],
+      retryMethods: ['GET', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'TRACE'],
+      retryAfterStatusCodes: [413, 429, 503],
+      handleRetry(res) {
+        // if we did not have a valid retry status code
+        // then simply return with the response
+        if (!this.opts.retryStatusCodes.includes(res.status)) return;
+
+        const retryAfter = res.headers.get('Retry-After');
+
+        // if there was no Retry-After header then attempt to retry
+        if (!retryAfter) {
+          // do not retry on 413 Payload Too Large errors
+          // unless they had a Retry-After header
+          if (res.status === 413) throw new pRetry.AbortError(res.statusText);
+          throw new Error(res.statusText);
+        }
+
+        // otherwise if there was a Retry-After header, then
+        // parse its value and if it is greater than the timeout
+        // go ahead and continue with the retry attempt
+        let after = Number(retryAfter);
+        if (Number.isNaN(after)) after = Date.parse(retryAfter) - Date.now();
+        else after *= 1000;
+
+        // return a number so we know to hold off on retrying
+        // however we will still respect the max number of attempts/retries
+        // but instead of using the retry package, we will adhere to header
+        return after;
+      },
       ...opts
     };
 
@@ -162,9 +205,7 @@ class Frisbee {
         method => method.toUpperCase().trim()
       );
 
-    this.opts.raw = boolean(this.opts.raw);
-
-    if (this.opts.auth) this.auth(this.opts.auth);
+    this.setOptions(this.opts);
 
     METHODS.forEach(method => {
       this[method.toLowerCase()] = this._setup(method.toLowerCase());
@@ -189,6 +230,9 @@ class Frisbee {
 
   setOptions(opts) {
     this.opts = { ...this.opts, ...opts };
+    this.opts.raw = boolean(this.opts.raw);
+    if (this.opts.auth) this.auth(this.opts.auth);
+    this.opts.handleRetry = this.opts.handleRetry.bind(this);
     return this.opts;
   }
 
@@ -427,7 +471,7 @@ class Frisbee {
     return res;
   }
 
-  async _fetch(path, opts, raw) {
+  async _fetch(path, opts, raw, attempts = this.opts.retry.retries) {
     debug('fetch', path, opts);
     debug('raw', raw);
     // <https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch>
@@ -476,13 +520,52 @@ class Frisbee {
         }", must be one of: ${REFERRER.join(', ')}`
       );
 
-    if (typeof this.opts.logRequest === 'function')
-      this.opts.logRequest(path, opts);
+    // if this resolves with a number, then we know that this indicates
+    // how long we should wait until trying again (related to Retry-After)
+    const run = async () => {
+      const timeout = setTimeout(() => {
+        if (opts.signal && !opts.signal.aborted) {
+          opts.signal.emit('abort');
+        }
 
-    const originalRes = await fetch(path, opts);
+        throw new Error(`Request timeout of ${ms(this.opts.timeout)} exceeded`);
+      }, this.opts.timeout);
+      try {
+        const res = await fetch(path, opts);
+        clearTimeout(timeout);
+        if (res.ok) return res;
+        // if we resolve with a number then that indicates
+        // how long we should delay before retrying again
+        const delay = await this.opts.handleRetry(res);
+        if (typeof delay === 'number') return delay;
+        return res;
+      } catch (err) {
+        if (err.type === 'aborted') throw new pRetry.AbortError(err);
+        throw err;
+      }
+    };
 
-    if (typeof this.opts.logResponse === 'function')
-      this.opts.logResponse(path, opts, originalRes);
+    const originalRes = await pRetry(run, {
+      onFailedAttempt: err => {
+        debug('onFailedAttempt', err);
+        this.opts.retry.onFailedAttempt(err);
+        // set the number of attempts left
+        // in case we respect a Retry-After header
+        // and wait a bit before retrying again
+        // note that we already had one initial attempt
+        attempts = err.retriesLeft;
+      },
+      retries: attempts,
+      factor: this.opts.retry.factor,
+      minTimeout: this.opts.retry.minTimeout,
+      maxTimeout: this.opts.retry.maxTimeout
+    });
+
+    if (typeof originalRes === 'number') {
+      debug(`Retry-After header indicated to wait ${originalRes}ms`);
+      await delay(originalRes);
+      return this._fetch(path, opts, raw, attempts);
+    }
 
     const res = createFrisbeeResponse(originalRes);
     const contentType = res.headers.get('Content-Type');
