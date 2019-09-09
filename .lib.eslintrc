@@ -2,7 +2,9 @@
   "extends": ["eslint:recommended", "plugin:node/recommended"],
   "rules": {
     "no-unused-vars": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "no-useless-catch": "off",
+    "require-atomic-updates": "off"
   },
   "globals": {
     "fetch": "readonly",

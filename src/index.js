@@ -75,8 +75,9 @@ function createFrisbeeResponse(origResp) {
   let callable = null;
   respProperties.callable.forEach(prop => {
     Object.defineProperty(resp, prop, {
-      value: ((callable = origResp[prop]),
-      typeof callable === 'function' && callable.bind(origResp))
+      value:
+        ((callable = origResp[prop]),
+        typeof callable === 'function' && callable.bind(origResp))
     });
   });
 

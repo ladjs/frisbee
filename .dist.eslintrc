@@ -19,7 +19,8 @@
     "no-fallthrough": "off",
     "getter-return": "off",
     "no-control-regex": "off",
-    "no-cond-assign": "off"
+    "no-cond-assign": "off",
+    "no-prototype-builtins": "off"
   },
   "globals": {
     "regeneratorRuntime": "writable"
@@ -38,7 +39,8 @@
       "Object.getOwnPropertySymbols",
       "Uint8Array",
       "Reflect",
-      "Map"
+      "Map",
+      "Object.getOwnPropertyDescriptors"
     ]
   }
 }

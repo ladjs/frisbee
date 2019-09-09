@@ -32,12 +32,12 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
   * [How do I unset a default header](#how-do-i-unset-a-default-header)
   * [Why do my form uploads randomly fail with React Native](#why-do-my-form-uploads-randomly-fail-with-react-native)
   * [Does this support callbacks, promises, or both](#does-this-support-callbacks-promises-or-both)
-  * [What is the fetch method](#what-is-the-fetch-method)
-  * [Does the Browser or Node.js support fetch yet](#does-the-browser-or-nodejs-support-fetch-yet)
-  * [If my engine does not support fetch yet, is there a polyfill](#if-my-engine-does-not-support-fetch-yet-is-there-a-polyfill)
-  * [Can I make fetch support older browsers](#can-i-make-fetch-support-older-browsers)
+  * [What is the `fetch` method](#what-is-the-fetch-method)
+  * [Does the Browser or Node.js support `fetch` yet](#does-the-browser-or-nodejs-support-fetch-yet)
+  * [If my engine does not support `fetch` yet, is there a polyfill](#if-my-engine-does-not-support-fetch-yet-is-there-a-polyfill)
+  * [Can I make `fetch` support older browsers](#can-i-make-fetch-support-older-browsers)
   * [What is this project about](#what-is-this-project-about)
-  * [Why not just use superagent or fetch](#why-not-just-use-superagent-or-fetch)
+  * [Why not just use `superagent` or `fetch`](#why-not-just-use-superagent-or-fetch)
   * [Want to build an API back-end with Node.js](#want-to-build-an-api-back-end-with-nodejs)
   * [Need help or want to request a feature](#need-help-or-want-to-request-a-feature)
 * [Tests](#tests)
@@ -67,7 +67,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 1. Load the package via `<script>` tag (note you will need to polyfill with [required features](#required-features)):
 
 ```html
-<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CPromise%2CSymbol%2CArray.from%2CObject.setPrototypeOf%2CUint8Array%2CMap%2CReflect"></script>
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=es6,fetch,Promise,Symbol,Array.from,Object.setPrototypeOf,Uint8Array,Map,Reflect,Object.getOwnPropertyDescriptors"></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
@@ -434,6 +434,7 @@ This list is sourced from ESLint output and polyfilled settings through [eslint-
 * `Uint8Array`
 * `Reflect`
 * `Map`
+* `Object.getOwnPropertyDescriptors`
 
 
 ## Frequently Asked Questions
@@ -601,9 +602,9 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 
 [automatic-ip-configuration]: http://moduscreate.com/automated-ip-configuration-for-react-native-development/
 
-[slack-image]: http://slack.crocodilejs.com/badge.svg
+[slack-image]: https://slack.crocodilejs.com/badge.svg
 
-[slack-url]: http://slack.crocodilejs.com
+[slack-url]: https://slack.crocodilejs.com
 
 [lad-url]: https://lad.js.org
 
