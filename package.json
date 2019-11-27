@@ -158,14 +158,14 @@
   },
   "scripts": {
     "ava": "cross-env NODE_ENV=test ava",
-    "browserify": "browserify src/index.js -o dist/frisbee.js -s Frisbee -d -t [ babelify --configFile ./.dist.babelrc ]",
+    "browserify": "browserify src/index.js -o dist/frisbee.js -s Frisbee -d -g [ babelify --configFile ./.dist.babelrc ]",
     "build": "npm run build:clean && npm run build:lib && npm run build:dist",
     "build:clean": "rimraf lib dist",
     "build:dist": "npm run browserify && npm run minify",
     "build:lib": "babel --config-file ./.lib.babelrc src --out-dir lib",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "xo && remark . -qfo && eslint --no-inline-config -c .lib.eslintrc lib && eslint --no-inline-config -c .dist.eslintrc dist",
-    "minify": "cross-env NODE_ENV=production browserify src/index.js -o dist/frisbee.min.js -s Frisbee -t [ babelify --configFile ./.dist.babelrc ] -p tinyify",
+    "minify": "cross-env NODE_ENV=production browserify src/index.js -o dist/frisbee.min.js -s Frisbee -g [ babelify --configFile ./.dist.babelrc ] -p tinyify",
     "nyc": "cross-env NODE_ENV=test nyc ava",
     "test": "npm run build && npm run lint && npm run ava",
     "test-coverage": "npm run build && npm run lint && npm run nyc"
