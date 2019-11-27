@@ -46,6 +46,7 @@
     "common-tags": "^1.8.0",
     "cross-fetch": "^3.0.4",
     "debug": "^4.1.1",
+    "defaults-deep": "^0.2.4",
     "qs": "^6.8.0",
     "url-join": "^4.0.1",
     "url-parse": "^1.4.7"

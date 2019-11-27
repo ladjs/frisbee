@@ -4,6 +4,7 @@ const urlJoin = require('url-join');
 const URL = require('url-parse');
 const debug = require('debug')('frisbee');
 const boolean = require('boolean');
+const defaults = require('defaults-deep');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('cross-fetch/polyfill');
@@ -94,28 +95,30 @@ function createFrisbeeResponse(origResp) {
 
 class Frisbee {
   constructor(opts = {}) {
-    this.opts = {
-      parse: {
-        ignoreQueryPrefix: true
+    this.opts = defaults(
+      {
+        preventBodyOnMethods: ['GET', 'HEAD', 'DELETE', 'CONNECT'],
+        interceptableMethods: METHODS,
+        mode: 'same-origin',
+        cache: 'default',
+        credentials: 'same-origin',
+        redirect: 'follow',
+        referrer: 'client',
+        body: null,
+        params: null,
+        logRequest: false,
+        logResponse: false,
+        parse: {
+          ignoreQueryPrefix: true
+        },
+        stringify: {
+          addQueryPrefix: true,
+          format: 'RFC1738',
+          arrayFormat: 'indices'
+        }
       },
-      stringify: {
-        addQueryPrefix: true,
-        format: 'RFC1738',
-        arrayFormat: 'indices'
-      },
-      preventBodyOnMethods: ['GET', 'HEAD', 'DELETE', 'CONNECT'],
-      interceptableMethods: METHODS,
-      mode: 'same-origin',
-      cache: 'default',
-      credentials: 'same-origin',
-      redirect: 'follow',
-      referrer: 'client',
-      body: null,
-      params: null,
-      logRequest: false,
-      logResponse: false,
-      ...opts
-    };
+      opts
+    );
 
     let localAbortController;
     Object.defineProperty(this, 'abortController', {
