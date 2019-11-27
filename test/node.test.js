@@ -22,7 +22,9 @@ test.serial.before(t => {
   options.baseURI = `http://localhost:${t.context.server.address().port}`;
 });
 
-test.after(t => t.context.server.close());
+test.after(t => {
+  t.context.server.close();
+});
 
 // <https://github.com/niftylettuce/node-react-native-fetch-api>
 test('should not throw an error if we fail to pass baseURI', t => {
@@ -163,12 +165,12 @@ test.serial(
       const api = new Frisbee(options);
       try {
         await api.get('/querystring/', { body: { param: 'foo' } });
-      } catch (err) {
+      } catch {
         // We broke `fetch`, so this is expected
       }
 
       const [url] = fetch.getCall(0).args;
-      const hasTrailingSlash = url.indexOf('querystring/?') !== -1;
+      const hasTrailingSlash = url.includes('querystring/?');
       t.true(hasTrailingSlash, 'Trailing slash is still present');
     } finally {
       fetch.restore();
@@ -528,7 +530,7 @@ test.serial(oneLine`should allow params into querystring`, async t => {
     const api = new Frisbee(options);
     try {
       await api.get('/', { params: { foo: 'bar' } });
-    } catch (err) {
+    } catch {
       // We broke `fetch`, so this is expected
     }
 
@@ -545,7 +547,7 @@ test.serial(oneLine`should merge params into querystring`, async t => {
     const api = new Frisbee(options);
     try {
       await api.get('/?foo=bar', { params: { beep: 'boop' } });
-    } catch (err) {
+    } catch {
       // We broke `fetch`, so this is expected
     }
 
@@ -569,7 +571,7 @@ test.serial(
       });
       try {
         await api.get('/?foo=bar', { params: { beep: 'boop' } });
-      } catch (err) {
+      } catch {
         // We broke `fetch`, so this is expected
       }
 
@@ -589,7 +591,7 @@ test.serial(
       const api = new Frisbee(options);
       try {
         await api.get('/?foo=beep', { params: { foo: 'bar' } });
-      } catch (err) {
+      } catch {
         // We broke `fetch`, so this is expected
       }
 
@@ -614,7 +616,7 @@ test.serial(
       });
       try {
         await api.get('/', { params: { hello: 'bar' } });
-      } catch (err) {
+      } catch {
         // We broke `fetch`, so this is expected
       }
 

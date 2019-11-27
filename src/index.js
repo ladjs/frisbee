@@ -1,10 +1,11 @@
+const URL = require('url-parse');
+const boolean = require('boolean');
 const caseless = require('caseless');
+const debug = require('debug')('frisbee');
+const defaults = require('defaults-deep');
 const qs = require('qs');
 const urlJoin = require('url-join');
-const URL = require('url-parse');
-const debug = require('debug')('frisbee');
-const boolean = require('boolean');
-const defaults = require('defaults-deep');
+const { boolean } = require('boolean');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('cross-fetch/polyfill');
@@ -290,9 +291,12 @@ class Frisbee {
       };
 
       if (this.opts.body || options.body) {
-        opts.body = typeof options.body === 'object'
-          ? {...this.opts.body, ...options.body}
-          : (options.body ? options.body : this.opts.body);
+        opts.body =
+          typeof options.body === 'object'
+            ? { ...this.opts.body, ...options.body }
+            : options.body
+            ? options.body
+            : this.opts.body;
       }
 
       if (this.opts.params || options.params)
@@ -428,7 +432,7 @@ class Frisbee {
         if (res.body.error.param) res.err.param = res.body.error.param;
       }
     } catch (err) {
-      res.err = this.parseErr;
+      res.err = this.parseErr || err;
     }
 
     return res;
@@ -509,7 +513,7 @@ class Frisbee {
           }
         } catch (err) {
           if (contentType === 'application/json') {
-            res.err = this.parseErr;
+            res.err = this.parseErr || err;
             return res;
           }
         }
@@ -532,8 +536,7 @@ class Frisbee {
   auth(creds) {
     if (typeof creds === 'string') {
       const index = creds.indexOf(':');
-      if (index !== -1)
-        creds = [creds.substr(0, index), creds.substr(index + 1)];
+      if (index !== -1) creds = [creds.slice(0, index), creds.slice(index + 1)];
     }
 
     if (!Array.isArray(creds)) {

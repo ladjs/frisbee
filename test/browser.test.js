@@ -13,7 +13,8 @@ const virtualConsole = new VirtualConsole();
 virtualConsole.sendTo(console);
 
 const script = new Script(
-  readFileSync(path.join(__dirname, '..', 'dist', 'frisbee.min.js'))
+  readFileSync(path.join(__dirname, '..', 'dist', 'frisbee.js'))
+  // readFileSync(path.join(__dirname, '..', 'dist', 'frisbee.min.js'))
 );
 
 const dom = new JSDOM(``, {

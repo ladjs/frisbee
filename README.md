@@ -67,7 +67,7 @@ Modern [fetch-based][fetch] alternative to [axios][]/[superagent][]/[request][].
 1. Load the package via `<script>` tag (note you will need to polyfill with [required features](#required-features)):
 
 ```html
-<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=es6,fetch,Promise,Symbol,Array.from,Object.setPrototypeOf,Uint8Array,Map,Reflect,Object.getOwnPropertyDescriptors"></script>
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=es6,Array.from,Object.getOwnPropertyDescriptors,Object.getOwnPropertySymbols,Promise,Promise.race,Promise.reject,Promise.resolve,Reflect,Symbol.for,Symbol.iterator,Symbol.prototype,Symbol.species,Symbol.toPrimitive,Symbol.toStringTag,Uint8Array"></script>
 <script src="https://unpkg.com/frisbee"></script>
 <script type="text/javascript">
   (function() {
@@ -424,17 +424,21 @@ You can run your application with `DEBUG=frisbee node app.js` to output debug lo
 
 This list is sourced from ESLint output and polyfilled settings through [eslint-plugin-compat][].
 
-* `fetch`
-* `Promise`
-* `Symbol`
-* `Array.from`
-* `ArrayBuffer.isView`
-* `Object.setPrototypeOf`
-* `Object.getOwnPropertySymbols`
-* `Uint8Array`
-* `Reflect`
-* `Map`
-* `Object.getOwnPropertyDescriptors`
+* Array.from() is not supported in IE 11
+* Object.getOwnPropertyDescriptors() is not supported in IE 11
+* Object.getOwnPropertySymbols() is not supported in IE 11
+* Promise is not supported in Opera Mini all, IE Mobile 11, IE 11
+* Promise.race() is not supported in Opera Mini all, IE Mobile 11, IE 11
+* Promise.reject() is not supported in Opera Mini all, IE Mobile 11, IE 11
+* Promise.resolve() is not supported in Opera Mini all, IE Mobile 11, IE 11
+* Reflect is not supported in IE 11
+* Symbol.for() is not supported in IE 11
+* Symbol.iterator() is not supported in IE 11
+* Symbol.prototype() is not supported in IE 11
+* Symbol.species() is not supported in IE 11
+* Symbol.toPrimitive() is not supported in IE 11
+* Symbol.toStringTag() is not supported in IE 11
+* Uint8Array is not supported in IE Mobile 11
 
 
 ## Frequently Asked Questions
