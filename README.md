@@ -206,7 +206,7 @@ const Frisbee = require('frisbee');
 
     * **Tip**: You'll most likely want to set the `"Accept"` header to `"application/json"` and the `"Content-Type"` header to `"application/json"`
 
-  * `body` (Object) - an object containing default body payload to send with every request  (API method specific `params` options will override or extend properties defined here, but not deep merge)
+  * `body` (Object) - an object containing default body payload to send with every request (Provided body objects will shallow-merge with the defaults.)
 
   * `params` (Object) - an object containing default querystring parameters to send with every request (API method specific `params` options will override or extend properties defined here, but will not deep merge)
 
