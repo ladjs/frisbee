@@ -286,14 +286,8 @@ class Frisbee {
         signal
       };
 
-      if (this.opts.body || options.body) {
-        opts.body =
-          typeof options.body === 'object'
-            ? { ...this.opts.body, ...options.body }
-            : options.body
-            ? options.body
-            : this.opts.body;
-      }
+      if (this.opts.body || options.body)
+        opts.body = options.body ? options.body : this.opts.body;
 
       if (this.opts.params || options.params)
         opts.params = { ...this.opts.params, ...options.params };
