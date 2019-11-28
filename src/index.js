@@ -1,8 +1,6 @@
 const URL = require('url-parse');
-const boolean = require('boolean');
 const caseless = require('caseless');
 const debug = require('debug')('frisbee');
-const defaults = require('defaults-deep');
 const qs = require('qs');
 const urlJoin = require('url-join');
 const { boolean } = require('boolean');
@@ -96,30 +94,28 @@ function createFrisbeeResponse(origResp) {
 
 class Frisbee {
   constructor(opts = {}) {
-    this.opts = defaults(
-      {
-        preventBodyOnMethods: ['GET', 'HEAD', 'DELETE', 'CONNECT'],
-        interceptableMethods: METHODS,
-        mode: 'same-origin',
-        cache: 'default',
-        credentials: 'same-origin',
-        redirect: 'follow',
-        referrer: 'client',
-        body: null,
-        params: null,
-        logRequest: false,
-        logResponse: false,
-        parse: {
-          ignoreQueryPrefix: true
-        },
-        stringify: {
-          addQueryPrefix: true,
-          format: 'RFC1738',
-          arrayFormat: 'indices'
-        }
+    this.opts = {
+      preventBodyOnMethods: ['GET', 'HEAD', 'DELETE', 'CONNECT'],
+      interceptableMethods: METHODS,
+      mode: 'same-origin',
+      cache: 'default',
+      credentials: 'same-origin',
+      redirect: 'follow',
+      referrer: 'client',
+      body: null,
+      params: null,
+      logRequest: false,
+      logResponse: false,
+      parse: {
+        ignoreQueryPrefix: true
       },
-      opts
-    );
+      stringify: {
+        addQueryPrefix: true,
+        format: 'RFC1738',
+        arrayFormat: 'indices'
+      },
+      ...opts
+    };
 
     let localAbortController;
     Object.defineProperty(this, 'abortController', {
