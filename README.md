@@ -617,9 +617,9 @@ Therefore we created `frisbee` to serve as our API glue, and hopefully it'll ser
 
 [automatic-ip-configuration]: http://moduscreate.com/automated-ip-configuration-for-react-native-development/
 
-[slack-image]: https://slack.crocodilejs.com/badge.svg
+[slack-image]: https://img.shields.io/badge/chat-join%20slack-brightgreen
 
-[slack-url]: https://slack.crocodilejs.com
+[slack-url]: https://join.slack.com/t/ladjs/shared_invite/zt-fqei6z11-Bq2trhwHQxVc5x~ifiZG0g
 
 [lad-url]: https://lad.js.org
 
