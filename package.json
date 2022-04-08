@@ -39,7 +39,7 @@
     "Adam Jenkins <akmjenkins@gmail.com>"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.10.2",
+    "@babel/runtime": "^7.17.7",
     "abortcontroller-polyfill": "^1.4.0",
     "boolean": "^3.0.1",
     "caseless": "^0.12.0",
