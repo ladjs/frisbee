@@ -329,7 +329,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         return [path, options];
     },
     requestError: function (err) {
-        // Handle an error occured in the request method
+        // Handle an error occurred in the request method
         // ...
         return Promise.reject(err);
     },
@@ -339,7 +339,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         return response;
     },
     responseError: function (err) {
-        // Handle error occured in api/response methods
+        // Handle error occurred in api/response methods
         return Promise.reject(err);
     }
     ```
@@ -532,7 +532,7 @@ This means that it is compatible for both client-side and server-side usage.
 
 ## Background
 
-The docs suggest that you use `superagent` with React Native, but in our experience it did not work properly, therefore we went with the next best solution, the Github `fetch` API polyfill included with React Native.  After having several issues trying to use `fetch` and writing our own API wrapper for a project with it (and running into roadblocks along the way) – we decided to publish this.
+The docs suggest that you use `superagent` with React Native, but in our experience it did not work properly, therefore we went with the next best solution, the GitHub `fetch` API polyfill included with React Native.  After having several issues trying to use `fetch` and writing our own API wrapper for a project with it (and running into roadblocks along the way) – we decided to publish this.
 
 Here were the issues we discovered/filed related to this:
 
