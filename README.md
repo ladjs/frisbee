@@ -329,7 +329,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         return [path, options];
     },
     requestError: function (err) {
-        // Handle an error occured in the request method
+        // Handle an error occurred in the request method
         // ...
         return Promise.reject(err);
     },
@@ -339,7 +339,7 @@ Upon being invoked, `Frisbee` returns an object with the following chainable met
         return response;
     },
     responseError: function (err) {
-        // Handle error occured in api/response methods
+        // Handle error occurred in api/response methods
         return Promise.reject(err);
     }
     ```
